@@ -12,7 +12,7 @@
         <div class="card-header flex-wrap border-0 pt-6 pb-0">
             <div class="card-title">
                 <h3 class="card-label">Users
-                    <span class="d-block text-muted pt-2 font-size-sm">List Of approved User</span>
+                    <span class="d-block text-muted pt-2 font-size-sm">List of approved User</span>
                 </h3>
             </div>
             <div class="card-toolbar">
@@ -69,12 +69,12 @@
                                         @csrf
                                         <select class="form-control" id="kt_datatable_search_status" name="approval_status">
                                             <option selected value="">
-                                                Select Approval Status
+                                               All Available Status
                                             </option>
                                             @foreach ($approval_status as $key => $status)
                                                 <?php
                                                 if ($status->approval_status == '0') {
-                                                    $value = 'Left for approval';
+                                                    $value = 'Unapproved';
                                                 } elseif ($status->approval_status == '1') {
                                                     $value = 'Approved';
                                                 }
@@ -122,7 +122,16 @@
                                 @endif
                             </td>
                             <td>
-                                {{ $user->approval_status == '0' ? 'Left for approval' : 'Approved' }}
+                                @if ($user->approval_status == '0')
+                                <span class="text-danger fs-6">
+                                    Unapproved
+                                </span>
+                                @else
+                                <span class="text-success fs-6">
+                                    Approved
+                                </span>
+                                @endif
+                                {{-- {{ $user->approval_status == '0' ? 'Unapproved' : 'Approved' }} --}}
                             </td>
 
                             <td>
