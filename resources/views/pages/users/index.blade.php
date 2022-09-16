@@ -12,7 +12,7 @@
         <div class="card-header flex-wrap border-0 pt-6 pb-0">
             <div class="card-title">
                 <h3 class="card-label">Users
-                    <span class="d-block text-muted pt-2 font-size-sm">List Of Users registered</span>
+                    <span class="d-block text-muted pt-2 font-size-sm">List Of approved User</span>
                 </h3>
             </div>
             <div class="card-toolbar">
@@ -51,7 +51,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="col-md-4 my-2 my-md-0">
+                            {{-- <div class="col-md-4 my-2 my-md-0">
                                 <div class="d-flex align-items-center">
                                     <label class="mr-3 mb-0 d-none d-md-block">Role:</label>
                                     <select class="form-control" id="kt_datatable_search_role">
@@ -61,21 +61,49 @@
 
                                     </select>
                                 </div>
+                            </div> --}}
+                            <div class="col-md-4 my-2 my-md-0">
+                                <div class="d-flex align-items-center">
+                                    <label class="mr-3 mb-0 d-none d-md-block">Status:</label>
+                                    <form action="{{ route('user.approvalFilter') }}" method="POST" class="d-flex">
+                                        @csrf
+                                        <select class="form-control" id="kt_datatable_search_status" name="approval_status">
+                                            <option selected value="">
+                                                Select Approval Status
+                                            </option>
+                                            @foreach ($approval_status as $key => $status)
+                                                <?php
+                                                if ($status->approval_status == '0') {
+                                                    $value = 'Left for approval';
+                                                } elseif ($status->approval_status == '1') {
+                                                    $value = 'Approved';
+                                                }
+                                                ?>
+                                                <option value="{{ $status->approval_status }}">
+                                                    {{ $value }}
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+                                        <button type="submit" class="mx-5 btn btn-primary" >
+                                            Search
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
             <table class="datatable datatable-bordered" id="kt_datatable">
                 <thead>
                     <tr>
                         <th style="width: 10px !important;">No</th>
-                        <th>Username</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Dealer/Exchange</th>
+                        <th>Approval Status</th>
                         <th title="Field #6">Action</th>
                     </tr>
                 </thead>
@@ -83,10 +111,8 @@
                     @foreach ($users as $key => $user)
                         <tr>
                             <td>{{ $key + 1 }}</td>
-                            <td>{{ $user->username }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            {{-- <td>Role name</td> --}}
                             <td>
                                 @if (isset($user->role))
                                     <a href="{{ route('roles.edit', $user->role->id) }}" data-toggle="tooltip"
@@ -96,23 +122,25 @@
                                 @endif
                             </td>
                             <td>
-                                @if (isset($user->dealer))
-                                    <a href="{{ route('dealers.edit', $user->dealer->id) }}" data-toggle="tooltip"
-                                        title="Edit">{{ isset($user->dealer) ? $user->dealer->name : '' }}</a>
-                                @else
-                                    ---
-                                @endif
-
+                                {{ $user->approval_status == '0' ? 'Left for approval' : 'Approved' }}
                             </td>
+
                             <td>
-                                <a href="{{ route('users.edit', $user->id) }}"  class="btn btn-icon btn-success btn-xs mr-2" data-toggle="tooltip" title="Edit">
-                                    <i  class="fa fa-pen"></i>
-                                </a>
-                                @if (isset($user->dealer))
-                                <a href="{{ route('users.reset', $user->id) }}" class="btn btn-icon btn-success btn-xs mr-2" data-toggle="tooltip" title="Reset Password">
-                                    <i class="fa fa-key"></i>
-                                </a>
+                                @if ($user->approval_status == '0')
+                                    <a href="{{ route('user.approve', $user->id) }}"
+                                        class="btn btn-icon btn-info btn-xs mr-2" data-toggle="tooltip" title="Approve">
+                                        <i class="fa fa-check"></i>
+                                    </a>
+                                @else
+                                    <a href="{{ route('user.unapprove', $user->id) }}"
+                                        class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip" title="Unapprove">
+                                        <i class="fa fa-minus"></i>
+                                    </a>
                                 @endif
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-icon btn-success btn-xs mr-2"
+                                    data-toggle="tooltip" title="Edit">
+                                    <i class="fa fa-pen"></i>
+                                </a>
                                 <form action="{{ route('users.destroy', $user->id) }}" style="display: inline-block;"
                                     method="post">
                                     {{ method_field('DELETE') }}
@@ -158,6 +186,10 @@
         $('#kt_datatable_search_role').on('change', function() {
             datatable.search($(this).val(), 'Role');
         });
+        // $('#kt_datatable_search_status').on('change', function() {
+        //     datatable.search($(this).val(), 'Approval Status');
+        // });
+
         $('#kt_datatable_search_status, #kt_datatable_search_type').selectpicker();
     </script>
 @endsection

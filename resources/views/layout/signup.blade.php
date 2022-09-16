@@ -16,7 +16,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <head>
     <base href="../../../">
     <meta charset="utf-8" />
-    <title>NoPrice | Login Page</title>
+    <title>FSC | Login Page</title>
     <meta name="description" content="Login page example" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <!--begin::Fonts-->
@@ -56,62 +56,17 @@ License: You must have a valid license purchased only from themeforest(the above
                             {{-- Logo here --}}
                         </a>
                     </div>
-                    <!--end::Login Header-->
-                    <!--begin::Login Sign in form-->
-                    <div class="login-signin">
-                        <div class="mb-10">
-                            <h2 style="color: #ffffff;">Login</h2>
-                            <div class="text-muted font-weight-bold">Enter your details to login to your account:</div>
-                        </div>
-                        <form class="kt-form" action="{{ route('login') }}" method="post" novalidate="novalidate">
-                            {{ csrf_field() }}
-                            @if (session('fail'))
-                                <div class="alert alert-danger alert-dismissible" role="alert">
-                                    <div class="alert-text">{!! session('fail') !!}</div>
-                                    <!-- <div class="alert-close">
-           <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
-          </div>	 -->
-                                </div>
-                            @endif
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
-                                    placeholder="Email" name="email" autocomplete="off" />
-                            </div>
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8 password" type="password"
-                                    placeholder="Password" name="password" />
-                            </div>
-                            <!-- 	<div class="form-group row">
-       <div class="col-lg-4 col-md-9 col-sm-12">
-       <div class="g-recaptcha" data-sitekey="6LdnLwgUAAAAAAIb9L3PQlHQgvSCi16sYgbMIMFR"></div>
-       </div>
-      </div> -->
-                            <!-- <div class="form-group d-flex flex-wrap justify-content-between align-items-center">
-         <label class="checkbox m-0 text-muted">
-         <input type="checkbox" name="remember" />Remember me
-         <span></span></label>
-         <a href="javascript:;" id="kt_login_forgot" class="text-muted text-hover-primary">Forget Password ?</a>
-        </div> -->
-                            <button type="submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4">Sign
-                                In</button>
-                        </form>
-                        <div class="mt-10">
-                            <span class="text-muted font-weight-bold">Don't have an account yet?</span>
-                            <a href="/signup" id="kt_login_signup"
-                                class="text-muted text-hover-primary font-weight-bold">Sign Up!</a>
-                        </div>
-                    </div>
-                    <!--end::Login Sign in form-->
-                    <!--begin::Login Sign up form-->
-                    <div class="login-signup">
+
+                    <div class="login-signin ">
                         <div class="mb-20">
-                            <h3>Sign Up</h3>
+                            <h3 class="text-muted font-weight-bold">Sign Up</h3>
                             <div class="text-muted font-weight-bold">Enter your details to create your account</div>
                         </div>
-                        <form class="form">
+                        <form class="form" action="{{ route('register') }}" method="POST">
+                            @csrf
                             <div class="form-group mb-5">
                                 <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
-                                    placeholder="Fullname" name="fullname" />
+                                    placeholder="Fullname" name="name" />
                             </div>
                             <div class="form-group mb-5">
                                 <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
@@ -125,42 +80,19 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <input class="form-control h-auto form-control-solid py-4 px-8" type="password"
                                     placeholder="Confirm Password" name="rpassword" />
                             </div>
-                            <div class="form-group mb-5 text-left">
-                                <label class="checkbox m-0">
-                                    <input type="checkbox" name="agree" />I Agree the
-                                    <a href="#" class="font-weight-bold">terms and conditions</a>.
-                                    <span></span></label>
-                                <div class="form-text text-muted text-center"></div>
-                            </div>
+
                             <div class="form-group d-flex flex-wrap flex-center mt-10">
                                 <button id="kt_login_signup_submit"
                                     class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2">Sign Up</button>
-                                <button id="kt_login_signup_cancel"
-                                    class="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-2">Cancel</button>
                             </div>
                         </form>
-                    </div>
-                    <!--end::Login Sign up form-->
-                    <!--begin::Login forgot password form-->
-                    <div class="login-forgot">
-                        <div class="mb-20">
-                            <h3>Forgotten Password ?</h3>
-                            <div class="text-muted font-weight-bold">Enter your email to reset your password</div>
+                        <div class="mt-10">
+                            <span class="text-muted font-weight-bold">Already have an account ?</span>
+                            <a href="/login" id="kt_login_signup"
+                                class="text-muted text-hover-primary font-weight-bold">Login</a>
                         </div>
-                        <form class="form">
-                            <div class="input-group mb-10">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
-                                    placeholder="Email" name="email" id="kt_email" autocomplete="off" />
-                            </div>
-                            <div class="form-group d-flex flex-wrap flex-center mt-10">
-                                <button id="kt_login_forgot_submit"
-                                    class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2">Request</button>
-                                <button id="kt_login_forgot_cancel"
-                                    class="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-2">Cancel</button>
-                            </div>
-                        </form>
                     </div>
-                    <!--end::Login forgot password form-->
+
                 </div>
             </div>
         </div>

@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Mail\CustomEmail;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\Dealer;
-use App\Models\Exchange;
 use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Hash;
 use Auth;
-use Carbon\Carbon;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -23,18 +24,54 @@ class UserController extends Controller
         $this->_data['page_title'] = 'User';
     }
 
-    public function index()
+    public function index($status = '')
     {
         $this->_data['users'] = User::all();
+        // return ([$this->_data]);
         $this->_data['roles'] = Role::pluck('name', 'id')->prepend('Select Role', '');
+        $this->_data['approval_status'] = User::select('approval_status')->distinct()->get();
+
         return view($this->_page . 'index', $this->_data);
+    }
+    public function approvalFilter(Request $request)
+    {
+        $status = $request->approval_status;
+        if (is_null($status)) {
+            return redirect(route('users.index'));
+        }
+        $this->_data['users'] = User::where('approval_status', $status)->get();
+        $this->_data['roles'] = Role::pluck('name', 'id')->prepend('Select Role', '');
+        $this->_data['approval_status'] = User::select('approval_status')->distinct()->get();
+        return view($this->_page . 'index', $this->_data);
+    }
+
+    public function approveUser($id)
+    {
+        $user = User::find($id);
+        $user->approval_status = '1';
+        $user->save();
+        Mail::to($user->email)->send(new CustomEmail([
+            'body' => 'Your account has been approved'
+        ]));
+
+        return redirect(route('users.index'));
+    }
+
+
+    public function unapproveUser($id)
+    {
+        $user = User::find($id);
+        $user->approval_status = '0';
+        $user->save();
+        Mail::to($user->email)->send(new CustomEmail([
+            'body' => 'Your account has been suspended !!'
+        ]));
+        return redirect(route('users.index'));
     }
 
     public function create()
     {
         $this->_data['roles'] = Role::list();
-        $this->_data['dealers'] = Dealer::list();
-        $this->_data['exchanges'] = Exchange::list();
         return view($this->_page . 'create', $this->_data);
     }
 
@@ -44,7 +81,6 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required',
             'role_id' => 'required',
-            'username' => 'required',
             'password' => 'required',
         ]);
 
@@ -53,12 +89,9 @@ class UserController extends Controller
         $user->name = $data['name'];
         $user->email = $data['email'];
         $user->role_id = $data['role_id'];
-        $user->dealer_id  = $data['dealer_id'];
-        $user->exchange_id = $data['exchange_id'];
-        $user->username = $data['username'];
         $user->password = Hash::make($data['password']);
         if ($user->save()) {
-            //TODO::EMAIL
+            event(new Registered($user));
             return redirect()->route('users.index')->with('success', 'Your Information has been Added .');
         }
         return redirect()->back()->with('fail', 'Information could not be added .');
@@ -67,8 +100,6 @@ class UserController extends Controller
     public function edit($id)
     {
         $this->_data['roles'] = Role::list();
-        $this->_data['dealers'] = (new CustomerController)->get_dealers_list();
-        $this->_data['exchanges'] = Exchange::list();
         $this->_data['data'] = User::find($id);
         return view($this->_page . 'edit', $this->_data);
     }
@@ -79,10 +110,10 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required',
             'role_id' => 'required',
-            'username' => 'required',
         ]);
 
-        $data = $request->input();
+        $data = array_filter($request->input());
+
         $user = User::findOrFail($id);
         if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
@@ -97,7 +128,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        if (!in_array($user->role_id, [1, 2])) {
+        if (!in_array($user->role_id, [1])) {
             $user->delete();
             return redirect()->route('users.index')->with('delete-success', "Deleted");
         } else {
@@ -176,44 +207,5 @@ class UserController extends Controller
         $this->_data['page_title'] = 'User Track Log';
         $this->_data['activityLogs'] = ActivityLog::orderBy('created_at', 'desc')->get();
         return view($this->_page . 'users-log', $this->_data);
-    }
-
-    public function reset($id){
-        $User = User::find($id);
-        $password = $this->generate_password();
-        $length = 12;
-        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        $new_token = substr(str_shuffle($chars),0,$length);
-        if(User::where(['id' => $id])->update([
-            'password' => Hash::make($password), 
-            'token_id' => $new_token,
-            'updated' => Carbon::now()->format('Y-m-d h:i:s'),
-            'modified_by' => Auth::user()->id
-        ])){
-            $Dealer = Dealer::where('id','=', $User->dealer_id)->first();
-            $message = "Dear Dealer, Your log in credentials for NGM Sathi app has been updated.Password: $password";
-            //dd($Dealer->contact);
-            $this->sendSMS($Dealer->contact, $message);
-            return redirect()->route('users.index')->with('success', 'Your Information has been updated .');
-        }
-        
-        return redirect()->back()->with('fail', 'Information could not be updated .');
-    }
-
-    //Fn to generate easy to remember passwords for Sathi Login
-    public function generate_password(){
-        $words_array_1 = [ 'Expensive','Easytodrive','Registration','Owners','Economical',
-                           'Traffic','Vintage','Electric','Speed','Engineered' ,
-                           'Faster','Powerful','Extreme','Enhanced','Luxury',
-                           'Hybrid','Fast','Classic','Manual','Automatic'];
-        $words_array_2 = ['ACHIEVER','DASH','DESTINI','DUET','GLAMOUR',
-                          'HUNK','HUNK150R','KARIZMA','KARIZMAZMR','MAESTRO',
-                          'PASSIONPRO','PLEASURE','PLEASUREPLUS','SPLENDOR','SUPERSPLENDOR',
-                          'SPLENDOR ISMART','XPULSE','XPULSE2004V','XTREME','XTREME200R'];
-        $random_number = rand(1001,9999);
-        $random_password = $words_array_1[rand(1,19)] . $words_array_2[rand(1,19)]. $random_number;
-        return $random_password;
-
-
     }
 }

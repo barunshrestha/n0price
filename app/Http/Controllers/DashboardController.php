@@ -20,11 +20,7 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        $today = date('Y-m-d');
-        $this->_data['sub_date'] = date('Y-m-d', strtotime($today . '-4 days'));
-        
-        $this->_data['month'] = "";
-       
+             
         return view($this->_page.'dashboard',$this->_data);
     }
 

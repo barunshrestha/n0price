@@ -28,9 +28,6 @@
                 <div class="form-group row">
                     <label class="col-form-label text-right col-lg-3 col-sm-12">Role:*</label>
                     <div class="col-lg-9 col-md-9 col-sm-12">
-
-                        {{-- {{ Form::select('role_id', $roles, null, ['class' => 'form-control form-control-solid role', 'autocomplete' => 'off', 'required' => true]) }} --}}
-
                         <select class="form-control form-control-solid role" id="role_id" name="role_id" required>
                             @foreach ($roles as $key => $role)
                                 <option value="{{ $key }}">{{ ucfirst(trans($role)) }}</option>
@@ -38,27 +35,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group row dealer">
-                    <label class="col-form-label text-right col-lg-3 col-sm-12">Dealer:</label>
-                    <div class="col-lg-9 col-md-9 col-sm-12">
-                        {{ Form::select('dealer_id', $dealers, null, ['class' => 'form-control form-control-solid', 'autocomplete' => 'off']) }}
-                    </div>
-                </div>
-                <div class="form-group row exchange">
-                    <label class="col-form-label text-right col-lg-3 col-sm-12">Exchange:</label>
-                    <div class="col-lg-9 col-md-9 col-sm-12">
-                        {{ Form::select('exchange_id', $exchanges, null, ['class' => 'form-control form-control-solid', 'autocomplete' => 'off']) }}
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-form-label text-right col-lg-3 col-sm-12">Username:*</label>
-                    <div class="col-lg-9 col-md-9 col-sm-12">
-                        <input name="username" type="text" class="form-control form-control-solid username"
-                            placeholder="Enter Username" required autocomplete="off" />
-                        <span class="form-text text-muted unameMsg" style="display:none;color : red !important;">This
-                            username already exists. Choose another one.</span>
-                    </div>
-                </div>
+               
                 <div class="form-group row">
                     <label class="col-form-label text-right col-lg-3 col-sm-12">Password:*</label>
                     <div class="col-lg-9 col-md-9 col-sm-12">

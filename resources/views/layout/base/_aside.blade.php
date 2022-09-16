@@ -17,7 +17,10 @@ $kt_logo_image = 'hero-logo.png';
     <div class="brand flex-column-auto {{ Metronic::printClasses('brand', false) }}" id="kt_brand">
         <div class="brand-logo">
             <a href="{{ url('/') }}">
-                <img alt="{{ config('app.name') }}" src="{{ asset('media/logos/'.$kt_logo_image) }}" style="height:25px !important;"/>
+                {{-- <img alt="{{ config('app.name') }}" src="{{ asset('media/logos/'.$kt_logo_image) }}" style="height:25px !important;"/> --}}
+                <h2 class="text-white">
+                    No Price
+                </h2>
             </a>
         </div>
 
@@ -35,7 +38,7 @@ $kt_logo_image = 'hero-logo.png';
         @if (config('layout.aside.self.display') === false)
             <div class="header-logo">
                 <a href="{{ url('/') }}">
-                    <img alt="{{ config('app.name') }}" src="{{ asset('media/logos/'.$kt_logo_image) }}"/>
+                    {{-- <img alt="{{ config('app.name') }}" src="{{ asset('media/logos/'.$kt_logo_image) }}"/> --}}
                 </a>
             </div>
         @endif

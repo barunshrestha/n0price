@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
@@ -16,7 +17,30 @@ class AuthController extends Controller
 
     public function _construct()
     {
+    }
 
+    public function signup(Request $request)
+    {
+        return view('layout.signup');
+    }
+
+    public function signupAction(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required'],
+        ]);
+        // dd($request->all());
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        event(new Registered($user));
+        return redirect(route('login'));
     }
 
     public function login(Request $request)
@@ -27,13 +51,13 @@ class AuthController extends Controller
     public function loginAction(Request $request)
     {
         $this->validate($request, [
-            'username' => 'required',
+            'email' => 'required',
             'password' => 'required'
         ]);
-        
-        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             return redirect()->route('dashboard');
-        } 
+        }
 
         return redirect()->back()->withInput($request->only('username'))->with(['fail' => 'Credentials did not match our record']);
     }
@@ -49,7 +73,9 @@ class AuthController extends Controller
         // $activityLog->save();
         Auth::logout();
         $request->session()->invalidate();
-		return redirect()->route('login');
+        return redirect()->route('login');
     }
-
+    public function approvalPending(){
+        return view('auth.approval_page');
+    }
 }

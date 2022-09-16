@@ -8,25 +8,23 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable
+
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
-    const CREATED_AT = 'created';
-    const UPDATED_AT = 'updated';
-
+  
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
+    protected $table='users';
+    
     protected $fillable = [
         'name',
         'email',
         'password',
-        'username',
-        'role_id',
-        'exchange_id',
-        'dealer_id'
+        'role_id'
     ];
 
     /**
@@ -49,19 +47,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
     public function role()
     {
         return $this->belongsTo('App\Models\Role', 'role_id', 'id')->select('id', 'name');
-    }
-
-    public function dealer()
-    {
-        return $this->belongsTo('App\Models\Dealer', 'dealer_id', 'id');
-    }
-
-    public function dealerdetails()
-    {
-        return $this->hasManyThrough(DealerDetail::class, Dealer::class, 'id', 'dealer_id', 'dealer_id')->Select("meta_name", "meta_value");
     }
 }

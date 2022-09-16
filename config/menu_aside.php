@@ -11,13 +11,22 @@ return [
             'page' => '/',
             'new-tab' => false,
         ],
+        
        
         // Custom
         [
-            'section' => 'Custom',
+            'section' => 'User',
         ],
         [
-            'title' => 'Settings',
+            'title' => 'Users',
+            'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
+            'bullet' => 'line',
+            'page'=>'/users',
+            'root' => true,
+            'new-tab'=>false,
+        ],
+        [
+            'title' => 'Points',
             'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
             'bullet' => 'line',
             'root' => true,
@@ -27,6 +36,13 @@ return [
 
                 ]
             ]
+        ],
+        [
+            'title' => 'Logout',
+            'root' => true,
+            'icon' => 'media/svg/icons/Design/Layers.svg', // or can be 'flaticon-home' or any flaticon-*
+            'page' => '/logout',
+            'new-tab' => false,
         ],
         
     ]
