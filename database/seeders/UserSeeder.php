@@ -19,6 +19,8 @@ class UserSeeder extends Seeder
             'email' => 'bimaladhikari8158@gmail.com',
             'password' => Hash::make('00000000'),
             'role_id' => 1,
+            'approval_status' => 1,
+            'email_verified_at' => '2022-09-19',
         ]);
     }
 }

@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Hash;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Mail;
 
@@ -24,7 +24,7 @@ class UserController extends Controller
         $this->_data['page_title'] = 'User';
     }
 
-    public function index($status = '')
+    public function index()
     {
         $this->_data['users'] = User::all();
         // return ([$this->_data]);
@@ -204,10 +204,4 @@ class UserController extends Controller
         return redirect()->back()->with('fail', 'User could not be enabled at the moment.');
     }
 
-    public function listUsersLog()
-    {
-        $this->_data['page_title'] = 'User Track Log';
-        $this->_data['activityLogs'] = ActivityLog::orderBy('created_at', 'desc')->get();
-        return view($this->_page . 'users-log', $this->_data);
-    }
 }

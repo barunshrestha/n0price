@@ -38,6 +38,33 @@ return [
             ]
         ],
         [
+            'section' => 'Coin',
+        ],
+        [
+            'title' => 'Coin',
+            'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
+            'bullet' => 'line',
+            'page'=>'/coins',
+            'root' => true,
+            'new-tab'=>false,
+        ],
+        [
+            'title' => 'Transaction',
+            'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
+            'bullet' => 'line',
+            'root' => true,
+            'submenu' => [
+                [
+                   
+
+                ]
+            ]
+        ],
+        [
+            'section' => 'Settings',
+        ],
+
+        [
             'title' => 'Logout',
             'root' => true,
             'icon' => 'media/svg/icons/Design/Layers.svg', // or can be 'flaticon-home' or any flaticon-*

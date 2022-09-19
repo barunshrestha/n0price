@@ -29,6 +29,9 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/user/unnapprove/{id}', [UserController::class,'unapproveUser'])->name('user.unapprove');
     Route::post('/user/status', [UserController::class,'approvalFilter'])->name('user.approvalFilter');
     Route::resource('users', 'UserController');
+    Route::resource('transactions', 'TransactionController');
+    Route::resource('coins', 'CoinController');
+
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 });
 
