@@ -78,16 +78,35 @@
                     <form class="form" id="kt_form" action="{{ route('transactions.store') }}" method="POST"
                         enctype="multipart/form-data">
                         {{ csrf_field() }}
-                        <div class="card p-3">
+                        <div class="card p-3 container">
                             <div class="form-group mt-4 ">
-                                <label>Coin type</label>
-                                <select class="form-control form-control-solid coins" id="coin_id" name="coin_id"
+                                <div class="row">
+                                    <label class="px-4">Coin type</label>
+                                </div>
+                                <div class="row">
+
+                                    <div class="coin_container">
+                                        @foreach ($available_coins as $coin)
+                                            <div class="col">
+
+                                                <div class="selection">
+                                                    <input name="coin_id" type="radio" value="{{ $coin->id }}"
+                                                        id="{{ $coin->id }}">
+                                                    <label
+                                                        for="{{ $coin->id }}">{{ ucfirst(trans($coin->name)) }}</label>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                {{-- <select class="form-control form-control-solid coins" id="coin_id" name="coin_id"
                                     required>
                                     @foreach ($available_coins as $coin)
                                         <option value="{{ $coin->id }}">
                                             {{ ucfirst(trans($coin->name)) }}</option>
                                     @endforeach
-                                </select>
+                                </select> --}}
 
                             </div>
                             <div class="row">

@@ -2,6 +2,38 @@
 @extends('layout.default')
 @section('styles')
     <link href="{{ asset('css/pages/wizard/wizard-2.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        .coin_container .selection {
+            margin-bottom: 1em;
+        }
+
+        .coin_container {
+            display: flex;
+        }
+       
+        .selection label {
+            text-align: center;
+            display: block;
+            width: 7em;
+            background-color: #42b4d6;
+            border-radius: 12em;
+            color: #ffffff;
+            padding: 0.5em;
+            cursor: pointer;
+        }
+
+        .coin_container .selection label:hover {
+            background-color: #5fc0dc;
+        }
+
+        .coin_container .selection input[type=radio] {
+            display: none;
+        }
+
+        .coin_container .selection input[type=radio]:checked~label {
+            background-color: #f1592a;
+        }
+    </style>
 @endsection
 {{-- Content --}}
 @section('content')
@@ -31,6 +63,20 @@
                             </li>
                         </ul>
                     </div>
+                    @if (Auth::user()->role_id == '2')
+                        <ul class="nav nav-tabs nav-bold nav-tabs-line pe-5">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    {{ $user->name }}
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href={{ route('logout') }}>Logout</a>
+
+                                </div>
+                            </li>
+                        </ul>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="tab-content">
@@ -65,7 +111,7 @@
                     cookie: false
                 }
             },
-            
+
             search: {
                 input: $('#kt_datatable_search_query_portfolio'),
                 key: 'generalSearch'
@@ -79,7 +125,7 @@
                         cookie: false
                     }
                 },
-              
+
                 search: {
                     input: $('#kt_datatable_search_query_portfolio'),
                     key: 'generalSearch'

@@ -72,7 +72,6 @@ License: You must have a valid license purchased only from themeforest(the above
     @yield('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
-
             // startConnection();
             $("form").submit(function() {
                 KTApp.block('#kt_blockui_card', {
