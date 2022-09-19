@@ -41,7 +41,7 @@
                 @foreach ($transactions as $key => $transaction)
                     <tr>
                         <td>{{ $key + 1 }}</td>
-                        <td>{{ $transaction->coin_id }}</td>
+                        <td>{{ $transaction->coin_name }}</td>
                         <td>{{ $transaction->units }}</td>
                         <td>{{ $transaction->purchase_price }}</td>
                         <td>{{ $transaction->purchase_date }}</td>

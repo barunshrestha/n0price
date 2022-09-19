@@ -45,7 +45,7 @@
             <table class="datatable datatable-bordered table-responsive" id="kt_datatable_portfolio">
                 <thead>
                     <tr>
-                        <th style="width: 10px !important;">No</th>
+                        <th>No</th>
                         <th>Coin</th>
                         <th>Total Units</th>
                     </tr>

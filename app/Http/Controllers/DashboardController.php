@@ -33,7 +33,11 @@ class DashboardController extends Controller
             ->get();
         $this->_data['portfolio'] = $portfolio;
 
-        $transactions = Transaction::where('user_id', $user->id)->get();
+        // $transactions = Transaction::where('user_id', $user->id)->join()->get();
+        $transactions= DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
+            ->where('transactions.user_id', $user->id)
+            ->select(DB::raw('coins.name as coin_name,transactions.*'))
+            ->get();
         $this->_data['transactions'] = $transactions;
 
         return view($this->_page . 'dashboard', $this->_data);

@@ -65,20 +65,7 @@
                     cookie: false
                 }
             },
-            columns: [{
-                    field: "No",
-                    width: 20,
-                },
-                {
-                    field: "Coin",
-                    width: 60,
-                },
-                {
-                    field: "Total Units",
-                    width: 80,
-                },
-
-            ],
+            
             search: {
                 input: $('#kt_datatable_search_query_portfolio'),
                 key: 'generalSearch'
@@ -92,12 +79,7 @@
                         cookie: false
                     }
                 },
-                columns: [{
-                        field: "No",
-                        width: 20,
-                    },
-
-                ],
+              
                 search: {
                     input: $('#kt_datatable_search_query_portfolio'),
                     key: 'generalSearch'
