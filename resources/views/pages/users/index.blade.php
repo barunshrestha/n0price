@@ -51,17 +51,6 @@
                                     </span>
                                 </div>
                             </div>
-                            {{-- <div class="col-md-4 my-2 my-md-0">
-                                <div class="d-flex align-items-center">
-                                    <label class="mr-3 mb-0 d-none d-md-block">Role:</label>
-                                    <select class="form-control" id="kt_datatable_search_role">
-                                        @foreach ($roles as $key => $role)
-                                            <option value="{{ $role }}">{{ ucfirst(trans($role)) }}</option>
-                                        @endforeach
-
-                                    </select>
-                                </div>
-                            </div> --}}
                             <div class="col-md-4 my-2 my-md-0">
                                 <div class="d-flex align-items-center">
                                     <label class="mr-3 mb-0 d-none d-md-block">Status:</label>
@@ -96,7 +85,7 @@
 
                 </div>
             </div>
-            <table class="datatable datatable-bordered" id="kt_datatable">
+            <table class="datatable datatable-bordered table-responsive" id="kt_datatable">
                 <thead>
                     <tr>
                         <th style="width: 10px !important;">No</th>

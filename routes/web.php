@@ -3,7 +3,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmailVerificationController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -43,7 +42,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('users', 'UserController');
     Route::get('/reset_password/{id}', 'UserController@reset')->name('users.reset');
     Route::resource('roles', 'RoleController');
-
     // Demo routes
     Route::get('/datatables', 'PagesController@datatables');
     Route::get('/ktdatatables', 'PagesController@ktDatatables');
@@ -62,8 +60,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Quick search dummy route to display html elements in search dropdown (header search)
     Route::get('/quick-search', 'PagesController@quickSearch')->name('quick-search');
-
-
 
     Route::get('verify-email', [EmailVerificationController::class, 'verify_email_invoke'])
         ->name('verification.notice');

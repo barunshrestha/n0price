@@ -51,7 +51,8 @@ class UserController extends Controller
         $user->approval_status = '1';
         $user->save();
         Mail::to($user->email)->send(new CustomEmail([
-            'body' => 'Your account has been approved'
+            'body' => 'Your account has been approved. You can now start using NoPrice',
+            'user'=>$user->name,
         ]));
 
         return redirect(route('users.index'));
@@ -64,7 +65,8 @@ class UserController extends Controller
         $user->approval_status = '0';
         $user->save();
         Mail::to($user->email)->send(new CustomEmail([
-            'body' => 'Your account has been suspended !!'
+            'body' => 'Your account has been suspended! Until NoPrice approves you, you cannot use it.',
+            'user'=>$user->name,
         ]));
         return redirect(route('users.index'));
     }
