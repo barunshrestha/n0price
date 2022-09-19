@@ -31,7 +31,7 @@
                             </g>
                         </svg>
                         <!--end::Svg Icon-->
-                    </span>New User</a>
+                    </span>New Coin</a>
             </div>
         </div>
         <div class="card-body">
@@ -114,13 +114,13 @@
 
                             <td>
                                 @if ($coin->status == '0')
-                                    <a href="{{ route('user.approve', $coin->id) }}"
+                                    <a href="{{ route('coins.active', $coin->id) }}"
                                         class="btn btn-icon btn-info btn-xs mr-2" data-toggle="tooltip" title="Approve">
                                         <i class="fa fa-check"></i>
                                     </a>
                                 @else
-                                    <a href="{{ route('user.unapprove', $coin->id) }}"
-                                        class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip" title="Unapprove">
+                                    <a href="{{ route('coins.inactive', $coin->id) }}"
+                                        class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip" title="Disable">
                                         <i class="fa fa-minus"></i>
                                     </a>
                                 @endif

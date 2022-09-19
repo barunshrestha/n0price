@@ -22,7 +22,7 @@ class CoinController extends Controller
     public function index()
     {
         $this->_data['coins'] = Coin::all();
-        return view($this->_page . 'index', $this->_data); 
+        return view($this->_page . 'index', $this->_data);
     }
 
     /**
@@ -32,7 +32,7 @@ class CoinController extends Controller
      */
     public function create()
     {
-        //
+        return view($this->_page . 'create', $this->_data);
     }
 
     /**
@@ -43,7 +43,34 @@ class CoinController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required',
+        ]);
+
+        $data = $request->except('_token');
+        $coin = new Coin();
+        $coin->name = $data['name'];
+        $coin->status = '1';
+        if ($coin->save()) {
+            return redirect()->route('coins.index')->with('success', 'Coin Information has been Added .');
+        }
+
+        return redirect()->back()->with('fail', 'Coin Information could not be added .');
+    }
+    public function activeCoin($id)
+    {
+        $coin = Coin::find($id);
+        $coin->status = '1';
+        $coin->save();
+
+        return redirect()->route('coins.index')->with('success', 'Coin Information has been updated .');
+    }
+    public function inactiveCoin($id)
+    {
+        $coin = Coin::find($id);
+        $coin->status = '0';
+        $coin->save();
+        return redirect()->route('coins.index')->with('success', 'Coin Information has been updated .');
     }
 
     /**

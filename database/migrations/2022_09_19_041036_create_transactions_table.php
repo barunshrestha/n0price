@@ -18,8 +18,9 @@ class CreateTransactionsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('coin_id');
             $table->string('units');
-            $table->string('current_rate');
+            $table->string('current_rate')->nullable();
             $table->string('purchase_price');
+            $table->date('purchase_date');
             $table->timestamps();
         });
     }

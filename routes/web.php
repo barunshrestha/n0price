@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CoinController;
 use App\Http\Controllers\EmailVerificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -31,6 +32,8 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::resource('users', 'UserController');
     Route::resource('transactions', 'TransactionController');
     Route::resource('coins', 'CoinController');
+    Route::get('/coin/active/{id}', [CoinController::class,'activeCoin'])->name('coins.active');
+    Route::get('/coin/inactive/{id}', [CoinController::class,'inactiveCoin'])->name('coins.inactive');
 
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 });

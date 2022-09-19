@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -37,7 +39,26 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'coin_id' => 'required',
+            'units' => 'required',
+            'purchase_price' => 'required',
+            'purchase_date' => 'required',
+        ]);
+
+        $data = $request->except('_token');
+        $user = Auth::user();
+        $transaction = new Transaction();
+        $transaction->user_id = $user->id;
+        $transaction->coin_id = $data['coin_id'];
+        $transaction->units = $data['units'];
+        $transaction->purchase_price = $data['purchase_price'];
+        $transaction->purchase_date = $data['purchase_date'];
+
+        if ($transaction->save()) {
+            return redirect()->back()->with('success', 'Purchased the coin.');
+        }
+        return redirect()->back()->with('fail', 'Information could not be added.');
     }
 
     /**

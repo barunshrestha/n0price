@@ -83,8 +83,6 @@ License: You must have a valid license purchased only from themeforest(the above
                 });
             });
 
-
-
             $('.password, .opass, .cpass, .pass').on('copy paste cut', function(e) {
                 e.preventDefault();
             });
