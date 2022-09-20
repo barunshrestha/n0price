@@ -12,14 +12,14 @@
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                             width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <rect x="0" y="0" width="24" height="24" />
-                                <circle fill="#000000" cx="9" cy="15" r="6" />
-                                <path
-                                    d="M8.8012943,7.00241953 C9.83837775,5.20768121 11.7781543,4 14,4 C17.3137085,4 20,6.6862915 20,10 C20,12.2218457 18.7923188,14.1616223 16.9975805,15.1987057 C16.9991904,15.1326658 17,15.0664274 17,15 C17,10.581722 13.418278,7 9,7 C8.93357256,7 8.86733422,7.00080962 8.8012943,7.00241953 Z"
-                                    fill="#000000" opacity="0.3" />
+                                <rect fill="#000000" x="4" y="11" width="16" height="2"
+                                    rx="1" />
+                                <rect fill="#000000" opacity="0.9"
+                                    transform="translate(12.000000, 12.000000) rotate(-270.000000) translate(-12.000000, -12.000000) "
+                                    x="4" y="11" width="16" height="2" rx="1" />
                             </g>
                         </svg>
-                    </span>Add Coin </button>
+                    </span> Investment</button>
             </div>
         </div>
         <div class="card-body">
@@ -42,20 +42,63 @@
 
                 </div>
             </div>
-            <table class="datatable datatable-bordered table-responsive" id="kt_datatable_portfolio">
+            <table class="table table-borderless table-bordered">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Coin</th>
-                        <th>Total Units</th>
+                        <th>NO</th>
+                        <th>SYMBOL</th>
+                        <th>NAME</th>
+                        <th>PRICE</th>
+                        <th>QUANTITY</th>
+                        <th>DAY GAIN</th>
+                        <th>VALUE</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($portfolio as $key => $data)
                         <tr>
                             <td>{{ $key + 1 }}</td>
+                            <td></td>
                             <td>{{ $data->coin_name }}</td>
+                            <td></td>
                             <td>{{ $data->total }}</td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <div class="card-toolbar">
+                                    <a class="btn btn-icon btn-sm btn-hover-light-primary mr-1" data-toggle="collapse"
+                                        href=<?php echo "\"#coin-" . $key . "\""; ?> role="button" aria-expanded="false"
+                                        aria-controls=<?php echo "\"coin-" . $key . "\""; ?> title="Toggle Card">
+                                        <i class="ki ki-arrow-down icon-nm"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7">
+                                <div id=<?php echo "\"coin-" . $key . "\""; ?> class="collapse">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Purchase date</th>
+                                                <th>Purchase price</th>
+                                                <th>Quantity</th>
+                                                <th>Total gain</th>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <td>1</td>
+                                            <td>1</td>
+                                            <td>1</td>
+                                            <td>1</td>
+                                            <td>1</td>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -81,34 +124,24 @@
                         <div class="card p-3 container">
                             <div class="form-group mt-4 ">
                                 <div class="row">
-                                    <label class="px-4">Coin type</label>
+                                    <label class="px-4">Investment Type</label>
                                 </div>
-                                <div class="row">
+                               
 
-                                    <div class="coin_container">
-                                        @foreach ($available_coins as $coin)
-                                            <div class="col">
-
-                                                <div class="selection">
-                                                    <input name="coin_id" type="radio" value="{{ $coin->id }}"
-                                                        id="{{ $coin->id }}">
-                                                    <label
-                                                        for="{{ $coin->id }}">{{ ucfirst(trans($coin->name)) }}</label>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-
-                                {{-- <select class="form-control form-control-solid coins" id="coin_id" name="coin_id"
-                                    required>
+                                <select name="coin_id" class="form-control" id="kt_datatable_search_coins">
                                     @foreach ($available_coins as $coin)
-                                        <option value="{{ $coin->id }}">
-                                            {{ ucfirst(trans($coin->name)) }}</option>
-                                    @endforeach
-                                </select> --}}
+                                        <option value="{{ $coin->id }}" id="{{ $coin->id }}">
+                                            <div class="container">
+                                                <span
+                                                    class="kt-badge kt-badge--unified-brand kt-badge--xl kt-badge--rounded kt-badge--bold ">{{ strtoupper($coin->symbol) }}</span>
+                                            </div>
+                                            {{ ucfirst(trans($coin->name)) }}
 
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
+
                             <div class="row">
                                 <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
                                     <label>Quantity</label>

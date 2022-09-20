@@ -2,6 +2,9 @@
 @extends('layout.default')
 @section('styles')
     <link href="{{ asset('css/pages/wizard/wizard-2.css') }}" rel="stylesheet" type="text/css" />
+    {{-- <link href="{{ asset('css/badge.bundle.css') }}" rel="stylesheet" type="text/css" /> --}}
+    {{-- <link href="{{ asset('css/select2/select2.min.css') }}" rel="stylesheet" type="text/css"/> --}}
+
     <style>
         .coin_container .selection {
             margin-bottom: 1em;
@@ -10,7 +13,7 @@
         .coin_container {
             display: flex;
         }
-       
+
         .selection label {
             text-align: center;
             display: block;
@@ -33,10 +36,91 @@
         .coin_container .selection input[type=radio]:checked~label {
             background-color: #f1592a;
         }
+
+        .dropdown-image {
+            height: 40px;
+            width: 40px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .flexproperty {
+            display: inline-flex;
+        }
+
+        #kt_datatable_coin_select tbody tr span {
+            width: 70em !important;
+        }
     </style>
 @endsection
 {{-- Content --}}
 @section('content')
+    <div class="card card-custom" style="width: 100%">
+        <div class="card-body">
+            <!--begin::Search Form-->
+            <div class="mt-2 mb-5 mt-lg-5 mb-lg-10">
+                <div class="row align-items-center">
+                    <div class="col-lg-12 col-xl-12">
+                        <div class="row align-items-center">
+                            <div class="col-md-12 mt-2 mt-md-0">
+                                <div class="input-icon">
+                                    <input type="text" class="form-control" placeholder="Enter the investment type ..."
+                                        id="kt_coin_datatable_search_query" />
+                                    <span><i class="flaticon2-search-1 text-muted"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row align-items-center">
+                <div class="col-md-12">
+                    <div id="selected_coin" class="card hidden">
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="hiddentable" class="hidden">
+                <table class="table table-hover" id="kt_datatable_coin_select" style="width: 100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($available_coins as $coin)
+                            <tr>
+                                <td class="coin-table-data">
+                                    <?php
+                                    $curr = "$coin->coin_id";
+                                    $usd = $current_price->$curr->usd;
+                                    $usd_24h_vol = $current_price->$curr->usd_24h_vol;
+                                    $usd_24h_change = $current_price->$curr->usd_24h_change;
+                                    ?>
+                                    <div class="align-items-center d-flex">
+                                        <img src="{{ $coin->image }}" alt="img" class="dropdown-image mx-2 ">
+                                        <div class="mx-2">{{ strtoupper($coin->symbol) }}</div>
+                                        <div class="mx-2">{{ ucfirst(trans($coin->name)) }}</div>
+                                        <div class="mx-2">{{ $usd }}</div>
+                                        <div class="mx-2">{{ round($usd_24h_change, 2) }}</div>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card card-custom gutter-b">
@@ -104,6 +188,7 @@
     <script src="{{ asset('js/pages/crud/ktdatatable/base/html-table.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/pages/crud/datatables/extensions/buttons.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/pages/widgets.js') }}" type="text/javascript"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
     <script type="text/javascript">
         var datatable = $('#kt_datatable_portfolio').KTDatatable({
             data: {
@@ -112,11 +197,25 @@
                 }
             },
 
+
             search: {
                 input: $('#kt_datatable_search_query_portfolio'),
                 key: 'generalSearch'
             }
         });
+        var datatable = $('#kt_datatable_coin_select').KTDatatable({
+            data: {
+                saveState: {
+                    cookie: false
+                }
+            },
+            pagination: false,
+            search: {
+                input: $('#kt_coin_datatable_search_query'),
+                key: 'generalSearch'
+            }
+        });
+
 
         document.getElementById('portfolio-btn').onclick = function() {
             var datatable = $('#kt_datatable_portfolio').KTDatatable({
@@ -139,12 +238,6 @@
                         cookie: false
                     }
                 },
-                columns: [{
-                        field: "No",
-                        width: 20,
-                    },
-
-                ],
                 search: {
                     input: $('#_portfolio_search_transaction'),
                     key: 'generalSearch'
@@ -158,17 +251,39 @@
                         cookie: false
                     }
                 },
-                columns: [{
-                        field: "No",
-                        width: 20,
-                    },
 
-                ],
                 search: {
                     input: $('#portfolio_search_assetmatrix'),
                     key: 'generalSearch'
                 }
             });
         }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#kt_coin_datatable_search_query').mouseover(
+                function() {
+                    $('#hiddentable').removeClass("hidden");
+                }
+            );
+            $('td').click(
+                function(event) {
+                    $contents = event.target.parentElement;
+                    // console.log(event.target.parentElement);
+                    console.log($contents);
+                    $('#selected_coin').removeClass("hidden");
+                    $('#hiddentable').addClass("hidden");
+                    $('#selected_coin').html($contents)
+                }
+            );
+
+
+
+            // $('#kt_coin_datatable_search_query').mouseleave(
+            //     function() {
+            //         $('#hiddentable').addClass("hidden");
+            //     }
+            // );
+        });
     </script>
 @endsection

@@ -15,8 +15,11 @@ class CreateCoinsTable extends Migration
     {
         Schema::create('coins', function (Blueprint $table) {
             $table->id();
+            $table->string('coin_id');
+            $table->string('symbol');
             $table->string('name');
-            $table->string('status');
+            $table->string('image');
+            $table->string('status')->default('0');
             $table->timestamps();
         });
     }

@@ -10,6 +10,8 @@ class Coin extends Model
     use HasFactory;
     protected $fillable = [
         'name',
+        'coin_id',
+        'symbol',
         'status'
     ];
 }

@@ -29,7 +29,7 @@
         <table class="datatable datatable-bordered" id="kt_datatable_transactions">
             <thead>
                 <tr>
-                    <th style="width: 10px !important;">No</th>
+                    <th>No</th>
                     <th>Coin</th>
                     <th>Units</th>
                     <th>Purchase Price</th>
