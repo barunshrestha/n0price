@@ -171,13 +171,11 @@
 
                             @include('pages.dashboard-content.portfolio')
                         </div>
-                        <div class="tab-pane fade" id="kt_tab_pane_2_4" role="tabpanel"
-                            aria-labelledby="kt_tab_pane_2_4">
+                        <div class="tab-pane fade" id="kt_tab_pane_2_4" role="tabpanel" aria-labelledby="kt_tab_pane_2_4">
 
                             @include('pages.dashboard-content.transaction')
                         </div>
-                        <div class="tab-pane fade" id="kt_tab_pane_3_4" role="tabpanel"
-                            aria-labelledby="kt_tab_pane_3_4">
+                        <div class="tab-pane fade" id="kt_tab_pane_3_4" role="tabpanel" aria-labelledby="kt_tab_pane_3_4">
 
                             @include('pages.dashboard-content.asset-matrix')
                         </div>
@@ -291,16 +289,42 @@
             //     return parent;
             // }
 
-        });
 
-        function returnparent(event) {
-            var target = event.currentTarget;
-            var parent = target.parentElement;
-            return parent;
-        }
+
+            $('#purchase_date').change(
+                function() {
+                    var selected_coin=$('#selected_coin .coin_org_symbol').val();
+                    var org_date=$('#purchase_date').val();
+                    var date=org_date.split('-').reverse().join('-');
+                    // var date = reverseString($('#purchase_date').val());
+                    var url ="https://api.coingecko.com/api/v3/coins/"+selected_coin+"/history?date="+date+"&localization=false";
+                    let fetchRes = fetch(url);
+                    fetchRes.then(res =>
+                        res.json()).then(data => {
+                            // console.log(data);
+                        var req_data = data['market_data']['current_price']['usd'];
+                        $('#purchase_price').val(req_data);
+
+                    })
+                }
+            );
+
+            // function reverseString(str) {
+            //     return str.split('-').reverse().join('-');
+            // }
+
+
+
+
+
+        });
 
         function selectCoinFromCoinsList(event) {
             var parent = event.currentTarget.parentElement;
+
+            // console.log(parent);
+
+
             $('#selected_coin').html(parent)
             $('#selected_coin').removeClass("hidden");
             $('#investment-description').removeClass("hidden");

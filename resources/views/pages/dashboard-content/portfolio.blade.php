@@ -161,6 +161,8 @@
                                                     <div class="align-items-center d-flex">
                                                         <img src="{{ $coin->image }}" alt="img" class="dropdown-image mx-2 ">
                                                         <div class="mx-2">{{ strtoupper($coin->symbol) }}</div>
+                                                        <input type="hidden" value={{ $coin->id }} id={{ $curr }} name="coin_id">
+                                                        <input type="hidden" value={{ $coin->coin_id }} class="coin_org_symbol">
                                                         <div class="mx-2">{{ ucfirst(trans($coin->name)) }}</div>
                                                         <div class="mx-2">{{ $usd }}</div>
                                                         <div class="mx-2">{{ round($usd_24h_change, 2) }}</div>
@@ -198,14 +200,14 @@
                                     <label>Purchase date</label>
                                     <div class="input-group">
                                         <input type="date" class="form-control" placeholder="date"
-                                            name="purchase_date" />
+                                            name="purchase_date" id="purchase_date"/>
                                     </div>
                                 </div>
                                 <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
                                     <label>Purchase price</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" placeholder="Unit Price Amount"
-                                            name="purchase_price" />
+                                        <input type="number" class="form-control" placeholder="Purchase Price Amount"
+                                            name="purchase_price" id="purchase_price"/>
                                     </div>
                                 </div>
                             </div>
