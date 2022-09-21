@@ -107,6 +107,8 @@
                                                         <th class="text-center align-middle">Quantity</th>
                                                         <th class="text-center align-middle">Total gain</th>
                                                         <th class="text-center align-middle">Value</th>
+                                                        <th></th>
+                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
