@@ -58,6 +58,9 @@
             /* width:max-content !important; */
             width: 100% !important;
         }
+        .gain-button{
+            width: 8em;
+        }
     </style>
 @endsection
 {{-- Content --}}

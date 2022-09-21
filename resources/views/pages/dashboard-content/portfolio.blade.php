@@ -75,10 +75,10 @@
                                 if ($usd_24h_change > 0) {
                                 } elseif ($usd_24h_change < 0) {
                                     $round_usd = round($usd_24h_change / 100, 2);
-                                    echo "<button class=\"btn btn-light-danger font-weight-bold \">" . (string) $round_usd . '%</button>';
+                                    echo "<button class=\"btn btn-light-danger font-weight-bold gain-button \">" . (string) $round_usd . '%</button>';
                                 } else {
                                     $round_usd = round($usd_24h_change / 100, 2);
-                                    echo "<button class=\"btn btn-light-success font-weight-bold\">" . (string) $round_usd . '%</button>';
+                                    echo "<button class=\"btn btn-light-success font-weight-bold gain-button\">" . (string) $round_usd . '%</button>';
                                 }
                                 ?>
 
@@ -99,28 +99,31 @@
                                 <div id=<?php echo "\"coin-" . $key . "\""; ?> class="collapse">
                                     <div class="card-container">
                                         <div class="card shadow mb-5 bg-white rounded">
-                                            <div class="card-body">
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Purchase date</th>
-                                                            <th>Purchase price</th>
-                                                            <th>Quantity</th>
-                                                            <th>Total gain</th>
-                                                            <th>Value</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <td>1</td>
-                                                        <td>1</td>
-                                                        <td>1</td>
-                                                        <td>1</td>
-                                                        <td>1</td>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center align-middle">Purchase date</th>
+                                                        <th class="text-center align-middle">Purchase price</th>
+                                                        <th class="text-center align-middle">Quantity</th>
+                                                        <th class="text-center align-middle">Total gain</th>
+                                                        <th class="text-center align-middle">Value</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($portfolio_details as $details)
+                                                        @if ($details->coin_id == $data->id_of_coin)
+                                                            <tr>
+                                                                <td class="text-center align-middle">{{$details->purchase_date}}</td>
+                                                                <td class="text-center align-middle">{{$details->purchase_price}}</td>
+                                                                <td class="text-center align-middle">{{$details->units}}</td>
+                                                                <td class="text-center align-middle"></td>
+                                                                <td class="text-center align-middle"></td>
+                                                            </tr>
+                                                        @endif
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
                                         </div>
-
                                     </div>
 
                                 </div>
@@ -201,27 +204,33 @@
                                                                 {{ ucfirst(trans($coin->name)) }}</div>
                                                         </div>
                                                         <div class="align-items-center d-flex ml-auto ">
-                                                            <div class="mx-2 font-weight-bold">{{ $usd }} USD
+                                                            <div class="mx-2 font-weight-bold">{{ round($usd, 2) }}
+                                                                USD
                                                             </div>
                                                             <div class="mx-2">
                                                                 <?php
                                                                 if ($usd_24h_change > 0) {
                                                                     $round_usd = round($usd_24h_change / 100, 2);
-                                                                    echo "<button class=\"btn btn-light-success font-weight-bold my-\">" . (string) $round_usd . '% <i class="flaticon2-arrow-up"></i></button>';
+                                                                    echo "<button class=\"btn btn-light-success font-weight-bold gain-button\">" . (string) $round_usd . '% <i class="flaticon2-arrow-up"></i></button>';
                                                                 } elseif ($usd_24h_change < 0) {
                                                                     $round_usd = round($usd_24h_change / 100, 2);
-                                                                    echo "<button class=\"btn btn-light-danger font-weight-bold my- \">" . (string) $round_usd . '% <i class="flaticon2-arrow-down"></i>  </button>';
+                                                                    echo "<button class=\"btn btn-light-danger font-weight-bold gain-button \">" . (string) $round_usd . '% <i class="flaticon2-arrow-down"></i>  </button>';
                                                                 }
-                                                                
                                                                 ?>
 
                                                             </div>
-                                                            <button type="button"
+
+
+                                                            {{-- <button type="button"
                                                                 onclick="selectCoinFromCoinsList(event)"
-                                                                class="btn btn-icon text-info btn-circle mr-2 coin-in-coin-list-button">
+                                                                class="btn btn-light-success btn-circle mr-2 coin-in-coin-list-button">
                                                                 <i class="flaticon-plus text-info"></i>
-                                                            </button>
+                                                            </button> --}}
                                                         </div>
+                                                        <button class="btn mr-2 coin-in-coin-list-button"
+                                                            onclick="selectCoinFromCoinsList(event)" type="button">
+                                                            <i class="flaticon2-plus text-success"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
