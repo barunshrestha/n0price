@@ -36,36 +36,55 @@
                                     </span>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
                 </div>
             </div>
-            <table class="table table-borderless table-bordered">
+            <table class="table table-borderless table-bordered px-5">
                 <thead>
                     <tr>
-                        <th>NO</th>
-                        <th>SYMBOL</th>
-                        <th>NAME</th>
-                        <th>PRICE</th>
-                        <th>QUANTITY</th>
-                        <th>DAY GAIN</th>
-                        <th>VALUE</th>
-                        <th></th>
+                        <th class="text-center">NO</th>
+                        <th class="text-center">SYMBOL</th>
+                        <th class="text-center">NAME</th>
+                        <th class="text-center">PRICE</th>
+                        <th class="text-center">QUANTITY</th>
+                        <th class="text-center">DAY GAIN</th>
+                        <th class="text-center">VALUE</th>
+                        <th class="text-center"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($portfolio as $key => $data)
+                        <?php
+                        $curr = "$data->coin_id";
+                        $usd = $current_price->$curr->usd;
+                        $usd_24h_change = $current_price->$curr->usd_24h_change;
+                        ?>
                         <tr>
-                            <td>{{ $key + 1 }}</td>
-                            <td></td>
-                            <td>{{ $data->coin_name }}</td>
-                            <td></td>
-                            <td>{{ $data->total }}</td>
-                            <td></td>
-                            <td></td>
-                            <td>
+                            <td class="text-center align-middle">{{ $key + 1 }}</td>
+                            <td class="text-center align-middle">
+                                <img src="{{ $data->image }}" alt="img" class="dropdown-image mx-2 ">
+                            </td>
+                            <td class="text-center align-middle">{{ $data->coin_name }}</td>
+                            <td class="text-center align-middle">
+                                {{ $usd }} USD
+                            </td>
+                            <td class="text-center align-middle">{{ $data->total }}</td>
+                            <td class="text-center align-middle">
+                                <?php
+                                if ($usd_24h_change > 0) {
+                                } elseif ($usd_24h_change < 0) {
+                                    $round_usd = round($usd_24h_change / 100, 2);
+                                    echo "<button class=\"btn btn-light-danger font-weight-bold \">" . (string) $round_usd . '%</button>';
+                                } else {
+                                    $round_usd = round($usd_24h_change / 100, 2);
+                                    echo "<button class=\"btn btn-light-success font-weight-bold\">" . (string) $round_usd . '%</button>';
+                                }
+                                ?>
+
+                            </td>
+                            <td class="text-center align-middle"></td>
+                            <td class="text-center align-middle">
                                 <div class="card-toolbar">
                                     <a class="btn btn-icon btn-sm btn-hover-light-primary mr-1" data-toggle="collapse"
                                         href=<?php echo "\"#coin-" . $key . "\""; ?> role="button" aria-expanded="false"
@@ -76,26 +95,34 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="7">
+                            <td colspan="8">
                                 <div id=<?php echo "\"coin-" . $key . "\""; ?> class="collapse">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Purchase date</th>
-                                                <th>Purchase price</th>
-                                                <th>Quantity</th>
-                                                <th>Total gain</th>
-                                                <th>Value</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <td>1</td>
-                                            <td>1</td>
-                                            <td>1</td>
-                                            <td>1</td>
-                                            <td>1</td>
-                                        </tbody>
-                                    </table>
+                                    <div class="card-container">
+                                        <div class="card shadow mb-5 bg-white rounded">
+                                            <div class="card-body">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Purchase date</th>
+                                                            <th>Purchase price</th>
+                                                            <th>Quantity</th>
+                                                            <th>Total gain</th>
+                                                            <th>Value</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <td>1</td>
+                                                        <td>1</td>
+                                                        <td>1</td>
+                                                        <td>1</td>
+                                                        <td>1</td>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
                                 </div>
 
                             </td>
@@ -158,17 +185,43 @@
                                                     $usd_24h_vol = $current_price->$curr->usd_24h_vol;
                                                     $usd_24h_change = $current_price->$curr->usd_24h_change;
                                                     ?>
-                                                    <div class="align-items-center d-flex">
-                                                        <img src="{{ $coin->image }}" alt="img" class="dropdown-image mx-2 ">
-                                                        <div class="mx-2">{{ strtoupper($coin->symbol) }}</div>
-                                                        <input type="hidden" value={{ $coin->id }} id={{ $curr }} name="coin_id">
-                                                        <input type="hidden" value={{ $coin->coin_id }} class="coin_org_symbol">
-                                                        <div class="mx-2">{{ ucfirst(trans($coin->name)) }}</div>
-                                                        <div class="mx-2">{{ $usd }}</div>
-                                                        <div class="mx-2">{{ round($usd_24h_change, 2) }}</div>
-                                                        <button type="button" onclick="selectCoinFromCoinsList(event)" class="btn btn-icon text-info btn-circle mr-2 coin-in-coin-list-button">
-                                                            <i class="flaticon-plus text-info"></i>
-                                                        </button>
+
+                                                    <div class="align-items-center d-flex ">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ $coin->image }}" alt="img"
+                                                                class="dropdown-image mx-2 ">
+
+                                                            <input type="hidden" value={{ $coin->id }}
+                                                                id={{ $curr }} name="coin_id">
+                                                            <input type="hidden" value={{ $coin->coin_id }}
+                                                                class="coin_org_symbol">
+
+
+                                                            <div class="mx-2 font-weight-bold">
+                                                                {{ ucfirst(trans($coin->name)) }}</div>
+                                                        </div>
+                                                        <div class="align-items-center d-flex ml-auto ">
+                                                            <div class="mx-2 font-weight-bold">{{ $usd }} USD
+                                                            </div>
+                                                            <div class="mx-2">
+                                                                <?php
+                                                                if ($usd_24h_change > 0) {
+                                                                    $round_usd = round($usd_24h_change / 100, 2);
+                                                                    echo "<button class=\"btn btn-light-success font-weight-bold my-\">" . (string) $round_usd . '% <i class="flaticon2-arrow-up"></i></button>';
+                                                                } elseif ($usd_24h_change < 0) {
+                                                                    $round_usd = round($usd_24h_change / 100, 2);
+                                                                    echo "<button class=\"btn btn-light-danger font-weight-bold my- \">" . (string) $round_usd . '% <i class="flaticon2-arrow-down"></i>  </button>';
+                                                                }
+                                                                
+                                                                ?>
+
+                                                            </div>
+                                                            <button type="button"
+                                                                onclick="selectCoinFromCoinsList(event)"
+                                                                class="btn btn-icon text-info btn-circle mr-2 coin-in-coin-list-button">
+                                                                <i class="flaticon-plus text-info"></i>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -200,14 +253,15 @@
                                     <label>Purchase date</label>
                                     <div class="input-group">
                                         <input type="date" class="form-control" placeholder="date"
-                                            name="purchase_date" id="purchase_date"/>
+                                            name="purchase_date" id="purchase_date" />
                                     </div>
                                 </div>
                                 <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
                                     <label>Purchase price</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" placeholder="Purchase Price Amount"
-                                            name="purchase_price" id="purchase_price"/>
+                                        <input type="number" class="form-control"
+                                            placeholder="Purchase Price Amount" name="purchase_price"
+                                            id="purchase_price" />
                                     </div>
                                 </div>
                             </div>

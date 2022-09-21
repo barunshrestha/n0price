@@ -49,8 +49,12 @@ class DashboardController extends Controller
         $user = Auth::user();
         $this->_data['user'] = $user;
 
-        $portfolio = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')->where('user_id', $user->id)->select(DB::raw('coins.name as coin_name,sum(units) as total'))
+        $portfolio = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')->where('user_id', $user->id)
+            ->select(DB::raw('coins.name as coin_name,coins.image as image, coins.coin_id as coin_id,coins.symbol as symbol,sum(units) as total'))
             ->groupBy('coins.name')
+            ->groupBy('coins.image')
+            ->groupBy('coins.coin_id')
+            ->groupBy('coins.symbol')
             ->get();
         $this->_data['portfolio'] = $portfolio;
 

@@ -55,7 +55,8 @@
         }
 
         #kt_datatable_coin_select tbody tr span {
-            width: max-content !important;
+            /* width:max-content !important; */
+            width: 100% !important;
         }
     </style>
 @endsection
@@ -198,8 +199,6 @@
                     cookie: false
                 }
             },
-
-
             search: {
                 input: $('#kt_datatable_search_query_portfolio'),
                 key: 'generalSearch'
