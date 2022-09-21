@@ -141,7 +141,6 @@
                                 </div>
                             </div>
 
-
                             <div id="hiddentable" class="hidden">
                                 <table class="table table-hover" id="kt_datatable_coin_select" style="width: 100%">
                                     <thead>
@@ -160,16 +159,14 @@
                                                     $usd_24h_change = $current_price->$curr->usd_24h_change;
                                                     ?>
                                                     <div class="align-items-center d-flex">
-                                                        <img src="{{ $coin->image }}" alt="img"
-                                                            class="dropdown-image mx-2 ">
-                                                        <div class="mx-2">{{ strtoupper($coin->symbol) }}
-                                                        </div>
-                                                        <div class="mx-2">{{ ucfirst(trans($coin->name)) }}
-                                                        </div>
+                                                        <img src="{{ $coin->image }}" alt="img" class="dropdown-image mx-2 ">
+                                                        <div class="mx-2">{{ strtoupper($coin->symbol) }}</div>
+                                                        <div class="mx-2">{{ ucfirst(trans($coin->name)) }}</div>
                                                         <div class="mx-2">{{ $usd }}</div>
-                                                        <div class="mx-2">{{ round($usd_24h_change, 2) }}
-                                                        </div>
-                                                        <input type="hidden" value={{ $coin->id }} id={{ $curr }} name="coin_id">
+                                                        <div class="mx-2">{{ round($usd_24h_change, 2) }}</div>
+                                                        <button type="button" onclick="selectCoinFromCoinsList(event)" class="btn btn-icon text-info btn-circle mr-2 coin-in-coin-list-button">
+                                                            <i class="flaticon-plus text-info"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>

@@ -43,7 +43,7 @@
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         .show {
@@ -55,7 +55,7 @@
         }
 
         #kt_datatable_coin_select tbody tr span {
-            width: 70em !important;
+            width: max-content !important;
         }
     </style>
 @endsection
@@ -110,7 +110,9 @@
                                         <div class="mx-2">{{ ucfirst(trans($coin->name)) }}</div>
                                         <div class="mx-2">{{ $usd }}</div>
                                         <div class="mx-2">{{ round($usd_24h_change, 2) }}</div>
-
+                                        <button type="button" onclick="selectCoinFromCoinsList(event)" class="btn btn-icon text-info btn-circle mr-2 coin-in-coin-list-button">
+                                            <i class="flaticon-plus text-info"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -169,11 +171,13 @@
 
                             @include('pages.dashboard-content.portfolio')
                         </div>
-                        <div class="tab-pane fade" id="kt_tab_pane_2_4" role="tabpanel" aria-labelledby="kt_tab_pane_2_4">
+                        <div class="tab-pane fade" id="kt_tab_pane_2_4" role="tabpanel"
+                            aria-labelledby="kt_tab_pane_2_4">
 
                             @include('pages.dashboard-content.transaction')
                         </div>
-                        <div class="tab-pane fade" id="kt_tab_pane_3_4" role="tabpanel" aria-labelledby="kt_tab_pane_3_4">
+                        <div class="tab-pane fade" id="kt_tab_pane_3_4" role="tabpanel"
+                            aria-labelledby="kt_tab_pane_3_4">
 
                             @include('pages.dashboard-content.asset-matrix')
                         </div>
@@ -264,27 +268,45 @@
                     $('#hiddentable').removeClass("hidden");
                 }
             );
-            $('td').click(
-                function(event) {
-                    var parent = returnparent(event);
-                    // $contents = event.target.parentElement;
-                    // console.log(event.target.parentElement);
-                    console.log(parent);
+            // $('td').click(
+            //     function() {
+            //         // alert("clicked");
+            //         // var parent = returnparent(event);
+            //         // // $contents = event.target.parentElement;
+            //         // // console.log(event.target.parentElement);
+            //         // console.log(parent);
 
-                    $('#selected_coin').html(parent)
-                    $('#selected_coin').removeClass("hidden");
-                    $('#investment-description').removeClass("hidden");
-                    $('#hiddentable').addClass("hidden");
-                    $('#coin-search-bar').addClass('hidden');
-                }
+            //         // $('#selected_coin').html(parent)
+            //         // $('#selected_coin').removeClass("hidden");
+            //         // $('#investment-description').removeClass("hidden");
+            //         // $('#hiddentable').addClass("hidden");
+            //         // $('#coin-search-bar').addClass('hidden');
+            //     }
 
-            );
+            // );
 
-            function returnparent(event) {
-                var target = event.currentTarget;
-                var parent = target.parentElement;
-                return parent;
-            }
+            // function returnparent(event) {
+            //     var target = event.currentTarget;
+            //     var parent = target.parentElement;
+            //     return parent;
+            // }
+
         });
+
+        function returnparent(event) {
+            var target = event.currentTarget;
+            var parent = target.parentElement;
+            return parent;
+        }
+
+        function selectCoinFromCoinsList(event) {
+            var parent = event.currentTarget.parentElement;
+            $('#selected_coin').html(parent)
+            $('#selected_coin').removeClass("hidden");
+            $('#investment-description').removeClass("hidden");
+            $('#hiddentable').addClass("hidden");
+            $('#coin-search-bar').addClass('hidden');
+            $('.coin-in-coin-list-button').addClass('hidden');
+        }
     </script>
 @endsection
