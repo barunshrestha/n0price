@@ -169,8 +169,7 @@
                                                         <div class="mx-2">{{ $usd }}</div>
                                                         <div class="mx-2">{{ round($usd_24h_change, 2) }}
                                                         </div>
-                                                        <input type="hidden" value={{ $coin->id }}
-                                                            id={{ $curr }} name="coin_id">
+                                                        <input type="hidden" value={{ $coin->id }} id={{ $curr }} name="coin_id">
                                                     </div>
                                                 </td>
                                             </tr>
