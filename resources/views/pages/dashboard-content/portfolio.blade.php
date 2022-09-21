@@ -113,36 +113,84 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Add to My Portfolio</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        onclick="window.location.reload();">
                         <i aria-hidden="true" class="ki ki-close"></i>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="form" id="kt_form" action="{{ route('transactions.store') }}" method="POST"
-                        enctype="multipart/form-data">
-                        {{ csrf_field() }}
-                        <div class="card p-3 container">
-                            <div class="form-group mt-4 ">
-                                <div class="row">
-                                    <label class="px-4">Investment Type</label>
-                                </div>
-                               
 
-                                <select name="coin_id" class="form-control" id="kt_datatable_search_coins">
-                                    @foreach ($available_coins as $coin)
-                                        <option value="{{ $coin->id }}" id="{{ $coin->id }}">
-                                            <div class="container">
-                                                <span
-                                                    class="kt-badge kt-badge--unified-brand kt-badge--xl kt-badge--rounded kt-badge--bold ">{{ strtoupper($coin->symbol) }}</span>
+                    <div class="card px-3 container card-custom" style="width: 100%">
+
+                        <div class="card-body">
+                            <!--begin::Search Form-->
+                            <div class="mb-5 mt-lg-5 mb-lg-10" id="coin-search-bar">
+                                <div class="row align-items-center">
+                                    <div class="col-lg-12 col-xl-12">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-12 mt-2 mt-md-0">
+                                                <div class="input-icon">
+                                                    <input type="text" class="form-control"
+                                                        placeholder="Enter the investment type ..."
+                                                        id="kt_coin_datatable_search_query" />
+                                                    <span><i class="flaticon2-search-1 text-muted"></i></span>
+                                                </div>
                                             </div>
-                                            {{ ucfirst(trans($coin->name)) }}
-
-                                        </option>
-                                    @endforeach
-                                </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="row">
+
+                            <div id="hiddentable" class="hidden">
+                                <table class="table table-hover" id="kt_datatable_coin_select" style="width: 100%">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($available_coins as $coin)
+                                            <tr>
+                                                <td class="coin-table-data">
+                                                    <?php
+                                                    $curr = "$coin->coin_id";
+                                                    $usd = $current_price->$curr->usd;
+                                                    $usd_24h_vol = $current_price->$curr->usd_24h_vol;
+                                                    $usd_24h_change = $current_price->$curr->usd_24h_change;
+                                                    ?>
+                                                    <div class="align-items-center d-flex">
+                                                        <img src="{{ $coin->image }}" alt="img"
+                                                            class="dropdown-image mx-2 ">
+                                                        <div class="mx-2">{{ strtoupper($coin->symbol) }}
+                                                        </div>
+                                                        <div class="mx-2">{{ ucfirst(trans($coin->name)) }}
+                                                        </div>
+                                                        <div class="mx-2">{{ $usd }}</div>
+                                                        <div class="mx-2">{{ round($usd_24h_change, 2) }}
+                                                        </div>
+                                                        <input type="hidden" value={{ $coin->id }}
+                                                            id={{ $curr }} name="coin_id">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <form class="form" id="kt_form" action="{{ route('transactions.store') }}"
+                            method="POST" enctype="multipart/form-data">
+                            {{ csrf_field() }}
+                            <div class="row align-items-center">
+                                <div class="col-md-12">
+                                    <div id="selected_coin" class="card ">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row hidden mt-5" id="investment-description">
                                 <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
                                     <label>Quantity</label>
                                     <div class="input-group">
@@ -165,12 +213,12 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-light-primary font-weight-bold"
-                                data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary font-weight-bold">Save</button>
-                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal"
+                            onclick="window.location.reload();">Close</button>
+                        <button type="submit" class="btn btn-primary font-weight-bold">Save</button>
+                    </div>
                     </form>
                 </div>
             </div>

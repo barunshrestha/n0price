@@ -61,7 +61,7 @@
 @endsection
 {{-- Content --}}
 @section('content')
-    <div class="card card-custom" style="width: 100%">
+    {{-- <div class="card card-custom" style="width: 100%">
         <div class="card-body">
             <!--begin::Search Form-->
             <div class="mt-2 mb-5 mt-lg-5 mb-lg-10">
@@ -69,7 +69,7 @@
                     <div class="col-lg-12 col-xl-12">
                         <div class="row align-items-center">
                             <div class="col-md-12 mt-2 mt-md-0">
-                                <div class="input-icon">
+                                <div class="input-icon" id="coin-search-bar">
                                     <input type="text" class="form-control" placeholder="Enter the investment type ..."
                                         id="kt_coin_datatable_search_query" />
                                     <span><i class="flaticon2-search-1 text-muted"></i></span>
@@ -81,7 +81,7 @@
             </div>
             <div class="row align-items-center">
                 <div class="col-md-12">
-                    <div id="selected_coin" class="card hidden">
+                    <div id="selected_coin" class="card ">
 
                     </div>
                 </div>
@@ -110,7 +110,7 @@
                                         <div class="mx-2">{{ ucfirst(trans($coin->name)) }}</div>
                                         <div class="mx-2">{{ $usd }}</div>
                                         <div class="mx-2">{{ round($usd_24h_change, 2) }}</div>
-                                        
+
                                     </div>
                                 </td>
                             </tr>
@@ -119,7 +119,7 @@
                 </table>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <div class="row">
         <div class="col-md-12">
@@ -190,7 +190,7 @@
     <script src="{{ asset('js/pages/widgets.js') }}" type="text/javascript"></script>
     {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
     <script type="text/javascript">
-        var datatable = $('#kt_datatable_portfolio').KTDatatable({
+        var portfolio_datatable = $('#kt_datatable_portfolio').KTDatatable({
             data: {
                 saveState: {
                     cookie: false
@@ -218,7 +218,7 @@
 
 
         document.getElementById('portfolio-btn').onclick = function() {
-            var datatable = $('#kt_datatable_portfolio').KTDatatable({
+            var portfolio_datatable = $('#kt_datatable_portfolio').KTDatatable({
                 data: {
                     saveState: {
                         cookie: false
@@ -258,32 +258,33 @@
                 }
             });
         }
-    </script>
-    <script type="text/javascript">
         $(document).ready(function() {
-            $('#kt_coin_datatable_search_query').mouseover(
+            $('#kt_coin_datatable_search_query').click(
                 function() {
                     $('#hiddentable').removeClass("hidden");
                 }
             );
             $('td').click(
                 function(event) {
-                    $contents = event.target.parentElement;
+                    var parent = returnparent(event);
+                    // $contents = event.target.parentElement;
                     // console.log(event.target.parentElement);
-                    console.log($contents);
+                    console.log(parent);
+
+                    $('#selected_coin').html(parent)
                     $('#selected_coin').removeClass("hidden");
+                    $('#investment-description').removeClass("hidden");
                     $('#hiddentable').addClass("hidden");
-                    $('#selected_coin').html($contents)
+                    $('#coin-search-bar').addClass('hidden');
                 }
+
             );
 
-
-
-            // $('#kt_coin_datatable_search_query').mouseleave(
-            //     function() {
-            //         $('#hiddentable').addClass("hidden");
-            //     }
-            // );
+            function returnparent(event) {
+                var target = event.currentTarget;
+                var parent = target.parentElement;
+                return parent;
+            }
         });
     </script>
 @endsection
