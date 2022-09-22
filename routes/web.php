@@ -23,7 +23,8 @@ Route::post('/signup', [AuthController::class, 'signupAction'])->name('register'
 
 Route::get('/login', 'AuthController@login')->name('login');
 Route::post('/login', 'AuthController@loginAction');
-
+Route::get('verify-email', [EmailVerificationController::class, 'verify_email_invoke'])
+        ->name('verification.notice');
 Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/', 'DashboardController@index')->name('dashboard');
     Route::get('/user/approve/{id}', [UserController::class,'approveUser'])->name('user.approve');
@@ -46,8 +47,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/reset_password/{id}', 'UserController@reset')->name('users.reset');
     Route::resource('roles', 'RoleController');
 
-    Route::get('verify-email', [EmailVerificationController::class, 'verify_email_invoke'])
-        ->name('verification.notice');
+    // Route::get('verify-email', [EmailVerificationController::class, 'verify_email_invoke'])
+    //     ->name('verification.notice');
     Route::get('approval-page', [AuthController::class, 'approvalPending'])
         ->name('approvalpage');
 
