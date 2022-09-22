@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
+use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Support\Facades\Auth ;
+use App\Providers\RouteServiceProvider;
 
 class AuthController extends Controller
 {
@@ -48,34 +50,36 @@ class AuthController extends Controller
         return view('layout.login');
     }
 
-    public function loginAction(Request $request)
+    public function loginAction(LoginRequest $request)
     {
-        $this->validate($request, [
-            'email' => 'required',
-            'password' => 'required'
-        ]);
+        $request->authenticate();
+        $request->session()->regenerate();
+        return redirect()->intended(RouteServiceProvider::HOME);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->route('dashboard');
-        }
+        // $this->validate($request, [
+        //     'email' => 'required',
+        //     'password' => 'required'
+        // ]);
 
-        return redirect()->back()->withInput($request->only('username'))->with(['fail' => 'Credentials did not match our record']);
+        // if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        //     return redirect()->route('dashboard');
+        // }
+
+        // return redirect()->back()->withInput($request->only('username'))->with(['fail' => 'Credentials did not match our record']);
     }
 
     public function logout(Request $request)
     {
         $user_id = Auth::user()->id;
-        // $activityLog = new ActivityLog();
-        // $activityLog->user_id = $user_id;
-        // $activityLog->ip_address = $request->ip();
-        // $activityLog->user_agent = $request->header('User-Agent');
-        // $activityLog->activity = 'logged_out';
-        // $activityLog->save();
+        
         Auth::logout();
         $request->session()->invalidate();
         return redirect()->route('login');
     }
     public function approvalPending(){
+        if(Auth::user()->approval_status==1){
+        return redirect()->intended(RouteServiceProvider::HOME);
+        }
         return view('auth.approval_page');
     }
 }

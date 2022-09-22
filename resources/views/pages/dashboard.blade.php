@@ -58,7 +58,8 @@
             /* width:max-content !important; */
             width: 100% !important;
         }
-        .gain-button{
+
+        .gain-button {
             width: 8em;
         }
     </style>
@@ -157,15 +158,18 @@
                         <ul class="nav nav-tabs nav-bold nav-tabs-line pe-5">
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
-                                    aria-haspopup="true" aria-expanded="false">
+                                    aria-haspopup="true" aria-expanded="false" style="margin-right:5em;">
                                     {{ $user->name }}
                                 </a>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href={{ route('logout') }}>Logout</a>
-
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button class="dropdown-item" type="submit">Logout</button>
+                                    </form>
                                 </div>
                             </li>
                         </ul>
+                       
                     @endif
                 </div>
                 <div class="card-body">
@@ -295,15 +299,16 @@
 
             $('#purchase_date').change(
                 function() {
-                    var selected_coin=$('#selected_coin .coin_org_symbol').val();
-                    var org_date=$('#purchase_date').val();
-                    var date=org_date.split('-').reverse().join('-');
+                    var selected_coin = $('#selected_coin .coin_org_symbol').val();
+                    var org_date = $('#purchase_date').val();
+                    var date = org_date.split('-').reverse().join('-');
                     // var date = reverseString($('#purchase_date').val());
-                    var url ="https://api.coingecko.com/api/v3/coins/"+selected_coin+"/history?date="+date+"&localization=false";
+                    var url = "https://api.coingecko.com/api/v3/coins/" + selected_coin + "/history?date=" +
+                        date + "&localization=false";
                     let fetchRes = fetch(url);
                     fetchRes.then(res =>
                         res.json()).then(data => {
-                            // console.log(data);
+                        // console.log(data);
                         var req_data = data['market_data']['current_price']['usd'];
                         $('#purchase_price').val(req_data);
 
