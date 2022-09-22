@@ -333,7 +333,7 @@
                     var price_today = $('#selected_coin .coin_org_price').val();
                     // var req_data = data['market_data']['current_price']['usd'];
                         var quantity = $('#purchase_quantity').val();
-                        var total_price = Number(quantity) * Number(price_today);
+                        var total_price = parseFloat(quantity) * parseFloat(price_today);
                         $('#purchase_price').val(total_price);
 
 
