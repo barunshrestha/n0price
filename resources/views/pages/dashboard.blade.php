@@ -169,7 +169,6 @@
                                 </div>
                             </li>
                         </ul>
-                       
                     @endif
                 </div>
                 <div class="card-body">
@@ -294,34 +293,52 @@
             //     var parent = target.parentElement;
             //     return parent;
             // }
+            
 
-
-
-            $('#purchase_date').change(
+            $('#purchase_quantity').change(
                 function() {
-                    var selected_coin = $('#selected_coin .coin_org_symbol').val();
-                    var org_date = $('#purchase_date').val();
-                    var date = org_date.split('-').reverse().join('-');
-                    // var date = reverseString($('#purchase_date').val());
-                    var url = "https://api.coingecko.com/api/v3/coins/" + selected_coin + "/history?date=" +
-                        date + "&localization=false";
-                    let fetchRes = fetch(url);
-                    fetchRes.then(res =>
-                        res.json()).then(data => {
-                        // console.log(data);
-                        var req_data = data['market_data']['current_price']['usd'];
-                        $('#purchase_price').val(req_data);
 
-                    })
+                    var selected_coin = $('#selected_coin .coin_org_symbol').val();
+                    // var org_date = $('#purchase_date').val();
+                    // let currentDate = new Date().toJSON().slice(0, 10);
+
+                    // if (org_date == currentDate) {
+
+                    //     var quantity = $('#purchase_quantity').val();
+                    //     console.log("q",quantity);
+                    //     console.log("p",price_today);
+                    //     var total_price_today = Number(quantity) * Number(price_today);
+                    //     console.log(total_price_today);
+                    //     $('#purchase_price').val(total_price_today);
+                    //     // var ab = $('#selected_coin *.usd-price').val();
+                    //     // $('#purchase_price').val(req_data);
+                    // } else {
+
+
+                    // var date = org_date.split('-').reverse().join('-');
+                    // var date = reverseString($('#purchase_date').val());
+                    // var url = "https://api.coingecko.com/api/v3/coins/" + selected_coin + "/history?date=" +
+                    //     date + "&localization=false&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+                    // let fetchRes = fetch(url);
+                    // fetchRes.then(res =>
+                    //     res.json()).then(data => {
+                    //     // console.log(data);
+                    //     var req_data = data['market_data']['current_price']['usd'];
+                    //     var quantity = $('#purchase_quantity').val();
+                    //     var total_price = Number(quantity) * Number(req_data);
+                    //     $('#purchase_price').val(total_price);
+
+                    // })
+                    // }
+                    var price_today = $('#selected_coin .coin_org_price').val();
+                    // var req_data = data['market_data']['current_price']['usd'];
+                        var quantity = $('#purchase_quantity').val();
+                        var total_price = Number(quantity) * Number(price_today);
+                        $('#purchase_price').val(total_price);
+
+
                 }
             );
-
-            // function reverseString(str) {
-            //     return str.split('-').reverse().join('-');
-            // }
-
-
-
 
 
         });
@@ -338,6 +355,10 @@
             $('#hiddentable').addClass("hidden");
             $('#coin-search-bar').addClass('hidden');
             $('.coin-in-coin-list-button').addClass('hidden');
+
+            // var price_today = 
+            var price_today = $('#selected_coin .coin_org_price').val();
+            $('#purchase_price').val(price_today);
         }
     </script>
 @endsection

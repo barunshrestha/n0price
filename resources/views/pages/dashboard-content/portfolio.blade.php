@@ -200,13 +200,17 @@
                                                                 id={{ $curr }} name="coin_id">
                                                             <input type="hidden" value={{ $coin->coin_id }}
                                                                 class="coin_org_symbol">
+                                                            <input type="hidden" value={{ $usd }}
+                                                                class="coin_org_price">
+                                                            
+
 
 
                                                             <div class="mx-2 font-weight-bold">
                                                                 {{ ucfirst(trans($coin->name)) }}</div>
                                                         </div>
                                                         <div class="align-items-center d-flex ml-auto ">
-                                                            <div class="mx-2 font-weight-bold">{{ round($usd, 2) }}
+                                                            <div class="mx-2 font-weight-bold usd-price">{{ round($usd, 2) }}
                                                                 USD
                                                             </div>
                                                             <div class="mx-2">
@@ -256,22 +260,22 @@
                                 <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
                                     <label>Quantity</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control" placeholder="Quantity"
-                                            name="units" />
+                                        <input type="text" class="form-control" placeholder="Quantity" id="purchase_quantity"
+                                            name="units" value="1" />
                                     </div>
                                 </div>
                                 <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
                                     <label>Purchase date</label>
                                     <div class="input-group">
-                                        <input type="date" class="form-control" placeholder="date"
+                                        <input type="date" class="form-control" placeholder="date" value="<?php echo date('Y-m-d'); ?>"
                                             name="purchase_date" id="purchase_date" />
                                     </div>
                                 </div>
                                 <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
                                     <label>Purchase price</label>
                                     <div class="input-group">
-                                        <input type="number" class="form-control"
-                                            placeholder="Purchase Price Amount" name="purchase_price"
+                                        <input type="text" class="form-control"
+                                            placeholder="Purchase Price Amount" name="purchase_price" 
                                             id="purchase_price" />
                                     </div>
                                 </div>
