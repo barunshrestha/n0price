@@ -12,6 +12,7 @@ class Coin extends Model
         'name',
         'coin_id',
         'symbol',
-        'status'
+        'status',
+        'image'
     ];
 }

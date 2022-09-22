@@ -15,16 +15,16 @@ class CoinSeeder extends Seeder
      */
     public function run()
     {
-        $json = Storage::disk('local')->get('/json/coin.json');
-        $coins = json_decode($json, true);
+        // $json = Storage::disk('local')->get('/json/coin.json');
+        // $coins = json_decode($json, true);
 
-        foreach ($coins as $value) {
-            Coin::query()->updateOrCreate([
-                'name' => $value['name'],
-                'coin_id' => $value['id'],
-                'symbol' => $value['symbol'],
-                'image' => $value['image'],
-            ]);
-        }
+        // foreach ($coins as $value) {
+        //     Coin::query()->updateOrCreate([
+        //         'name' => $value['name'],
+        //         'coin_id' => $value['id'],
+        //         'symbol' => $value['symbol'],
+        //         'image' => $value['image'],
+        //     ]);
+        // }
     }
 }

@@ -34,7 +34,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::resource('coins', 'CoinController');
     Route::get('/coin/active/{id}', [CoinController::class,'activeCoin'])->name('coins.active');
     Route::get('/coin/inactive/{id}', [CoinController::class,'inactiveCoin'])->name('coins.inactive');
-
+    Route::get('/sync/coin',[CoinController::class,'sync_coin'])->name('coins.sync');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 });
 

@@ -117,4 +117,24 @@ class CoinController extends Controller
     {
         //
     }
+
+    public function sync_coin(){
+        $url = "https://pro-api.coingecko.com/api/v3/coins/markets?x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX&vs_currency=usd";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $coins = json_decode($response, true);
+
+        foreach ($coins as $value) {
+            Coin::query()->updateOrCreate([
+                'name' => $value['name'],
+                'coin_id' => $value['id'],
+                'symbol' => $value['symbol'],
+                'image' => $value['image'],
+            ]);
+        }
+        return redirect()->back()->with('success', 'Coin Synced Successfully');
+    }
 }
