@@ -46,10 +46,11 @@
                         <th class="text-center">NO</th>
                         <th class="text-center">SYMBOL</th>
                         <th class="text-center">NAME</th>
-                        <th class="text-center">PRICE</th>
+                        <th class="text-center">PRICE(CURRENT)</th>
                         <th class="text-center">QUANTITY</th>
-                        <th class="text-center">DAY GAIN</th>
-                        <th class="text-center">VALUE</th>
+                        <th class="text-center">PROFIT/LOSS(TOTAL)</th>
+                        <th class="text-center">INVESTMENT</th>
+                        <th class="text-center">WORTH(CURRENT)</th>
                         <th class="text-center"></th>
                     </tr>
                 </thead>
@@ -72,18 +73,42 @@
                             <td class="text-center align-middle">{{ $data->total }}</td>
                             <td class="text-center align-middle">
                                 <?php
-                                if ($usd_24h_change > 0) {
-                                } elseif ($usd_24h_change < 0) {
-                                    $round_usd = round($usd_24h_change / 100, 2);
-                                    echo "<button class=\"btn btn-light-danger font-weight-bold gain-button \">" . (string) $round_usd . '%</button>';
+                                
+                                $t_investment = $data->total_investment;
+                                $t_worth = $usd * $data->total;
+                                $t_profit_loss=$t_investment- $t_worth;
+                                
+                                if ($t_profit_loss > 0) {
+                                    
+                                    echo "<span class=\" text-success font-weight-bold gain-button\">" . (string) $t_profit_loss . '  USD</span>';
+                                } 
+                                elseif ($t_profit_loss < 0) {
+                                    
+                                    echo "<span class=\" text-danger font-weight-bold gain-button \">" . (string) $t_profit_loss . '  USD</span>';
                                 } else {
-                                    $round_usd = round($usd_24h_change / 100, 2);
-                                    echo "<button class=\"btn btn-light-success font-weight-bold gain-button\">" . (string) $round_usd . '%</button>';
+                                    
+                                    echo "<span class=\" text-dark font-weight-bold gain-button\">" . (string) $t_profit_loss . '  USD</span>';
                                 }
                                 ?>
 
+
+
+                                {{-- <?php
+                                if ($usd_24h_change > 0) {
+                                    $round_usd = round($usd_24h_change / 100, 2);
+                                    echo "<button class=\"btn btn-success font-weight-bold gain-button\">" . (string) $round_usd . '%</button>';
+                                } elseif (round($usd_24h_change / 100, 2) < 0) {
+                                    $round_usd = round($usd_24h_change / 100, 2);
+                                    echo "<button class=\"btn btn-danger font-weight-bold gain-button \">" . (string) $round_usd . '%</button>';
+                                } else {
+                                    $round_usd = round($usd_24h_change / 100, 2);
+                                    echo "<button class=\"btn btn-dark font-weight-bold gain-button\">" . (string) $round_usd . '%</button>';
+                                }
+                                ?> --}}
+
                             </td>
-                            <td class="text-center align-middle"></td>
+                            <td class="text-center align-middle">{{ round($data->total_investment, 2) }} </td>
+                            <td class="text-center align-middle">{{ round($usd * $data->total, 2) }} </td>
                             <td class="text-center align-middle">
                                 <div class="card-toolbar">
                                     <a class="btn btn-icon btn-sm btn-hover-light-primary mr-1" data-toggle="collapse"
@@ -95,7 +120,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="8">
+                            <td colspan="9">
                                 <div id=<?php echo "\"coin-" . $key . "\""; ?> class="collapse">
                                     <div class="card-container">
                                         <div class="card shadow mb-5 bg-white rounded">
@@ -105,7 +130,7 @@
                                                         <th class="text-center align-middle">Purchase date</th>
                                                         <th class="text-center align-middle">Purchase price</th>
                                                         <th class="text-center align-middle">Quantity</th>
-                                                        <th class="text-center align-middle">Total gain</th>
+                                                        <th class="text-center align-middle">Profit/Loss</th>
                                                         <th class="text-center align-middle">Value</th>
                                                         <th></th>
                                                         <th></th>
@@ -115,11 +140,35 @@
                                                     @foreach ($portfolio_details as $details)
                                                         @if ($details->coin_id == $data->id_of_coin)
                                                             <tr>
-                                                                <td class="text-center align-middle">{{$details->purchase_date}}</td>
-                                                                <td class="text-center align-middle">{{$details->purchase_price}}</td>
-                                                                <td class="text-center align-middle">{{$details->units}}</td>
-                                                                <td class="text-center align-middle"></td>
-                                                                <td class="text-center align-middle"></td>
+                                                                <td class="text-center align-middle">
+                                                                    {{ $details->purchase_date }}</td>
+                                                                <td class="text-center align-middle">
+                                                                    <?php
+                                                                    $p_price = $details->purchase_price / $details->units;
+                                                                    echo round($p_price, 2);
+                                                                    ?>
+
+                                                                    {{-- {{ round($details->purchase_price / $details->units, 2) }} --}}
+                                                                </td>
+                                                                <td class="text-center align-middle">
+                                                                    {{ $details->units }}</td>
+                                                                <td class="text-center align-middle">
+                                                                    <?php
+                                                                    
+                                                                    $profitLossAmount = round(($p_price - $usd) * $details->units, 2);
+                                                                    // echo $usd;
+                                                                    if ($profitLossAmount > 0) {
+                                                                        echo "<span class=\"text-success font-weight-bold gain-button\">" . (string) $profitLossAmount . '  USD</span>';
+                                                                    } elseif (round($profitLossAmount / 100, 2) < 0) {
+                                                                        echo "<span class=\"text-danger font-weight-bold gain-button \">" . (string) $profitLossAmount . '  USD</span>';
+                                                                    } else {
+                                                                        echo "<span class=\"text-dark font-weight-bold gain-button\">" . (string) $profitLossAmount . '  USD</span>';
+                                                                    }
+                                                                    ?>
+
+                                                                </td>
+                                                                <td class="text-center align-middle">
+                                                                    {{ round($details->purchase_price, 2) }}</td>
                                                             </tr>
                                                         @endif
                                                     @endforeach
@@ -127,7 +176,6 @@
                                             </table>
                                         </div>
                                     </div>
-
                                 </div>
 
                             </td>
@@ -202,25 +250,23 @@
                                                                 class="coin_org_symbol">
                                                             <input type="hidden" value={{ $usd }}
                                                                 class="coin_org_price">
-                                                            
-
-
 
                                                             <div class="mx-2 font-weight-bold">
                                                                 {{ ucfirst(trans($coin->name)) }}</div>
                                                         </div>
                                                         <div class="align-items-center d-flex ml-auto ">
-                                                            <div class="mx-2 font-weight-bold usd-price">{{ round($usd, 2) }}
+                                                            <div class="mx-2 font-weight-bold usd-price">
+                                                                {{ round($usd, 2) }}
                                                                 USD
                                                             </div>
                                                             <div class="mx-2">
                                                                 <?php
                                                                 if ($usd_24h_change > 0) {
                                                                     $round_usd = round($usd_24h_change / 100, 2);
-                                                                    echo "<button class=\"btn btn-light-success font-weight-bold gain-button\">" . (string) $round_usd . '% <i class="flaticon2-arrow-up"></i></button>';
+                                                                    echo "<button class=\"btn btn-success font-weight-bold gain-button\">" . (string) $round_usd . '% <i class="flaticon2-arrow-up"></i></button>';
                                                                 } elseif ($usd_24h_change < 0) {
                                                                     $round_usd = round($usd_24h_change / 100, 2);
-                                                                    echo "<button class=\"btn btn-light-danger font-weight-bold gain-button \">" . (string) $round_usd . '% <i class="flaticon2-arrow-down"></i>  </button>';
+                                                                    echo "<button class=\"btn btn-danger font-weight-bold gain-button \">" . (string) $round_usd . '% <i class="flaticon2-arrow-down"></i>  </button>';
                                                                 }
                                                                 ?>
 
@@ -260,22 +306,22 @@
                                 <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
                                     <label>Quantity</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Quantity" id="purchase_quantity"
-                                            name="units" value="1" />
+                                        <input type="text" class="form-control" placeholder="Quantity"
+                                            id="purchase_quantity" name="units" value="1" />
                                     </div>
                                 </div>
                                 <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
                                     <label>Purchase date</label>
                                     <div class="input-group">
-                                        <input type="date" class="form-control" placeholder="date" value="<?php echo date('Y-m-d'); ?>"
-                                            name="purchase_date" id="purchase_date" />
+                                        <input type="date" class="form-control" placeholder="date"
+                                            value="<?php echo date('Y-m-d'); ?>" name="purchase_date" id="purchase_date" />
                                     </div>
                                 </div>
                                 <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
                                     <label>Purchase price</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control"
-                                            placeholder="Purchase Price Amount" name="purchase_price" 
+                                            placeholder="Purchase Price Amount" name="purchase_price"
                                             id="purchase_price" />
                                     </div>
                                 </div>
