@@ -6,21 +6,42 @@
                 </h3>
             </div>
             <div class="card-toolbar">
-                <div class="input-icon mx-5">
-                    <input type="text" class="form-control" placeholder="Search..."
-                        id="kt_datatable_search_query_portfolio" />
-                    <span>
-                        <i class="flaticon2-search-1 text-muted"></i>
-                    </span>
-                </div>
+
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_transaction_modal">
-                    <i class="flaticon2-plus"></i>
-                     Transaction</button>
+                    <span class="svg-icon svg-icon-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <rect fill="#000000" x="4" y="11" width="16" height="2"
+                                    rx="1" />
+                                <rect fill="#000000" opacity="0.9"
+                                    transform="translate(12.000000, 12.000000) rotate(-270.000000) translate(-12.000000, -12.000000) "
+                                    x="4" y="11" width="16" height="2" rx="1" />
+                            </g>
+                        </svg>
+                    </span> Investment</button>
             </div>
         </div>
         <div class="card-body">
-            <table class="datatable datatable-bordered table-responsive text-center table-hover mt-5" id="kt_datatable_portfolio">
-                <thead class="card card-custom" style="background: #f6f6f6;">
+            <div class="mb-7">
+                <div class="row align-items-center">
+                    <div class="col-lg-9 col-xl-8">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 my-2 my-md-0">
+                                <div class="input-icon">
+                                    <input type="text" class="form-control" placeholder="Search..."
+                                        id="kt_datatable_search_query_portfolio" />
+                                    <span>
+                                        <i class="flaticon2-search-1 text-muted"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-borderless table-bordered px-5 table-responsive portfolio-table" style="width:100%;">
+                <thead>
                     <tr>
                         <th class="text-center">NO</th>
                         <th class="text-center">SYMBOL</th>
@@ -30,6 +51,7 @@
                         <th class="text-center">PROFIT/LOSS(TOTAL)</th>
                         <th class="text-center">INVESTMENT</th>
                         <th class="text-center">WORTH(CURRENT)</th>
+                        <th class="text-center"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,14 +61,14 @@
                         $usd = $current_price->$curr->usd;
                         $usd_24h_change = $current_price->$curr->usd_24h_change;
                         ?>
-                        <tr style="border-bottom: #f6f6f6 solid 0.75px;">
+                        <tr>
                             <td class="text-center align-middle">{{ $key + 1 }}</td>
                             <td class="text-center align-middle">
                                 <img src="{{ $data->image }}" alt="img" class="dropdown-image mx-2 ">
                             </td>
                             <td class="text-center align-middle">{{ $data->coin_name }}</td>
                             <td class="text-center align-middle">
-                                {{ round($usd,2) }} USD
+                                {{ $usd }} USD
                             </td>
                             <td class="text-center align-middle">{{ $data->total }}</td>
                             <td class="text-center align-middle">
@@ -54,7 +76,7 @@
                                 
                                 $t_investment = $data->total_investment;
                                 $t_worth = $usd * $data->total;
-                                $t_profit_loss=round($t_investment- $t_worth,2);
+                                $t_profit_loss=$t_investment- $t_worth;
                                 
                                 if ($t_profit_loss > 0) {
                                     
@@ -69,10 +91,25 @@
                                 }
                                 ?>
 
+
+
+                                {{-- <?php
+                                if ($usd_24h_change > 0) {
+                                    $round_usd = round($usd_24h_change / 100, 2);
+                                    echo "<button class=\"btn btn-success font-weight-bold gain-button\">" . (string) $round_usd . '%</button>';
+                                } elseif (round($usd_24h_change / 100, 2) < 0) {
+                                    $round_usd = round($usd_24h_change / 100, 2);
+                                    echo "<button class=\"btn btn-danger font-weight-bold gain-button \">" . (string) $round_usd . '%</button>';
+                                } else {
+                                    $round_usd = round($usd_24h_change / 100, 2);
+                                    echo "<button class=\"btn btn-dark font-weight-bold gain-button\">" . (string) $round_usd . '%</button>';
+                                }
+                                ?> --}}
+
                             </td>
                             <td class="text-center align-middle">{{ round($data->total_investment, 2) }} </td>
                             <td class="text-center align-middle">{{ round($usd * $data->total, 2) }} </td>
-                            {{-- <td class="text-center align-middle">
+                            <td class="text-center align-middle">
                                 <div class="card-toolbar">
                                     <a class="btn btn-icon btn-sm btn-hover-light-primary mr-1" data-toggle="collapse"
                                         href=<?php echo "\"#coin-" . $key . "\""; ?> role="button" aria-expanded="false"
@@ -80,9 +117,9 @@
                                         <i class="ki ki-arrow-down icon-nm"></i>
                                     </a>
                                 </div>
-                            </td> --}}
+                            </td>
                         </tr>
-                        {{-- <tr>
+                        <tr>
                             <td colspan="9">
                                 <div id=<?php echo "\"coin-" . $key . "\""; ?> class="collapse">
                                     <div class="card-container">
@@ -111,6 +148,7 @@
                                                                     echo round($p_price, 2);
                                                                     ?>
 
+                                                                    {{-- {{ round($details->purchase_price / $details->units, 2) }} --}}
                                                                 </td>
                                                                 <td class="text-center align-middle">
                                                                     {{ $details->units }}</td>
@@ -141,7 +179,7 @@
                                 </div>
 
                             </td>
-                        </tr> --}}
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
