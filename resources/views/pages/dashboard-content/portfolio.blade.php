@@ -51,18 +51,12 @@
                             </td>
                             <td class="text-center align-middle">
                                 <?php
-                                // foreach ($total_sell as $value) {
-                                //     if ($value->coin_id == $data->coin_id) {
-                                //         $current_unit=$data->total - $value->total;
-                                //         echo $current_unit;
-                                //     }
-                                //     else{
-                                //         $current_unit=$data->total;
-                                //         echo $current_unit;
-                                //     }
-                                // }
+                                $total_buy_unit=$data->buy_unit?$data->buy_unit:0;
+                                $total_sell_unit=$data->sell_unit?$data->sell_unit:0;
+                                $req_unit=$total_buy_unit- $total_sell_unit;
+                                echo $req_unit;                                
                                 ?>
-                                {{ $data->total }}
+                                {{-- {{ $data->total }} --}}
 
 
 
@@ -87,7 +81,7 @@
                             {{-- <td class="text-center align-middle">{{ round($data->total_investment, 2) }} </td> --}}
                             {{-- <td class="text-center align-middle">{{ round($usd * $data->total, 2) }} </td> --}}
 
-                            
+
                             {{-- <td class="text-center align-middle">
                                 <div class="card-toolbar">
                                     <a class="btn btn-icon btn-sm btn-hover-light-primary mr-1" data-toggle="collapse"
@@ -217,7 +211,8 @@
                                                     $usd_24h_change = $current_price->$curr->usd_24h_change;
                                                     ?>
 
-                                                    <div class="align-items-center d-flex" onclick="selectCoinFromCoinsList(event)">
+                                                    <div class="align-items-center d-flex"
+                                                        onclick="selectCoinFromCoinsList(event)">
                                                         <div class="d-flex align-items-center">
                                                             <img src="{{ $coin->image }}" alt="img"
                                                                 class="dropdown-image mx-2 ">
@@ -262,8 +257,8 @@
                                 </table>
                             </div>
                         </div>
-                        <form class="form" id="kt_form" action="{{ route('transactions.store') }}"
-                            method="POST" enctype="multipart/form-data">
+                        <form class="form" id="kt_form" action="{{ route('transactions.store') }}" method="POST"
+                            enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <div class="row align-items-center">
                                 <div class="col-md-12">
