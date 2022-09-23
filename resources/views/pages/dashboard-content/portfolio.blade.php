@@ -51,18 +51,18 @@
                             </td>
                             <td class="text-center align-middle">
                                 <?php
-                                foreach ($total_sell as $value) {
-                                    if ($value->coin_id == $data->coin_id) {
-                                        $current_unit=$data->total - $value->total;
-                                        echo $current_unit;
-                                    }
-                                    else{
-                                        $current_unit=$data->total;
-                                        echo $current_unit;
-                                    }
-                                }
+                                // foreach ($total_sell as $value) {
+                                //     if ($value->coin_id == $data->coin_id) {
+                                //         $current_unit=$data->total - $value->total;
+                                //         echo $current_unit;
+                                //     }
+                                //     else{
+                                //         $current_unit=$data->total;
+                                //         echo $current_unit;
+                                //     }
+                                // }
                                 ?>
-                                {{-- {{ $data->total }} --}}
+                                {{ $data->total }}
 
 
 
