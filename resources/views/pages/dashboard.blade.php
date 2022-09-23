@@ -285,9 +285,9 @@
         });
 
         function selectCoinFromCoinsList(event) {
-            // var parent = event.currentTarget.parentElement;
             var parent = event.target.parentElement;
 
+            
             // console.log(parent);
 
 
