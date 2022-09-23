@@ -95,7 +95,7 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd($request->all());
     }
 
     /**
@@ -106,6 +106,6 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        dd("destroyed");
     }
 }

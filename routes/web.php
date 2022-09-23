@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-
-
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +44,8 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/coin/inactive/{id}', [CoinController::class, 'inactiveCoin'])->name('coins.inactive');
     Route::get('/sync/coin', [CoinController::class, 'sync_coin'])->name('coins.sync');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+    Route::get('/transactions/delete/{id}', [TransactionController::class, 'destroy'])->name('destroyTransaction');
+    
 });
 
 

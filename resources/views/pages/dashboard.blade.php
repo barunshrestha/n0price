@@ -243,8 +243,8 @@
                     width: 147,
                 },
                 {
-                    field:"",
-                    width:40,
+                    field: "",
+                    width: 40,
                     sortable: false
                 }
 
@@ -273,7 +273,6 @@
             );
             $('#purchase_quantity').change(
                 function() {
-
                     var selected_coin = $('#selected_coin .coin_org_symbol').val();
                     var price_today = $('#selected_coin .coin_org_price').val();
                     var quantity = $('#purchase_quantity').val();
@@ -286,11 +285,7 @@
 
         function selectCoinFromCoinsList(event) {
             var parent = event.target.parentElement;
-
-            
-            // console.log(parent);
-
-
+            console.log(parent);
             $('#selected_coin').html(parent)
             $('#selected_coin').removeClass("hidden");
             $('#investment-description').removeClass("hidden");
@@ -301,5 +296,30 @@
             var price_today = $('#selected_coin .coin_org_price').val();
             $('#purchase_price').val(price_today);
         }
+
+        // $(document).ready(function() {
+        //     $('.transactionEditBtn').click(function(event) {
+        //         var all_id = event.target.parentElement.id;
+        //         id = all_id.split('-')[1];
+        //         var investment_type = '#investment_type-' + id;
+        //         var purchase_date = '#purchase_date-' + id;
+        //         var units = '#units-' + id;
+        //         var purchase_price = '#purchase_price-' + id;
+        //         var transaction_action_buttons = '#transaction_action_buttons-' + id;
+
+        //         $(investment_type+' .hide_before_edit').removeClass('hidden');
+        //         $(purchase_date+' .hide_before_edit').removeClass('hidden');
+        //         $(units+' .hide_before_edit').removeClass('hidden');
+        //         $(purchase_price+' .hide_before_edit').removeClass('hidden');
+        //         $(transaction_action_buttons+' .hide_before_edit').removeClass('hidden');
+                
+        //         $(investment_type+' .hide_after_edit').addClass('hidden');
+        //         $(purchase_date+' .hide_after_edit').addClass('hidden');
+        //         $(units+' .hide_after_edit').addClass('hidden');
+        //         $(purchase_price+' .hide_after_edit').addClass('hidden');
+        //         $(transaction_action_buttons+' .hide_after_edit').addClass('hidden');
+
+        //     });
+        // });
     </script>
 @endsection
