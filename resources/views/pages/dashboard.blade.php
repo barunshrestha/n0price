@@ -62,6 +62,13 @@
         .gain-button {
             width: 8em;
         }
+
+
+        @media screen and (min-width: 1287px) {
+            .portfolio-table {
+                display: inline-table;
+            }
+        }
     </style>
 @endsection
 {{-- Content --}}
@@ -293,7 +300,7 @@
             //     var parent = target.parentElement;
             //     return parent;
             // }
-            
+
 
             $('#purchase_quantity').change(
                 function() {
@@ -332,9 +339,9 @@
                     // }
                     var price_today = $('#selected_coin .coin_org_price').val();
                     // var req_data = data['market_data']['current_price']['usd'];
-                        var quantity = $('#purchase_quantity').val();
-                        var total_price = parseFloat(quantity) * parseFloat(price_today);
-                        $('#purchase_price').val(total_price);
+                    var quantity = $('#purchase_quantity').val();
+                    var total_price = parseFloat(quantity) * parseFloat(price_today);
+                    $('#purchase_price').val(total_price);
 
 
                 }

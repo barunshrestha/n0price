@@ -40,7 +40,7 @@
                     </div>
                 </div>
             </div>
-            <table class="table table-borderless table-bordered px-5">
+            <table class="table table-borderless table-bordered px-5 table-responsive portfolio-table" style="width:100%;">
                 <thead>
                     <tr>
                         <th class="text-center">NO</th>

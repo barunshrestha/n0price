@@ -29,9 +29,9 @@
 
                 @if (config('layout.subheader.display'))
                     @if (array_key_exists(config('layout.subheader.layout'), config('layout.subheader.layouts')))
-                        @include('layout.partials.subheader._' . config('layout.subheader.layout'))
+                        {{-- @include('layout.partials.subheader._' . config('layout.subheader.layout')) --}}
                     @else
-                        @include('layout.partials.subheader._' . array_key_first(config('layout.subheader.layouts')))
+                        {{-- @include('layout.partials.subheader._' . array_key_first(config('layout.subheader.layouts'))) --}}
                     @endif
                 @endif
 
@@ -49,29 +49,29 @@
 
 @if (config('layout.self.layout') != 'blank')
     @if (config('layout.extras.search.layout') == 'offcanvas')
-        @include('layout.partials.extras.offcanvas._quick-search')
+        {{-- @include('layout.partials.extras.offcanvas._quick-search') --}}
     @endif
 
     @if (config('layout.extras.notifications.layout') == 'offcanvas')
-        @include('layout.partials.extras.offcanvas._quick-notifications')
+        {{-- @include('layout.partials.extras.offcanvas._quick-notifications') --}}
     @endif
 
     @if (config('layout.extras.quick-actions.layout') == 'offcanvas')
-        @include('layout.partials.extras.offcanvas._quick-actions')
+        {{-- @include('layout.partials.extras.offcanvas._quick-actions') --}}
     @endif
 
     @if (config('layout.extras.user.layout') == 'offcanvas')
-        @include('layout.partials.extras.offcanvas._quick-user')
+        {{-- @include('layout.partials.extras.offcanvas._quick-user') --}}
     @endif
 
     @if (config('layout.extras.quick-panel.display'))
-        @include('layout.partials.extras.offcanvas._quick-panel')
+        {{-- @include('layout.partials.extras.offcanvas._quick-panel') --}}
     @endif
 
 
 
     @if (config('layout.extras.chat.display'))
-        @include('layout.partials.extras._chat')
+        {{-- @include('layout.partials.extras._chat') --}}
     @endif
 
     @include('layout.partials.extras._scrolltop')
