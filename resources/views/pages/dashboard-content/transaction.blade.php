@@ -106,7 +106,7 @@
                                         </button>
 
                                         <a href="{{ route('destroyTransaction', $transaction->id) }}" value="Delete"
-                                            class="btn btn-icon btn-danger btn-xs mr-2 deleteBtn" data-toggle="tooltip"
+                                            class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip"
                                             title="Delete"><i class="fa fa-trash"></i></a>
                                     </div>
                                     <div class="hide_before_edit hidden">
