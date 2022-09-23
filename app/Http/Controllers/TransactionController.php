@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -49,6 +50,16 @@ class TransactionController extends Controller
 
         $data = $request->except('_token');
         $user = Auth::user();
+        if($data['coin_investment_type']=='sell'){
+            $to_check_transaction=DB::select('CALL usp_get_current_transaction_coin_wise('.$user->id.','.$data['coin_id'].')');
+            $to_check_buy_total=$to_check_transaction[0]->buy_unit;
+            $to_check_sell_total=$to_check_transaction[0]->sell_unit;
+            $to_check_amt=$to_check_buy_total-$to_check_sell_total-$data['units'];
+            if($to_check_amt<0){
+                return redirect()->back()->with('fail', 'Information could not be added.');
+            }
+        }
+
         $transaction = new Transaction();
         $transaction->user_id = $user->id;
         $transaction->coin_id = $data['coin_id'];

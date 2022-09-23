@@ -56,10 +56,6 @@
                                 $req_unit=$total_buy_unit- $total_sell_unit;
                                 echo $req_unit;                                
                                 ?>
-                                {{-- {{ $data->total }} --}}
-
-
-
                             </td>
                             {{-- <td class="text-center align-middle">
                                 <?php
