@@ -40,6 +40,12 @@
             width: 40px;
         }
 
+        .icon-image {
+            height: 25px;
+            width: 25px;
+        }
+
+
         .hidden {
             display: none !important;
         }
@@ -61,6 +67,9 @@
             width: 8em;
         }
 
+        #selected_coin span {
+            width: 100% !important;
+        }
 
         @media screen and (min-width: 1287px) {
             .portfolio-table {
@@ -71,7 +80,7 @@
 @endsection
 {{-- Content --}}
 @section('content')
-      <div class="row">
+    <div class="row">
         <div class="col-md-12">
             <div class="card card-custom gutter-b">
                 <div class="card-header card-header-tabs-line">
@@ -199,81 +208,58 @@
             }
         });
 
-        // document.getElementById('portfolio-btn').onclick = function() {
-        //     alert("clicked");
-        //     let portfolio_datatable = $('#kt_datatable_portfolio').KTDatatable({
-        //         data: {
-        //             saveState: {
-        //                 cookie: false
-        //             }
-        //         },
-        //         columns: [{
-        //             field: "NO",
-        //             width: 46,
-        //         },
-        //         {
-        //             field: "SYMBOL",
-        //             width: 79,
-        //         },
-        //         {
-        //             field: "NAME",
-        //             width: 65,
-        //         },
-        //         {
-        //             field: "PRICE(CURRENT)",
-        //             width: 136,
-        //         },
-        //         {
-        //             field: "QUANTITY",
-        //             width: 91,
-        //         },
-        //         {
-        //             field: "PROFIT/LOSS(TOTAL)",
-        //             width: 161,
-        //         },
-        //         {
-        //             field: "INVESTMENT",
-        //             width: 106,
-        //         },
-        //         {
-        //             field: "WORTH(CURRENT)",
-        //             width: 147,
-        //         },
-
-        //     ],
-        //         search: {
-        //             input: $('#kt_datatable_search_query_portfolio'),
-        //             key: 'generalSearch'
-        //         }
-        //     });
-        // }
-        document.getElementById('transaction-btn').onclick = function() {
-            var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
-                data: {
-                    saveState: {
-                        cookie: false
-                    }
-                },
-                search: {
-                    input: $('#_portfolio_search_transaction'),
-                    key: 'generalSearch'
+        var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
+            data: {
+                saveState: {
+                    cookie: false
                 }
-            });
-        }
-        document.getElementById('assetmatrix-btn').onclick = function() {
-            var datatable_assetmatrix = $('#kt_datatable_assetmatrix').KTDatatable({
-                data: {
-                    saveState: {
-                        cookie: false
-                    }
+            },
+            search: {
+                input: $('#_portfolio_search_transaction'),
+                key: 'generalSearch'
+            },
+            columns: [{
+                    field: "NO",
+                    width: 46,
+                },
+                {
+                    field: "TICKER",
+                    width: 200,
+                },
+                {
+                    field: "TYPE",
+                    width: 65,
+                },
+                {
+                    field: "PURCHASE DATE",
+                    width: 161,
+                },
+                {
+                    field: "UNITS",
+                    width: 106,
+                },
+                {
+                    field: "PRICE(PER UNIT)",
+                    width: 147,
                 },
 
-                search: {
-                    input: $('#portfolio_search_assetmatrix'),
-                    key: 'generalSearch'
+            ],
+
+        });
+
+        var datatable_assetmatrix = $('#kt_datatable_assetmatrix').KTDatatable({
+            data: {
+                saveState: {
+                    cookie: false
                 }
-            });
-        }
+            },
+
+            search: {
+                input: $('#portfolio_search_assetmatrix'),
+                key: 'generalSearch'
+            }
+        });
+
         $(document).ready(function() {
             $('#kt_coin_datatable_search_query').click(
                 function() {
@@ -285,20 +271,17 @@
 
                     var selected_coin = $('#selected_coin .coin_org_symbol').val();
                     var price_today = $('#selected_coin .coin_org_price').val();
-                    // var req_data = data['market_data']['current_price']['usd'];
                     var quantity = $('#purchase_quantity').val();
                     var total_price = parseFloat(quantity) * parseFloat(price_today);
                     $('#purchase_price').val(total_price);
-
-
                 }
             );
-
 
         });
 
         function selectCoinFromCoinsList(event) {
-            var parent = event.currentTarget.parentElement;
+            // var parent = event.currentTarget.parentElement;
+            var parent = event.target.parentElement;
 
             // console.log(parent);
 
@@ -310,7 +293,6 @@
             $('#coin-search-bar').addClass('hidden');
             $('.coin-in-coin-list-button').addClass('hidden');
 
-            // var price_today = 
             var price_today = $('#selected_coin .coin_org_price').val();
             $('#purchase_price').val(price_today);
         }

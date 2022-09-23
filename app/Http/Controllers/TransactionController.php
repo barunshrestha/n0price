@@ -44,6 +44,7 @@ class TransactionController extends Controller
             'units' => 'required',
             'purchase_price' => 'required',
             'purchase_date' => 'required',
+            'coin_investment_type'=>'required',
         ]);
 
         $data = $request->except('_token');
@@ -54,6 +55,8 @@ class TransactionController extends Controller
         $transaction->units = $data['units'];
         $transaction->purchase_price = $data['purchase_price'];
         $transaction->purchase_date = $data['purchase_date'];
+        $transaction->investment_type = $data['coin_investment_type'];
+
 
         if ($transaction->save()) {
             return redirect()->back()->with('success', 'Purchased the coin.');

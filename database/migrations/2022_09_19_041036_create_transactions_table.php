@@ -20,6 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->string('units');
             $table->string('current_rate')->nullable();
             $table->string('purchase_price');
+            $table->string('investment_type');
             $table->date('purchase_date');
             $table->timestamps();
         });

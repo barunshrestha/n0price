@@ -192,7 +192,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($available_coins as $coin)
-                                            <tr>
+                                            <tr onclick="selectCoinFromCoinsList(event)">
                                                 <td class="coin-table-data">
                                                     <?php
                                                     $curr = "$coin->coin_id";
@@ -233,18 +233,11 @@
                                                                 ?>
 
                                                             </div>
-
-
-                                                            {{-- <button type="button"
-                                                                onclick="selectCoinFromCoinsList(event)"
-                                                                class="btn btn-light-success btn-circle mr-2 coin-in-coin-list-button">
-                                                                <i class="flaticon-plus text-info"></i>
-                                                            </button> --}}
                                                         </div>
-                                                        <button class="btn mr-2 coin-in-coin-list-button"
+                                                        {{-- <button class="btn mr-2 coin-in-coin-list-button"
                                                             onclick="selectCoinFromCoinsList(event)" type="button">
                                                             <i class="flaticon2-plus text-success"></i>
-                                                        </button>
+                                                        </button> --}}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -265,21 +258,30 @@
                             </div>
 
                             <div class="row hidden mt-5" id="investment-description">
-                                <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
+                                <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
+                                    <label>Status</label>
+                                    <div class="input-group">
+                                        <select name="coin_investment_type" id="coin_investment_type" class="form-control">
+                                            <option value="buy">Buy</option>
+                                            <option value="sell">Sell</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
                                     <label>Quantity</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" placeholder="Quantity"
                                             id="purchase_quantity" name="units" value="1" />
                                     </div>
                                 </div>
-                                <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
+                                <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
                                     <label>Purchase date</label>
                                     <div class="input-group">
                                         <input type="date" class="form-control" placeholder="date"
                                             value="<?php echo date('Y-m-d'); ?>" name="purchase_date" id="purchase_date" />
                                     </div>
                                 </div>
-                                <div class="form-group mt-2 col-sm-12 col-md-4 col-lg-4">
+                                <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
                                     <label>Purchase price</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control"
