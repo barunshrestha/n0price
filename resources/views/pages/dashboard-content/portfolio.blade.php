@@ -217,7 +217,7 @@
                                                     $usd_24h_change = $current_price->$curr->usd_24h_change;
                                                     ?>
 
-                                                    <div class="align-items-center d-flex ">
+                                                    <div class="align-items-center d-flex" onclick="selectCoinFromCoinsList(event)">
                                                         <div class="d-flex align-items-center">
                                                             <img src="{{ $coin->image }}" alt="img"
                                                                 class="dropdown-image mx-2 ">
