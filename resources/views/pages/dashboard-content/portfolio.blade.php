@@ -15,11 +15,12 @@
                 </div>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_transaction_modal">
                     <i class="flaticon2-plus"></i>
-                     Transaction</button>
+                    Transaction</button>
             </div>
         </div>
         <div class="card-body">
-            <table class="datatable datatable-bordered table-responsive text-center table-hover mt-5" id="kt_datatable_portfolio">
+            <table class="datatable datatable-bordered table-responsive text-center table-hover mt-5"
+                id="kt_datatable_portfolio">
                 <thead class="card card-custom" style="background: #f6f6f6;">
                     <tr>
                         <th class="text-center">NO</th>
@@ -27,9 +28,9 @@
                         <th class="text-center">NAME</th>
                         <th class="text-center">PRICE(CURRENT)</th>
                         <th class="text-center">QUANTITY</th>
-                        <th class="text-center">PROFIT/LOSS(TOTAL)</th>
-                        <th class="text-center">INVESTMENT</th>
-                        <th class="text-center">WORTH(CURRENT)</th>
+                        {{-- <th class="text-center">PROFIT/LOSS(TOTAL)</th> --}}
+                        {{-- <th class="text-center">INVESTMENT</th> --}}
+                        {{-- <th class="text-center">WORTH(CURRENT)</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -46,32 +47,47 @@
                             </td>
                             <td class="text-center align-middle">{{ $data->coin_name }}</td>
                             <td class="text-center align-middle">
-                                {{ round($usd,2) }} USD
+                                {{ round($usd, 2) }} USD
                             </td>
-                            <td class="text-center align-middle">{{ $data->total }}</td>
                             <td class="text-center align-middle">
+                                <?php
+                                foreach ($total_sell as $value) {
+                                    if ($value->coin_id == $data->coin_id) {
+                                        $current_unit=$data->total - $value->total;
+                                        echo $current_unit;
+                                    }
+                                    else{
+                                        $current_unit=$data->total;
+                                        echo $current_unit;
+                                    }
+                                }
+                                ?>
+                                {{-- {{ $data->total }} --}}
+
+
+
+                            </td>
+                            {{-- <td class="text-center align-middle">
                                 <?php
                                 
                                 $t_investment = $data->total_investment;
                                 $t_worth = $usd * $data->total;
-                                $t_profit_loss=round($t_investment- $t_worth,2);
+                                $t_profit_loss = round($t_investment - $t_worth, 2);
                                 
                                 if ($t_profit_loss > 0) {
-                                    
                                     echo "<span class=\" text-success font-weight-bold gain-button\">" . (string) $t_profit_loss . '  USD</span>';
-                                } 
-                                elseif ($t_profit_loss < 0) {
-                                    
+                                } elseif ($t_profit_loss < 0) {
                                     echo "<span class=\" text-danger font-weight-bold gain-button \">" . (string) $t_profit_loss . '  USD</span>';
                                 } else {
-                                    
                                     echo "<span class=\" text-dark font-weight-bold gain-button\">" . (string) $t_profit_loss . '  USD</span>';
                                 }
                                 ?>
 
-                            </td>
-                            <td class="text-center align-middle">{{ round($data->total_investment, 2) }} </td>
-                            <td class="text-center align-middle">{{ round($usd * $data->total, 2) }} </td>
+                            </td> --}}
+                            {{-- <td class="text-center align-middle">{{ round($data->total_investment, 2) }} </td> --}}
+                            {{-- <td class="text-center align-middle">{{ round($usd * $data->total, 2) }} </td> --}}
+
+                            
                             {{-- <td class="text-center align-middle">
                                 <div class="card-toolbar">
                                     <a class="btn btn-icon btn-sm btn-hover-light-primary mr-1" data-toggle="collapse"
@@ -221,14 +237,14 @@
                                                                 {{ round($usd, 2) }}
                                                                 USD
                                                             </div>
-                                                            <div class="mx-2">
+                                                            <div class="mx-2 ml-5">
                                                                 <?php
                                                                 if ($usd_24h_change > 0) {
                                                                     $round_usd = round($usd_24h_change / 100, 2);
-                                                                    echo "<button class=\"btn btn-success font-weight-bold gain-button\">" . (string) $round_usd . '% <i class="flaticon2-arrow-up"></i></button>';
+                                                                    echo "<span class=\"text-success font-weight-bold gain-button\">" . (string) $round_usd . '% <i class="text-success flaticon2-arrow-up"></i></span>';
                                                                 } elseif ($usd_24h_change < 0) {
                                                                     $round_usd = round($usd_24h_change / 100, 2);
-                                                                    echo "<button class=\"btn btn-danger font-weight-bold gain-button \">" . (string) $round_usd . '% <i class="flaticon2-arrow-down"></i>  </button>';
+                                                                    echo "<span class=\"text-danger font-weight-bold gain-button \">" . (string) $round_usd . '% <i class="text-danger flaticon2-arrow-down"></i>  </button>';
                                                                 }
                                                                 ?>
 
@@ -261,7 +277,8 @@
                                 <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
                                     <label>Status</label>
                                     <div class="input-group">
-                                        <select name="coin_investment_type" id="coin_investment_type" class="form-control">
+                                        <select name="coin_investment_type" id="coin_investment_type"
+                                            class="form-control">
                                             <option value="buy">Buy</option>
                                             <option value="sell">Sell</option>
                                         </select>

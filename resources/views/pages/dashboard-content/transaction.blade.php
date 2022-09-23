@@ -20,12 +20,13 @@
             <thead class="card card-custom" style="background: #f6f6f6;">
                 <tr>
                     <th class="text-center">NO</th>
+                    <th class="text-center"></th>
                     <th class="text-center">TICKER</th>
                     <th class="text-center">TYPE</th>
                     <th class="text-center">PURCHASE DATE</th>
                     <th class="text-center">UNITS</th>
                     <th class="text-center">PRICE(PER UNIT)</th>
-                    {{-- <th class="text-center" title="Field #6">Action</th> --}}
+                    <th class="text-center" title="Field #6">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,30 +34,127 @@
                     <tr style="border-bottom: #f6f6f6 solid 0.75px;">
                         <td class="text-center align-middle">{{ $key + 1 }}</td>
                         <td class="text-center align-middle">
-                                <img src="{{ $transaction->image }}" alt="img" class="icon-image mx-2 ">
-                                
-                                    {{ $transaction->coin_name }}                           
-                                
+                            <img src="{{ $transaction->image }}" alt="img" class="icon-image mx-2 ">
                         </td>
                         <td class="text-center align-middle">
-                            <?php
-                            $type = $transaction->investment_type;
-                            if ($type == 'buy') {
-                                echo "<span class=\" text-success font-weight-bold gain-button\">" . 'BUY' . ' </span>';
-                            } else {
-                                echo "<span class=\" text-danger font-weight-bold gain-button\">" . 'SELL' . ' </span>';
-                            }
-                            ?>
-                        </td>
-                        <td class="text-center align-middle">{{ $transaction->purchase_date }}</td>
-                        <td class="text-center align-middle">{{ $transaction->units }}</td>
-                        <td class="text-center align-middle">{{ round($transaction->purchase_price / $transaction->units, 2) }}</td>
+                            {{ $transaction->coin_name }}
 
-                        {{-- <td>
-                            <a href="{{ route('transactions.edit', $transaction->id) }}"
+                        </td>
+                        <td class="text-center align-middle">
+                            <div class="hide_after_edit">
+                                <?php
+                                $type = $transaction->investment_type;
+                                if ($type == 'buy') {
+                                    echo "<span class=\" text-success font-weight-bold gain-button\">" . 'BUY' . ' </span>';
+                                } else {
+                                    echo "<span class=\" text-danger font-weight-bold gain-button\">" . 'SELL' . ' </span>';
+                                }
+                                ?>
+                            </div>
+
+                            <select name="investment_type" class="form-control hide_before_edit hidden">
+                                <option value="buy" <?php if($type=="buy"){echo "selected";}  ?> >Buy</option>
+                                <option value="sell" <?php if($type=="sell"){echo "selected";}  ?> >Sell</option>
+                            </select>
+
+                        </td>
+                        <td class="text-center align-middle">
+                            <div class="hide_after_edit ">
+                            {{ $transaction->purchase_date }}
+                            </div>
+                            <input type="date" name="purchase_date" class="form-control hidden hide_before_edit" value="{{ $transaction->purchase_date }}">                           
+                        </td>
+                        <td class="text-center align-middle">{{ $transaction->units }}</td>
+                        <td class="text-center align-middle">
+                            {{ round($transaction->purchase_price / $transaction->units, 2) }}</td>
+
+                        <td>
+
+
+
+
+
+
+
+
+
+
+                            {{-- <button type="button" class="btn btn-icon btn-success btn-xs mr-2" data-toggle="modal"
+                                title="Edit" data-target="#editModal-{{ $transaction->id }}">
+                                <i class="fa fa-pen"></i>
+                            </button>
+
+                            <div class="modal fade" id="editModal-{{ $transaction->id }}" tabindex="-1" role="dialog"
+                                aria-labelledby="editModal-{{ $transaction->id }}Label" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModal-{{ $transaction->id }}Label">Edit
+                                                transaction</h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <i aria-hidden="true" class="ki ki-close"></i>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container">
+                                                <div class="row mt-5" id="investment-description">
+                                                    <form action="{{ route('transactions.update') }}">
+                                                        <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
+                                                            <label>Status</label>
+                                                            <div class="input-group">
+                                                                <select name="coin_investment_type"
+                                                                    id="coin_investment_type" class="form-control">
+                                                                    <option value="buy">Buy</option>
+                                                                    <option value="sell">Sell</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
+                                                            <label>Quantity</label>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Quantity" id="purchase_quantity"
+                                                                    name="units" value="1" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
+                                                            <label>Purchase date</label>
+                                                            <div class="input-group">
+                                                                <input type="date" class="form-control"
+                                                                    placeholder="date" value="<?php echo date('Y-m-d'); ?>"
+                                                                    name="purchase_date" id="purchase_date" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
+                                                            <label>Purchase price</label>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Purchase Price Amount"
+                                                                    name="purchase_price" id="purchase_price" />
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light-primary font-weight-bold"
+                                                data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary font-weight-bold">Save
+                                                changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> --}}
+
+
+
+                            {{-- <a href="{{ route('transactions.edit', $transaction->id) }}"
                                 class="btn btn-icon btn-success btn-xs mr-2" data-toggle="tooltip" title="Edit">
                                 <i class="fa fa-pen"></i>
-                            </a>
+                            </a> --}}
                             <form action="{{ route('transactions.destroy', $transaction->id) }}"
                                 style="display: inline-block;" method="post">
                                 {{ method_field('DELETE') }}
@@ -65,7 +163,7 @@
                                     class="btn btn-icon btn-danger btn-xs mr-2 deleteBtn" data-toggle="tooltip"
                                     title="Delete"><i class="fa fa-trash"></i></button>
                             </form>
-                        </td> --}}
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

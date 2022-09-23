@@ -64,7 +64,7 @@
         }
 
         .gain-button {
-            width: 8em;
+            min-width: 8em;
         }
 
         #selected_coin span {
@@ -224,7 +224,7 @@
                 },
                 {
                     field: "TICKER",
-                    width: 200,
+                    width: 170,
                 },
                 {
                     field: "TYPE",
@@ -232,7 +232,7 @@
                 },
                 {
                     field: "PURCHASE DATE",
-                    width: 161,
+                    width: 180,
                 },
                 {
                     field: "UNITS",
@@ -242,6 +242,11 @@
                     field: "PRICE(PER UNIT)",
                     width: 147,
                 },
+                {
+                    field:"",
+                    width:40,
+                    sortable: false
+                }
 
             ],
 
