@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -45,17 +46,17 @@ class TransactionController extends Controller
             'units' => 'required',
             'purchase_price' => 'required',
             'purchase_date' => 'required',
-            'coin_investment_type'=>'required',
+            'coin_investment_type' => 'required',
         ]);
 
         $data = $request->except('_token');
         $user = Auth::user();
-        if($data['coin_investment_type']=='sell'){
-            $to_check_transaction=DB::select('CALL usp_get_current_transaction_coin_wise('.$user->id.','.$data['coin_id'].')');
-            $to_check_buy_total=$to_check_transaction[0]->buy_unit;
-            $to_check_sell_total=$to_check_transaction[0]->sell_unit;
-            $to_check_amt=$to_check_buy_total-$to_check_sell_total-$data['units'];
-            if($to_check_amt<0){
+        if ($data['coin_investment_type'] == 'sell') {
+            $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $data['coin_id'] . ')');
+            $to_check_buy_total = $to_check_transaction[0]->buy_unit;
+            $to_check_sell_total = $to_check_transaction[0]->sell_unit;
+            $to_check_amt = $to_check_buy_total - $to_check_sell_total - $data['units'];
+            if ($to_check_amt < 0) {
                 return redirect()->back()->with('fail', 'Information could not be added.');
             }
         }
@@ -106,14 +107,27 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $transaction=Transaction::find($id);
-        $transaction->investment_type=$request->investment_type;
-        $transaction->purchase_date=$request->purchase_date;
-        $transaction->units=$request->units;
-        $total_price=$request->units*$request->purchase_price;
-        $transaction->purchase_price=$total_price;
+        $transaction = Transaction::find($id);
+        $user = User::find($transaction->user_id);
+        $investment_type = $request->investment_type;
+        $given_coin_id=$transaction->coin_id;
+
+        if ($investment_type == 'sell') {
+            $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $given_coin_id . ')');
+            $to_check_buy_total = $to_check_transaction[0]->buy_unit;
+            $to_check_sell_total = $to_check_transaction[0]->sell_unit?$to_check_transaction[0]->sell_unit:0;
+            $to_check_amt = $to_check_buy_total - $to_check_sell_total - $request->units;
+            if ($to_check_amt < 0) {
+                return response()->json(["success"=>false,"response"=>"Information couldn't be updated successfully"]);
+            }
+        }
+        $transaction->investment_type = $investment_type;
+        $transaction->purchase_date = $request->purchase_date;
+        $transaction->units = $request->units;
+        $total_price = $request->units * $request->purchase_price;
+        $transaction->purchase_price = $total_price;
         $transaction->save();
-        return response()->json(["success"]);
+        return response()->json(["success"=>true,"response"=>"Information updated successfully"]);
     }
 
     /**
@@ -124,8 +138,8 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        $transaction=Transaction::findOrFail($id);
+        $transaction = Transaction::findOrFail($id);
         $transaction->delete();
-        return redirect()->back()->with('success', 'Transaction has been deleted');        
+        return redirect()->back()->with('success', 'Transaction has been deleted');
     }
 }

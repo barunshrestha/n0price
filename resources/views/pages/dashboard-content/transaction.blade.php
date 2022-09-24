@@ -113,10 +113,6 @@
                                         id="transaction_edit_form-{{ $transaction->id }}">
                                         {{ method_field('PUT') }}
                                         {{ csrf_field() }}
-                                        <input type="hidden" value="" name="investment_type" id="form_investment_type-{{$transaction->id}}">
-                                        <input type="hidden" value="" name="purchase_date" id="form_purchase_date-{{$transaction->id}}">
-                                        <input type="hidden" value="" name="units" id="form_units-{{$transaction->id}}">
-                                        <input type="hidden" value="" name="price_per_unit" id="form_price_per_unit-{{$transaction->id}}">
                                         <button type="submit" value="Save"
                                             class="btn btn-icon btn-success btn-xs mr-2" data-toggle="tooltip"
                                             title="Save"><i class="flaticon2-check-mark"></i></button>
@@ -126,11 +122,6 @@
                                         title="Discard"><i class="flaticon2-cross"></i></button>
                                 </div>
                             </div>
-
-
-
-
-
 
                             {{-- <button type="button" class="btn btn-icon btn-success btn-xs mr-2" data-toggle="modal"
                                 title="Edit" data-target="#editModal-{{ $transaction->id }}">

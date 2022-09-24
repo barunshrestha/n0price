@@ -83,6 +83,15 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card card-custom gutter-b">
+                <div class="errorbox">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-custom gutter-b">
                 <div class="card-header card-header-tabs-line">
                     <div class="card-toolbar">
                         <ul class="nav nav-tabs nav-bold nav-tabs-line">
@@ -282,8 +291,7 @@
 
 
 
-            $('form').on('submit', function(event) 
-            {
+            $('form').on('submit', function(event) {
                 event.preventDefault();
                 var all_id = this.id;
                 id = all_id.split('-')[1];
@@ -291,15 +299,6 @@
                 var purchase_date = '#purchase_date-' + id;
                 var units = '#units-' + id;
                 var purchase_price = '#purchase_price-' + id;
-
-                var form_investment_type = '#form_investment_type-' + id;
-                var form_purchase_date = '#form_purchase_date-' + id;
-                var form_units = '#form_units-' + id;
-                var form_purchase_price = '#form_purchase_price-' + id;
-                var form_id = '#' + all_id;
-               
-
-
                 let details = {
                     investment_type: $(investment_type + ' .hide_before_edit').val(),
                     purchase_date: $(purchase_date + ' .hide_before_edit').val(),
@@ -310,12 +309,21 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    'url': '/transactions/'+id,
+                    'url': '/transactions/' + id,
                     'type': 'PUT',
                     'dataType': 'json',
                     'data': details,
                 }).done(function(response) {
-                    window.location.replace('/');
+                    if(response.success==true){
+                        $('.errorbox').html("<div class='p-4 bg-success text-white'>Transaction has been updated.</div>");
+                        setTimeout(window.location.replace('/'), 6000);
+                        // console.log(response.success);
+                    }
+                    else{
+                        $('.errorbox').html("<div class='p-4 bg-danger text-white'>Transaction couldnt be updated.</div>");
+                        setTimeout(window.location.replace('/'), 6000);
+                    }
+                    
                 }).fail(function(xhr, ajaxOps, error) {
                     console.log('Failed: ' + error);
                 });
