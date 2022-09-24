@@ -28,9 +28,6 @@
                         <th class="text-center">NAME</th>
                         <th class="text-center">PRICE(CURRENT)</th>
                         <th class="text-center">QUANTITY</th>
-                        {{-- <th class="text-center">PROFIT/LOSS(TOTAL)</th> --}}
-                        {{-- <th class="text-center">INVESTMENT</th> --}}
-                        {{-- <th class="text-center">WORTH(CURRENT)</th> --}}
                     </tr>
                 </thead>
                 <tbody>
