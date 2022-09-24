@@ -84,7 +84,7 @@
         <div class="col-md-12">
             <div class="card card-custom gutter-b">
                 <div class="errorbox">
-                   
+
                 </div>
             </div>
         </div>
@@ -159,122 +159,160 @@
     <script src="{{ asset('js/pages/crud/datatables/extensions/buttons.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/pages/widgets.js') }}" type="text/javascript"></script>
     <script type="text/javascript">
-        let portfolio_datatable = $('#kt_datatable_portfolio').KTDatatable({
-            data: {
-                saveState: {
-                    cookie: false
-                }
-            },
-            columns: [{
-                    field: "NO",
-                    width: 46,
-                },
-                {
-                    field: "SYMBOL",
-                    width: 79,
-                },
-                {
-                    field: "NAME",
-                    width: 65,
-                },
-                {
-                    field: "PRICE(CURRENT)",
-                    width: 136,
-                },
-                {
-                    field: "QUANTITY",
-                    width: 91,
-                },
-                {
-                    field: "PROFIT/LOSS(TOTAL)",
-                    width: 161,
-                },
-                {
-                    field: "INVESTMENT",
-                    width: 106,
-                },
-                {
-                    field: "WORTH(CURRENT)",
-                    width: 147,
-                },
-
-            ],
-            search: {
-                input: $('#kt_datatable_search_query_portfolio'),
-                key: 'generalSearch'
-            }
-        });
-        var datatable = $('#kt_datatable_coin_select').KTDatatable({
-            data: {
-                saveState: {
-                    cookie: false
-                }
-            },
-            pagination: false,
-            search: {
-                input: $('#kt_coin_datatable_search_query'),
-                key: 'generalSearch'
-            }
-        });
-
-        var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
-            data: {
-                saveState: {
-                    cookie: false
-                }
-            },
-            search: {
-                input: $('#_portfolio_search_transaction'),
-                key: 'generalSearch'
-            },
-            columns: [{
-                    field: "NO",
-                    width: 46,
-                },
-                {
-                    field: "TICKER",
-                    width: 170,
-                },
-                {
-                    field: "TYPE",
-                    width: 65,
-                },
-                {
-                    field: "PURCHASE DATE",
-                    width: 180,
-                },
-                {
-                    field: "UNITS",
-                    width: 106,
-                },
-                {
-                    field: "PRICE(PER UNIT)",
-                    width: 147,
-                },
-                {
-                    field: "",
-                    width: 40,
-                    sortable: false
-                }
-
-            ],
-
-        });
-
-        var datatable_assetmatrix = $('#kt_datatable_assetmatrix').KTDatatable({
-            data: {
-                saveState: {
-                    cookie: false
-                }
-            },
-
-            search: {
-                input: $('#portfolio_search_assetmatrix'),
-                key: 'generalSearch'
-            }
-        });
-
         $(document).ready(function() {
+            let portfolio_datatable = $('#kt_datatable_portfolio').KTDatatable({
+                data: {
+                    saveState: {
+                        cookie: false
+                    }
+                },
+                columns: [{
+                        field: "NO",
+                        width: 46,
+                    },
+                    {
+                        field: "SYMBOL",
+                        width: 79,
+                    },
+                    {
+                        field: "NAME",
+                        width: 65,
+                    },
+                    {
+                        field: "PRICE(CURRENT)",
+                        width: 136,
+                    },
+                    {
+                        field: "QUANTITY",
+                        width: 91,
+                    },
+                ],
+                search: {
+                    input: $('#kt_datatable_search_query_portfolio'),
+                    key: 'generalSearch'
+                }
+            });
+            $('#portfolio-btn').click(function() {
+                setTimeout(() => {
+                    let portfolio_datatable = $('#kt_datatable_portfolio').KTDatatable({
+                        data: {
+                            saveState: {
+                                cookie: false
+                            }
+                        },
+                        columns: [{
+                                field: "NO",
+                                width: 46,
+                            },
+                            {
+                                field: "SYMBOL",
+                                width: 79,
+                            },
+                            {
+                                field: "NAME",
+                                width: 65,
+                            },
+                            {
+                                field: "PRICE(CURRENT)",
+                                width: 136,
+                            },
+                            {
+                                field: "QUANTITY",
+                                width: 91,
+                            },
+                        ],
+                        search: {
+                            input: $('#kt_datatable_search_query_portfolio'),
+                            key: 'generalSearch'
+                        }
+                    });
+
+                }, 200);
+            });
+
+            $('#transaction-btn').click(function() {
+                setTimeout(() => {
+                    var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
+                        data: {
+                            saveState: {
+                                cookie: false
+                            }
+                        },
+                        search: {
+                            input: $('#_portfolio_search_transaction'),
+                            key: 'generalSearch'
+                        },
+                        columns: [{
+                                field: "NO",
+                                width: 46,
+                            },
+                            {
+                                field: "TICKER",
+                                width: 170,
+                            },
+                            {
+                                field: "TYPE",
+                                width: 90,
+                            },
+                            {
+                                field: "PURCHASE DATE",
+                                width: 180,
+                            },
+                            {
+                                field: "UNITS",
+                                width: 106,
+                            },
+                            {
+                                field: "PRICE(PER UNIT)",
+                                width: 147,
+                            },
+                            {
+                                field: "ACTIONS",
+                                width: 147,
+                            },
+                            {
+                                field: "",
+                                sortable: false
+                            }
+
+                        ],
+                    });
+                }, 200);
+
+            });
+
+            var datatable = $('#kt_datatable_coin_select').KTDatatable({
+                data: {
+                    saveState: {
+                        cookie: false
+                    }
+                },
+                pagination: false,
+                search: {
+                    input: $('#kt_coin_datatable_search_query'),
+                    key: 'generalSearch'
+                }
+            });
+
+            $('#assetmatrix-btn').click(function() {
+                setTimeout(() => {
+                    var datatable_assetmatrix = $('#kt_datatable_assetmatrix').KTDatatable({
+                        data: {
+                            saveState: {
+                                cookie: false
+                            }
+                        },
+
+                        search: {
+                            input: $('#portfolio_search_assetmatrix'),
+                            key: 'generalSearch'
+                        }
+                    });
+                }, 200);
+            });
+
+
+
             $('#kt_coin_datatable_search_query').click(
                 function() {
                     $('#hiddentable').removeClass("hidden");
@@ -314,16 +352,19 @@
                     'dataType': 'json',
                     'data': details,
                 }).done(function(response) {
-                    if(response.success==true){
-                        $('.errorbox').html("<div class='p-4 bg-success text-white'>Transaction has been updated.</div>");
+                    if (response.success == true) {
+                        $('.errorbox').html(
+                            "<div class='p-4 bg-success text-white'>Transaction has been updated.</div>"
+                        );
                         setTimeout(window.location.replace('/'), 6000);
                         // console.log(response.success);
-                    }
-                    else{
-                        $('.errorbox').html("<div class='p-4 bg-danger text-white'>Transaction couldnt be updated.</div>");
+                    } else {
+                        $('.errorbox').html(
+                            "<div class='p-4 bg-danger text-white'>Transaction couldnt be updated.</div>"
+                        );
                         setTimeout(window.location.replace('/'), 6000);
                     }
-                    
+
                 }).fail(function(xhr, ajaxOps, error) {
                     console.log('Failed: ' + error);
                 });
