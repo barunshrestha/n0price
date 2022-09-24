@@ -32,99 +32,107 @@
             <tbody>
                 @foreach ($transactions as $key => $transaction)
                     <tr style="border-bottom: #f6f6f6 solid 0.75px;">
-                        <form action={{ route('transactions.update', $transaction->id) }} method="POST">
-                            {{ csrf_field() }}
-                            <td class="text-center align-middle">{{ $key + 1 }}</td>
-                            <td class="text-center align-middle">
-                                <img src="{{ $transaction->image }}" alt="img" class="icon-image mx-2 ">
-                            </td>
-                            <td class="text-center align-middle">
-                                {{ $transaction->coin_name }}
 
-                            </td>
-                            <td class="text-center align-middle">
-                                <div id="investment_type-{{ $transaction->id }}">
+                        <td class="text-center align-middle">{{ $key + 1 }}</td>
+                        <td class="text-center align-middle">
+                            <img src="{{ $transaction->image }}" alt="img" class="icon-image mx-2 ">
+                        </td>
+                        <td class="text-center align-middle">
+                            {{ $transaction->coin_name }}
 
-                                    <div class="hide_after_edit">
-                                        <?php
-                                        $type = $transaction->investment_type;
-                                        if ($type == 'buy') {
-                                            echo "<span class=\" text-success font-weight-bold gain-button\">" . 'BUY' . ' </span>';
-                                        } else {
-                                            echo "<span class=\" text-danger font-weight-bold gain-button\">" . 'SELL' . ' </span>';
-                                        }
-                                        ?>
-                                    </div>
+                        </td>
+                        <td class="text-center align-middle">
+                            <div id="investment_type-{{ $transaction->id }}">
 
-                                    <select name="investment_type" class="form-control hide_before_edit hidden">
-                                        <option value="buy" <?php if ($type == 'buy') {
-                                            echo 'selected';
-                                        } ?>>Buy</option>
-                                        <option value="sell" <?php if ($type == 'sell') {
-                                            echo 'selected';
-                                        } ?>>Sell</option>
-                                    </select>
+                                <div class="hide_after_edit">
+                                    <?php
+                                    $type = $transaction->investment_type;
+                                    if ($type == 'buy') {
+                                        echo "<span class=\" text-success font-weight-bold gain-button\">" . 'BUY' . ' </span>';
+                                    } else {
+                                        echo "<span class=\" text-danger font-weight-bold gain-button\">" . 'SELL' . ' </span>';
+                                    }
+                                    ?>
                                 </div>
 
-                            </td>
-                            <td class="text-center align-middle">
-                                <div id="purchase_date-{{ $transaction->id }}">
-                                    <div class="hide_after_edit ">
-                                        {{ $transaction->purchase_date }}
-                                    </div>
-                                    <input type="date" name="purchase_date"
-                                        class="form-control hidden hide_before_edit"
-                                        value="{{ $transaction->purchase_date }}">
-                                </div>
-                            </td>
-                            <td class="text-center align-middle">
-                                <div id="units-{{ $transaction->id }}">
-                                    <div class="hide_after_edit ">
-                                        {{ $transaction->units }}
-                                    </div>
-                                    <input type="text" name="units" class="form-control hidden hide_before_edit"
-                                        value="{{ $transaction->units }}">
-                                </div>
-                            </td>
-                            <td class="text-center align-middle">
-                                <div id="purchase_price-{{ $transaction->id }}">
-                                    <div class="hide_after_edit ">
-                                        {{ round($transaction->purchase_price / $transaction->units, 2) }}
-                                    </div>
-                                    <input type="text" name="price_per_unit"
-                                        class="form-control hidden  hide_before_edit"
-                                        value="{{ round($transaction->purchase_price / $transaction->units, 2) }}">
-                                </div>
-                            </td>
-                            <td>
-                                <div id="transaction_action_buttons-{{ $transaction->id }}">
-                                    <div class="hide_after_edit ">
-                                        <button class="btn btn-icon btn-success btn-xs mr-2 transactionEditBtn hidden"
-                                            data-toggle="tooltip" title="Edit"
-                                            id="transactionEdit-{{ $transaction->id }}">
-                                            <i class="fa fa-pen"></i>
-                                        </button>
+                                <select name="investment_type" class="form-control hide_before_edit hidden">
+                                    <option value="buy" <?php if ($type == 'buy') {
+                                        echo 'selected';
+                                    } ?>>Buy</option>
+                                    <option value="sell" <?php if ($type == 'sell') {
+                                        echo 'selected';
+                                    } ?>>Sell</option>
+                                </select>
+                            </div>
 
-                                        <a href="{{ route('destroyTransaction', $transaction->id) }}" value="Delete"
-                                            class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip"
-                                            title="Delete"><i class="fa fa-trash"></i></a>
-                                    </div>
-                                    <div class="hide_before_edit hidden">
+                        </td>
+                        <td class="text-center align-middle">
+                            <div id="purchase_date-{{ $transaction->id }}">
+                                <div class="hide_after_edit ">
+                                    {{ $transaction->purchase_date }}
+                                </div>
+                                <input type="date" name="purchase_date" class="form-control hidden hide_before_edit"
+                                    value="{{ $transaction->purchase_date }}">
+                            </div>
+                        </td>
+                        <td class="text-center align-middle">
+                            <div id="units-{{ $transaction->id }}">
+                                <div class="hide_after_edit ">
+                                    {{ $transaction->units }}
+                                </div>
+                                <input type="text" name="units" class="form-control hidden hide_before_edit"
+                                    value="{{ $transaction->units }}">
+                            </div>
+                        </td>
+                        <td class="text-center align-middle">
+                            <div id="purchase_price-{{ $transaction->id }}">
+                                <div class="hide_after_edit ">
+                                    {{ round($transaction->purchase_price / $transaction->units, 2) }}
+                                </div>
+                                <input type="text" name="price_per_unit"
+                                    class="form-control hidden  hide_before_edit"
+                                    value="{{ round($transaction->purchase_price / $transaction->units, 2) }}">
+                            </div>
+                        </td>
+                        <td>
+                            <div id="transaction_action_buttons-{{ $transaction->id }}">
+                                <div class="hide_after_edit ">
+                                    <button class="btn btn-icon btn-success btn-xs mr-2 transactionEditBtn"
+                                        data-toggle="tooltip" title="Edit"
+                                        id="transactionEdit-{{ $transaction->id }}"
+                                        onclick="transactionEditBtn(event)">
+                                        <i class="fa fa-pen"></i>
+                                    </button>
+
+                                    <a href="{{ route('destroyTransaction', $transaction->id) }}" value="Delete"
+                                        class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip"
+                                        title="Delete"><i class="fa fa-trash"></i></a>
+                                </div>
+                                <div class="hide_before_edit hidden d-flex">
+                                    <form action={{ route('transactions.update', $transaction->id) }} method="POST"
+                                        id="transaction_edit_form-{{ $transaction->id }}">
+                                        {{ method_field('PUT') }}
+                                        {{ csrf_field() }}
+                                        <input type="hidden" value="" name="investment_type" id="form_investment_type-{{$transaction->id}}">
+                                        <input type="hidden" value="" name="purchase_date" id="form_purchase_date-{{$transaction->id}}">
+                                        <input type="hidden" value="" name="units" id="form_units-{{$transaction->id}}">
+                                        <input type="hidden" value="" name="price_per_unit" id="form_price_per_unit-{{$transaction->id}}">
                                         <button type="submit" value="Save"
                                             class="btn btn-icon btn-success btn-xs mr-2" data-toggle="tooltip"
                                             title="Save"><i class="flaticon2-check-mark"></i></button>
-                                        <button type="button" value="Discard" onclick="window.location.reload();"
-                                            class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip"
-                                            title="Discard"><i class="flaticon2-cross"></i></button>
-                                    </div>
+                                    </form>
+                                    <button type="button" value="Discard" onclick="window.location.reload();"
+                                        class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip"
+                                        title="Discard"><i class="flaticon2-cross"></i></button>
                                 </div>
+                            </div>
 
 
 
 
 
 
-                                {{-- <button type="button" class="btn btn-icon btn-success btn-xs mr-2" data-toggle="modal"
+                            {{-- <button type="button" class="btn btn-icon btn-success btn-xs mr-2" data-toggle="modal"
                                 title="Edit" data-target="#editModal-{{ $transaction->id }}">
                                 <i class="fa fa-pen"></i>
                             </button>
@@ -196,11 +204,11 @@
 
 
 
-                                {{-- <a href="{{ route('transactions.edit', $transaction->id) }}"
+                            {{-- <a href="{{ route('transactions.edit', $transaction->id) }}"
                                 class="btn btn-icon btn-success btn-xs mr-2" data-toggle="tooltip" title="Edit">
                                 <i class="fa fa-pen"></i>
                             </a> --}}
-                                {{-- <form action="{{ route('transactions.destroy', $transaction->id) }}"
+                            {{-- <form action="{{ route('transactions.destroy', $transaction->id) }}"
                                 style="display: inline-block;" method="post">
                                 {{ method_field('DELETE') }}
                                 {{ csrf_field() }}
@@ -208,8 +216,7 @@
                                     class="btn btn-icon btn-danger btn-xs mr-2 deleteBtn" data-toggle="tooltip"
                                     title="Delete"><i class="fa fa-trash"></i></button>
                             </form> --}}
-                            </td>
-                        </form>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

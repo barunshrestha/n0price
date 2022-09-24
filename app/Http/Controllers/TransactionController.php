@@ -106,7 +106,14 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request->all());
+        $transaction=Transaction::find($id);
+        $transaction->investment_type=$request->investment_type;
+        $transaction->purchase_date=$request->purchase_date;
+        $transaction->units=$request->units;
+        $total_price=$request->units*$request->purchase_price;
+        $transaction->purchase_price=$total_price;
+        $transaction->save();
+        return response()->json(["success"]);
     }
 
     /**

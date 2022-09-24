@@ -278,9 +278,48 @@
                     var quantity = $('#purchase_quantity').val();
                     var total_price = parseFloat(quantity) * parseFloat(price_today);
                     $('#purchase_price').val(total_price);
-                }
-            );
+                });
 
+
+
+            $('form').on('submit', function(event) 
+            {
+                event.preventDefault();
+                var all_id = this.id;
+                id = all_id.split('-')[1];
+                var investment_type = '#investment_type-' + id;
+                var purchase_date = '#purchase_date-' + id;
+                var units = '#units-' + id;
+                var purchase_price = '#purchase_price-' + id;
+
+                var form_investment_type = '#form_investment_type-' + id;
+                var form_purchase_date = '#form_purchase_date-' + id;
+                var form_units = '#form_units-' + id;
+                var form_purchase_price = '#form_purchase_price-' + id;
+                var form_id = '#' + all_id;
+               
+
+
+                let details = {
+                    investment_type: $(investment_type + ' .hide_before_edit').val(),
+                    purchase_date: $(purchase_date + ' .hide_before_edit').val(),
+                    units: $(units + ' .hide_before_edit').val(),
+                    purchase_price: $(purchase_price + ' .hide_before_edit').val()
+                };
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    'url': '/transactions/'+id,
+                    'type': 'PUT',
+                    'dataType': 'json',
+                    'data': details,
+                }).done(function(response) {
+                    window.location.replace('/');
+                }).fail(function(xhr, ajaxOps, error) {
+                    console.log('Failed: ' + error);
+                });
+            });
         });
 
         function selectCoinFromCoinsList(event) {
@@ -297,29 +336,27 @@
             $('#purchase_price').val(price_today);
         }
 
-        // $(document).ready(function() {
-        //     $('.transactionEditBtn').click(function(event) {
-        //         var all_id = event.target.parentElement.id;
-        //         id = all_id.split('-')[1];
-        //         var investment_type = '#investment_type-' + id;
-        //         var purchase_date = '#purchase_date-' + id;
-        //         var units = '#units-' + id;
-        //         var purchase_price = '#purchase_price-' + id;
-        //         var transaction_action_buttons = '#transaction_action_buttons-' + id;
 
-        //         $(investment_type+' .hide_before_edit').removeClass('hidden');
-        //         $(purchase_date+' .hide_before_edit').removeClass('hidden');
-        //         $(units+' .hide_before_edit').removeClass('hidden');
-        //         $(purchase_price+' .hide_before_edit').removeClass('hidden');
-        //         $(transaction_action_buttons+' .hide_before_edit').removeClass('hidden');
-                
-        //         $(investment_type+' .hide_after_edit').addClass('hidden');
-        //         $(purchase_date+' .hide_after_edit').addClass('hidden');
-        //         $(units+' .hide_after_edit').addClass('hidden');
-        //         $(purchase_price+' .hide_after_edit').addClass('hidden');
-        //         $(transaction_action_buttons+' .hide_after_edit').addClass('hidden');
+        function transactionEditBtn(event) {
+            var all_id = event.target.parentElement.id;
+            id = all_id.split('-')[1];
+            var investment_type = '#investment_type-' + id;
+            var purchase_date = '#purchase_date-' + id;
+            var units = '#units-' + id;
+            var purchase_price = '#purchase_price-' + id;
+            var transaction_action_buttons = '#transaction_action_buttons-' + id;
 
-        //     });
-        // });
+            $(investment_type + ' .hide_before_edit').removeClass('hidden');
+            $(purchase_date + ' .hide_before_edit').removeClass('hidden');
+            $(units + ' .hide_before_edit').removeClass('hidden');
+            $(purchase_price + ' .hide_before_edit').removeClass('hidden');
+            $(transaction_action_buttons + ' .hide_before_edit').removeClass('hidden');
+
+            $(investment_type + ' .hide_after_edit').addClass('hidden');
+            $(purchase_date + ' .hide_after_edit').addClass('hidden');
+            $(units + ' .hide_after_edit').addClass('hidden');
+            $(purchase_price + ' .hide_after_edit').addClass('hidden');
+            $(transaction_action_buttons + ' .hide_after_edit').addClass('hidden');
+        }
     </script>
 @endsection
