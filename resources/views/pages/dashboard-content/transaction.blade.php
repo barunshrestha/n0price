@@ -26,7 +26,7 @@
                     <th class="text-center">PURCHASE DATE</th>
                     <th class="text-center">UNITS</th>
                     <th class="text-center">PRICE(PER UNIT)</th>
-                    <th class="text-center" title="Field #6">Action</th>
+                    <th class="text-center">ACTIONS</th>
                 </tr>
             </thead>
             <tbody>
@@ -103,10 +103,15 @@
                                         onclick="transactionEditBtn(event)">
                                         <i class="fa fa-pen"></i>
                                     </button>
-
-                                    <a href="{{ route('destroyTransaction', $transaction->id) }}" value="Delete"
-                                        class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip"
-                                        title="Delete"><i class="fa fa-trash"></i></a>
+                                    
+                                    <form action="{{ route('transactions.destroy', $transaction->id) }}" style="display: inline-block;"
+                                        method="post">
+                                        {{ method_field('DELETE') }}
+                                        {{ csrf_field() }}
+                                        <button type="submit" value="Delete"
+                                            class="btn btn-icon btn-danger btn-xs mr-2 transactiondeleteBtn" data-toggle="tooltip"
+                                            title="Delete"><i class="fa fa-trash"></i></button>
+                                    </form>
                                 </div>
                                 <div class="hide_before_edit hidden d-flex">
                                     <form action={{ route('transactions.update', $transaction->id) }} method="POST"
