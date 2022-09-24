@@ -126,6 +126,28 @@ License: You must have a valid license purchased only from themeforest(the above
                     }
                 });
             });
+            $('.transactiondeleteBtn').click(function(e) {
+                e.preventDefault();
+                var $this = $(this);
+                swal.fire({
+                    title: "Delete!",
+                    text: "Are you sure you want to delete this transaction?",
+                    icon: "question",
+                    buttonsStyling: false,
+                    confirmButtonText: "Yes I'm sure",
+                    showCancelButton: true,
+                    cancelButtonText: "No",
+                    customClass: {
+                        confirmButton: "btn btn-success",
+                        cancelButton: "btn btn-default"
+                    }
+                }).then(function(result) {
+                    console.log(result);
+                    if (result.hasOwnProperty('value')) {
+                        $this.parents('form').submit();
+                    }
+                });
+            });
             $('.deleteBtnforcustomer').click(function(e) {
                 e.preventDefault();
                 var $this = $(this);
