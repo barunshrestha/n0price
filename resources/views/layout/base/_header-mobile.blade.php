@@ -25,7 +25,7 @@
 
             @endif
 
-            <img alt="{{ config('app.name') }}" src="{{ asset('media/logos/'.$kt_logo_image) }}"/>
+            {{-- <img alt="{{ config('app.name') }}" src="{{ asset('media/logos/'.$kt_logo_image) }}"/> --}}
 
         </a>
     </div>
@@ -36,11 +36,11 @@
         @endif
 
         @if (config('layout.header.menu.self.display'))
-            <button class="btn p-0 burger-icon ml-4" id="kt_header_mobile_toggle"><span></span></button>
+            {{-- <button class="btn p-0 burger-icon ml-4" id="kt_header_mobile_toggle"><span></span></button> --}}
         @endif
 
         <button class="btn btn-hover-text-primary p-0 ml-2" id="kt_header_mobile_topbar_toggle">
-            {{ Metronic::getSVG('media/svg/icons/General/User.svg', 'svg-icon-xl') }}
+            {{-- {{ Metronic::getSVG('media/svg/icons/General/User.svg', 'svg-icon-xl') }} --}}
         </button>
 
     </div>

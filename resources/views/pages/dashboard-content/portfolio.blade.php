@@ -6,14 +6,14 @@
                 </h3>
             </div>
             <div class="card-toolbar">
-                <div class="input-icon mx-5">
-                    <input type="text" class="form-control" placeholder="Search..."
+                <div class="input-icon mx-2 my-3 ">
+                    <input type="text" class="form-control " placeholder="Search..."
                         id="kt_datatable_search_query_portfolio" />
                     <span>
                         <i class="flaticon2-search-1 text-muted"></i>
                     </span>
                 </div>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_transaction_modal">
+                <button type="button" class="btn btn-primary mx-2 my-3" data-toggle="modal" data-target="#new_transaction_modal">
                     <i class="flaticon2-plus"></i>
                     Transaction</button>
             </div>
@@ -23,7 +23,7 @@
                 id="kt_datatable_portfolio">
                 <thead class="card card-custom" style="background: #f6f6f6;">
                     <tr>
-                        <th class="text-center">NO</th>
+                        <th class="text-center">SN</th>
                         <th class="text-center">SYMBOL</th>
                         <th class="text-center">NAME</th>
                         <th class="text-center">PRICE(CURRENT)</th>
@@ -54,97 +54,7 @@
                                 echo $req_unit;                                
                                 ?>
                             </td>
-                            {{-- <td class="text-center align-middle">
-                                <?php
-                                
-                                $t_investment = $data->total_investment;
-                                $t_worth = $usd * $data->total;
-                                $t_profit_loss = round($t_investment - $t_worth, 2);
-                                
-                                if ($t_profit_loss > 0) {
-                                    echo "<span class=\" text-success font-weight-bold gain-button\">" . (string) $t_profit_loss . '  USD</span>';
-                                } elseif ($t_profit_loss < 0) {
-                                    echo "<span class=\" text-danger font-weight-bold gain-button \">" . (string) $t_profit_loss . '  USD</span>';
-                                } else {
-                                    echo "<span class=\" text-dark font-weight-bold gain-button\">" . (string) $t_profit_loss . '  USD</span>';
-                                }
-                                ?>
-
-                            </td> --}}
-                            {{-- <td class="text-center align-middle">{{ round($data->total_investment, 2) }} </td> --}}
-                            {{-- <td class="text-center align-middle">{{ round($usd * $data->total, 2) }} </td> --}}
-
-
-                            {{-- <td class="text-center align-middle">
-                                <div class="card-toolbar">
-                                    <a class="btn btn-icon btn-sm btn-hover-light-primary mr-1" data-toggle="collapse"
-                                        href=<?php echo "\"#coin-" . $key . "\""; ?> role="button" aria-expanded="false"
-                                        aria-controls=<?php echo "\"coin-" . $key . "\""; ?> title="Toggle Card">
-                                        <i class="ki ki-arrow-down icon-nm"></i>
-                                    </a>
-                                </div>
-                            </td> --}}
                         </tr>
-                        {{-- <tr>
-                            <td colspan="9">
-                                <div id=<?php echo "\"coin-" . $key . "\""; ?> class="collapse">
-                                    <div class="card-container">
-                                        <div class="card shadow mb-5 bg-white rounded">
-                                            <table class="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-center align-middle">Purchase date</th>
-                                                        <th class="text-center align-middle">Purchase price</th>
-                                                        <th class="text-center align-middle">Quantity</th>
-                                                        <th class="text-center align-middle">Profit/Loss</th>
-                                                        <th class="text-center align-middle">Value</th>
-                                                        <th></th>
-                                                        <th></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($portfolio_details as $details)
-                                                        @if ($details->coin_id == $data->id_of_coin)
-                                                            <tr>
-                                                                <td class="text-center align-middle">
-                                                                    {{ $details->purchase_date }}</td>
-                                                                <td class="text-center align-middle">
-                                                                    <?php
-                                                                    $p_price = $details->purchase_price / $details->units;
-                                                                    echo round($p_price, 2);
-                                                                    ?>
-
-                                                                </td>
-                                                                <td class="text-center align-middle">
-                                                                    {{ $details->units }}</td>
-                                                                <td class="text-center align-middle">
-                                                                    <?php
-                                                                    
-                                                                    $profitLossAmount = round(($p_price - $usd) * $details->units, 2);
-                                                                    // echo $usd;
-                                                                    if ($profitLossAmount > 0) {
-                                                                        echo "<span class=\"text-success font-weight-bold gain-button\">" . (string) $profitLossAmount . '  USD</span>';
-                                                                    } elseif (round($profitLossAmount / 100, 2) < 0) {
-                                                                        echo "<span class=\"text-danger font-weight-bold gain-button \">" . (string) $profitLossAmount . '  USD</span>';
-                                                                    } else {
-                                                                        echo "<span class=\"text-dark font-weight-bold gain-button\">" . (string) $profitLossAmount . '  USD</span>';
-                                                                    }
-                                                                    ?>
-
-                                                                </td>
-                                                                <td class="text-center align-middle">
-                                                                    {{ round($details->purchase_price, 2) }}</td>
-                                                            </tr>
-                                                        @endif
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </td>
-                        </tr> --}}
                     @endforeach
                 </tbody>
             </table>
@@ -238,10 +148,6 @@
 
                                                             </div>
                                                         </div>
-                                                        {{-- <button class="btn mr-2 coin-in-coin-list-button"
-                                                            onclick="selectCoinFromCoinsList(event)" type="button">
-                                                            <i class="flaticon2-plus text-success"></i>
-                                                        </button> --}}
                                                     </div>
                                                 </td>
                                             </tr>
