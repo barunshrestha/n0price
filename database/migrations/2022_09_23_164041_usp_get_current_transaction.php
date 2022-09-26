@@ -17,7 +17,7 @@ class UspGetCurrentTransaction extends Migration
         DB::statement(" DROP PROCEDURE IF EXISTS usp_get_current_transaction");
         $procedure = "CREATE PROCEDURE usp_get_current_transaction(IN current_user_id varchar(50))
         BEGIN       
-        Select tb.coin_name,tb.coin_id,tb.symbol,tb.id_of_coin,tb.image,tb.user_id,tb.total as buy_unit, vw_total_sell.total as sell_unit,
+        Select tb.coin_name,tb.coin_id,tb.symbol,tb.id_of_coin,tb.image,tb.user_id,tb.total as buy_unit,tb.total_profit as total_profit, vw_total_sell.total as sell_unit,
         tb.total_investment as buy_amount,vw_total_sell.total_investment as sell_amount
         from vw_total_buy as tb LEFT JOIN vw_total_sell ON tb.coin_id = vw_total_sell.coin_id AND tb.user_id=vw_total_sell.user_id where tb.user_id= current_user_id;     
         END";

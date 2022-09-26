@@ -27,6 +27,7 @@
                         <th class="text-center">SYMBOL</th>
                         <th class="text-center">NAME</th>
                         <th class="text-center">PRICE(CURRENT)</th>
+                        <th class="text-center">GAIN</th>
                         <th class="text-center">QUANTITY</th>
                     </tr>
                 </thead>
@@ -46,6 +47,15 @@
                             <td class="text-center align-middle">
                                 {{ round($usd, 2) }} USD
                             </td>
+                           <td>
+                            <?php
+                            if ($data->total_profit>0) {
+                                echo "<span class=\" text-success font-weight-bold gain-button\">" . (string)$data->total_profit . ' USD </span>';
+                            } else {
+                                echo "<span class=\" text-danger font-weight-bold gain-button\">" . (string)$data->total_profit . ' USD</span>';
+                            }
+                            ?>
+                           </td>
                             <td class="text-center align-middle">
                                 <?php
                                 $total_buy_unit=$data->buy_unit?$data->buy_unit:0;

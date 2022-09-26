@@ -175,12 +175,16 @@
                     },
                     {
                         field: "NAME",
-                        width: 65,
+                        width: 62,
                         overflow: 'visible'
                     },
                     {
                         field: "PRICE(CURRENT)",
-                        width: 136,
+                        width: 108,
+                    },
+                    {
+                        field: "GAIN",
+                        width: 91,
                     },
                     {
                         field: "QUANTITY",
