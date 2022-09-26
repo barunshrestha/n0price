@@ -68,10 +68,16 @@ class TransactionController extends Controller
         $transaction->purchase_price = $data['purchase_price'];
         $transaction->purchase_date = $data['purchase_date'];
         $transaction->investment_type = $data['coin_investment_type'];
-
+       
 
         if ($transaction->save()) {
-            return redirect()->back()->with('success', 'Purchased the coin.');
+            if ($data['coin_investment_type'] == 'buy') {
+                return redirect()->back()->with('success', 'Successfully purchased the coin.');
+            }
+            if ($data['coin_investment_type'] == 'sell') {
+                // $current_transaction=Transaction::where('user_id','=',Auth::user()->id)->where('partial_units_debited','<','units');
+                return redirect()->back()->with('success', 'Successfully sold the coin.');
+            }
         }
         return redirect()->back()->with('fail', 'Information could not be added.');
     }

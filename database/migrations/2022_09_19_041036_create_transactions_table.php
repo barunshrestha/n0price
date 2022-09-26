@@ -18,6 +18,8 @@ class CreateTransactionsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('coin_id');
             $table->string('units');
+            $table->string('partial_units_debited')->default('0');
+            $table->string('profit_earned')->default('0');
             $table->string('current_rate')->nullable();
             $table->string('purchase_price');
             $table->string('investment_type');

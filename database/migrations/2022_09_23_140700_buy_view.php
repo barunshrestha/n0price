@@ -14,8 +14,8 @@ class BuyView extends Migration
      */
     public function up()
     {
-        DB::statement("
-        create view vw_total_buy as
+        DB::unprepared("drop view if exists vw_total_buy ");
+        DB::unprepared("create view vw_total_buy as
         select coins.name as coin_name,coins.coin_id as coin_id,coins.symbol as symbol,
         sum(units)as total,coins.id as id_of_coin,coins.image as image,
         sum(transactions.purchase_price) as total_investment,transactions.user_id as user_id

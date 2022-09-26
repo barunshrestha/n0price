@@ -1,35 +1,31 @@
-drop view if exists vw_total_buy ;
 create view vw_total_buy as
-select coins.name as coin_name,coins.coin_id as coin_id,coins.symbol as symbol,
-sum(units)as total,coins.id as id_of_coin,coins.image as image,
-sum(transactions.purchase_price) as total_investment,transactions.user_id as user_id
-from transactions join coins on transactions.coin_id=coins.id 
-where investment_type='buy' group by coin_id,user_id,coins.name,coins.symbol,coins.id,coins.image;
+        select coins.name as coin_name,coins.coin_id as coin_id,coins.symbol as symbol,
+        sum(units)as total,coins.id as id_of_coin,coins.image as image,
+        sum(transactions.purchase_price) as total_investment,transactions.user_id as user_id
+        from transactions join coins on transactions.coin_id=coins.id 
+        where investment_type='buy' group by coin_id,user_id,coins.name,coins.symbol,coins.id,coins.image;
 
-drop view if exists vw_total_sell ;
 create view vw_total_sell as
-select coins.name as coin_name,coins.coin_id as coin_id,coins.symbol as symbol,
-sum(units)as total,coins.id as id_of_coin,coins.image as image,
-sum(transactions.purchase_price) as total_investment,
-transactions.user_id as user_id
-from transactions join coins on transactions.coin_id=coins.id where investment_type='sell' group by coin_id,user_id,coins.name,coins.symbol,coins.id,coins.image;
+        select coins.name as coin_name,coins.coin_id as coin_id,coins.symbol as symbol,
+        sum(units)as total,coins.id as id_of_coin,coins.image as image,
+        sum(transactions.purchase_price) as total_investment,
+        transactions.user_id as user_id
+        from transactions join coins on transactions.coin_id=coins.id where investment_type='sell' group by coin_id,user_id,coins.name,coins.symbol,coins.id,coins.image;
 
-select * from vw_total_sell ;
-select * from vw_total_buy;
-
-
-
-
-DELIMITER //
 CREATE PROCEDURE usp_get_current_transaction(IN current_user_id varchar(50))
-BEGIN
-
-
-Select tb.coin_name,tb.coin_id,tb.symbol,tb.id_of_coin,tb.image,tb.user_id,tb.total as buy_unit, vw_total_sell.total as sell_unit,
-tb.total_investment as buy_amount,vw_total_sell.total_investment as sell_amount
-from vw_total_buy as tb LEFT JOIN vw_total_sell ON tb.coin_id = vw_total_sell.coin_id AND tb.user_id=vw_total_sell.user_id where tb.user_id= current_user_id;
-
-
-
-END //
-DELIMITER ;
+        BEGIN       
+        Select tb.coin_name,tb.coin_id,tb.symbol,tb.id_of_coin,tb.image,tb.user_id,tb.total as buy_unit, vw_total_sell.total as sell_unit,
+        tb.total_investment as buy_amount,vw_total_sell.total_investment as sell_amount
+        from vw_total_buy as tb LEFT JOIN vw_total_sell ON tb.coin_id = vw_total_sell.coin_id AND tb.user_id=vw_total_sell.user_id where tb.user_id= current_user_id;     
+        END
+CREATE PROCEDURE usp_get_current_transaction_coin_wise(IN current_user_id varchar(50),IN current_coin_id varchar(50))
+        BEGIN      
+        Select tb.coin_name,tb.coin_id,tb.symbol,tb.id_of_coin,tb.image,tb.user_id,tb.total as buy_unit, vw_total_sell.total as sell_unit,
+        tb.total_investment as buy_amount,vw_total_sell.total_investment as sell_amount
+        from vw_total_buy as tb LEFT JOIN vw_total_sell ON tb.coin_id = vw_total_sell.coin_id AND tb.user_id=vw_total_sell.user_id where tb.user_id= current_user_id
+        and tb.id_of_coin=current_coin_id;
+        END
+create view vw_final_transaction as select tb.coin_name AS coin_name,tb.coin_id AS coin_id,tb.symbol AS symbol
+       ,tb.id_of_coin AS id_of_coin,tb.image AS image,tb.user_id AS user_id,tb.total AS buy_unit,vw_total_sell.total 
+       AS sell_unit,tb.total_investment AS buy_amount,vw_total_sell.total_investment AS sell_amount from (vw_total_buy tb left join vw_total_sell 
+       on(tb.coin_id = vw_total_sell.coin_id and tb.user_id = vw_total_sell.user_id)) group by tb.user_id,tb.coin_name,tb.coin_id,tb.symbol,tb.id_of_coin,tb.image,tb.total,vw_total_sell.total,tb.total_investment,vw_total_sell.total_investment
