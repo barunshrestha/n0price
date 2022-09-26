@@ -175,7 +175,7 @@
                     },
                     {
                         field: "NAME",
-                        width: 62,
+                        width: 65,
                         overflow: 'visible'
                     },
                     {

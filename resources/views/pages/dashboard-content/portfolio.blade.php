@@ -77,7 +77,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add to My Portfolio</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Add Transaction</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                         onclick="window.location.reload();">
                         <i aria-hidden="true" class="ki ki-close"></i>
@@ -191,21 +191,21 @@
                                 <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
                                     <label>Quantity</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Quantity"
+                                        <input type="text" class="form-control" placeholder="Quantity" required
                                             id="purchase_quantity" name="units" value="1" />
                                     </div>
                                 </div>
                                 <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
-                                    <label>Purchase date</label>
+                                    <label>Date</label>
                                     <div class="input-group">
-                                        <input type="date" class="form-control" placeholder="date"
+                                        <input type="date" class="form-control" placeholder="date" required
                                             value="<?php echo date('Y-m-d'); ?>" name="purchase_date" id="purchase_date" />
                                     </div>
                                 </div>
                                 <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
-                                    <label>Purchase price</label>
+                                    <label>Price</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control"
+                                        <input type="text" class="form-control" required
                                             placeholder="Purchase Price Amount" name="purchase_price"
                                             id="purchase_price" />
                                     </div>
