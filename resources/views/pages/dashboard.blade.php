@@ -180,7 +180,7 @@
                     },
                     {
                         field: "PRICE(CURRENT)",
-                        width: 108,
+                        width: 115,
                     },
                     {
                         field: "GAIN",
@@ -196,6 +196,7 @@
                     key: 'generalSearch'
                 }
             });
+            get_profit_data();
             var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
                 data: {
                     saveState: {
@@ -259,6 +260,9 @@
 
             $('#portfolio-btn').click(function() {
                 portfolio_datatable.reload();
+                setTimeout(() => {
+                    get_profit_data();
+                }, 500);
 
             });
 
@@ -296,7 +300,6 @@
                     var total_price = parseFloat(quantity) * parseFloat(price_today);
                     $('#purchase_price').val(total_price);
                 });
-
         });
 
         function selectCoinFromCoinsList(event) {
@@ -375,7 +378,38 @@
             }).fail(function(xhr, ajaxOps, error) {
                 console.log('Failed: ' + error);
             });
+        }
 
+        function get_profit_data() {
+            $.ajax({
+                'url': '/profit_calc',
+                'type': 'GET',
+                'dataType': 'json',
+            }).done(function(response) {
+                if (response.success == true) {
+                    // console.log(response.data);
+                    var profit_data = response.data;
+                    profit_data.forEach(element => {
+                        var class_name = element[0] + "-profit"
+                        if (element[1] > 0) {
+                            var html =
+                                '<span class=" text-success font-weight-bold gain-button\">' +
+                                element[1] + ' USD </span>';
+                        } else {
+                            var html =
+                                '<span class=" text-danger font-weight-bold gain-button\">' +
+                                element[1] + ' USD </span>';
+                        }
+                        $('.' + class_name).html(html);
+                        // console.log("classname",$('.'class_name).val());
+                    });
+                } else {
+                    console.error(response.data);
+
+                }
+            }).fail(function(xhr, ajaxOps, error) {
+                console.log('Failed: ' + error);
+            });
         }
     </script>
 @endsection

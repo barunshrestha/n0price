@@ -48,13 +48,15 @@
                                 {{ round($usd, 2) }} USD
                             </td>
                            <td>
-                            <?php
+                            <div class="{{$data->coin_name}}-profit">
+                            </div>
+                            {{-- <?php
                             if ($data->total_profit>0) {
-                                echo "<span class=\" text-success font-weight-bold gain-button\">" . (string)$data->total_profit . ' USD </span>';
+                                echo "<span class=\" text-success font-weight-bold gain-button\">" . '' . '  </span>';
                             } else {
-                                echo "<span class=\" text-danger font-weight-bold gain-button\">" . (string)$data->total_profit . ' USD</span>';
+                                echo "<span class=\" text-danger font-weight-bold gain-button\">" . '' . ' </span>';
                             }
-                            ?>
+                            ?> --}}
                            </td>
                             <td class="text-center align-middle">
                                 <?php
