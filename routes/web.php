@@ -45,7 +45,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/sync/coin', [CoinController::class, 'sync_coin'])->name('coins.sync');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     Route::get('/transactions/delete/{id}', [TransactionController::class, 'destroy'])->name('destroyTransaction');
-    
+    Route::get('/profit_calc',[TransactionController::class,'profit_calculation']);
 });
 
 

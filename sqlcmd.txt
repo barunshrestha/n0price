@@ -29,3 +29,25 @@ create view vw_final_transaction as select tb.coin_name AS coin_name,tb.coin_id 
        ,tb.id_of_coin AS id_of_coin,tb.image AS image,tb.user_id AS user_id,tb.total AS buy_unit,vw_total_sell.total 
        AS sell_unit,tb.total_investment AS buy_amount,vw_total_sell.total_investment AS sell_amount from (vw_total_buy tb left join vw_total_sell 
        on(tb.coin_id = vw_total_sell.coin_id and tb.user_id = vw_total_sell.user_id)) group by tb.user_id,tb.coin_name,tb.coin_id,tb.symbol,tb.id_of_coin,tb.image,tb.total,vw_total_sell.total,tb.total_investment,vw_total_sell.total_investment
+
+
+       drop view if exists vw_buy_transactions;
+create view vw_buy_transactions as 
+select transactions.id, transactions.user_id,transactions.units,
+transactions.purchase_price,transactions.purchase_date,
+coins.symbol,coins.name,coins.image
+from transactions join coins on transactions.coin_id=coins.id 
+where transactions.investment_type='buy'; 
+
+
+
+
+
+
+drop view if exists vw_sell_transactions;
+create view vw_sell_transactions as 
+select transactions.id, transactions.user_id,transactions.units,
+transactions.purchase_price,transactions.purchase_date,
+coins.symbol,coins.name,coins.image
+from transactions join coins on transactions.coin_id=coins.id
+where transactions.investment_type='sell';
