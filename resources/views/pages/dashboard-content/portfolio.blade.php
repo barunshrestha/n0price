@@ -7,7 +7,7 @@
             </div>
             <div class="card-toolbar">
                 <div class="input-icon mx-2 my-3 ">
-                    <input type="text" class="form-control " placeholder="Search..."
+                    <input type="text" class="form-control " placeholder="Search by ticker.."
                         id="kt_datatable_search_query_portfolio" />
                     <span>
                         <i class="flaticon2-search-1 text-muted"></i>

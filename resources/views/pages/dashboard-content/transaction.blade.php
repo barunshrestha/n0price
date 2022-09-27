@@ -7,7 +7,7 @@
         </div>
         <div class="card-toolbar">
             <div class="input-icon">
-                <input type="text" class="form-control" placeholder="Search..." id="_portfolio_search_transaction" />
+                <input type="text" class="form-control" placeholder="Search by ticker..." id="_portfolio_search_transaction" />
                 <span>
                     <i class="flaticon2-search-1 text-muted"></i>
                 </span>
