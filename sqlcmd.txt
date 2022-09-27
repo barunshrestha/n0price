@@ -39,11 +39,6 @@ coins.symbol,coins.name,coins.image
 from transactions join coins on transactions.coin_id=coins.id 
 where transactions.investment_type='buy'; 
 
-
-
-
-
-
 drop view if exists vw_sell_transactions;
 create view vw_sell_transactions as 
 select transactions.id, transactions.user_id,transactions.units,
