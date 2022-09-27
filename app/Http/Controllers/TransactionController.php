@@ -73,56 +73,56 @@ class TransactionController extends Controller
 
         // logic for partial subtranction
 
-        if ($data['coin_investment_type'] == 'sell') {
-            $total_sell_unit = (int)$data['units'];
-            $sell_unit_price = $data['purchase_price'] / $data['units'];
-            $current_transactions = Transaction::where('user_id', '=', Auth::user()->id)
-                ->where('partial_units_debited', '<', 'units')
-                ->where('investment_type', '=', 'buy')
-                ->where('coin_id', '=', $data['coin_id'])->get();
-            if ($total_sell_unit > 0) {
-                for ($i = 0; $i < count($current_transactions); $i++) {
-                    $current_transaction = $current_transactions[$i];
-                    $purchase_unit_price = $current_transaction->purchase_price / $current_transaction->units;
-                    $profit_loss_rate = $sell_unit_price - $purchase_unit_price;
-                    $total_units = $current_transaction->units;
-                    $total_debited_units = $current_transaction->partial_units_debited;
-                    $slot_units_available = $total_units - $total_debited_units;
-                    $profit_earned = $current_transaction->profit_earned;
-                    if ($slot_units_available > 0) {
-                        if ($slot_units_available >= $total_sell_unit) {
-                            if ($total_sell_unit > 0) {
-                                $current_transaction->update([
-                                    "partial_units_debited" => $total_debited_units + $total_sell_unit,
-                                    "profit_earned" => $profit_earned + $profit_loss_rate * $total_sell_unit
-                                ]);
-                                $sell_log = new Sell_log();
-                                $sell_log->transaction_id = $current_transaction->id;
-                                $sell_log->profit_loss = $profit_loss_rate;
-                                $sell_log->units_debited = $total_sell_unit;
-                                $sell_log->save();
-                                $total_sell_unit = $total_sell_unit - $total_debited_units;
-                                break;
-                            }
-                        } elseif ($slot_units_available < $total_sell_unit) {
-                            if ($total_sell_unit > 0) {
+        // if ($data['coin_investment_type'] == 'sell') {
+        //     $total_sell_unit = (int)$data['units'];
+        //     $sell_unit_price = $data['purchase_price'] / $data['units'];
+        //     $current_transactions = Transaction::where('user_id', '=', Auth::user()->id)
+        //         ->where('partial_units_debited', '<', 'units')
+        //         ->where('investment_type', '=', 'buy')
+        //         ->where('coin_id', '=', $data['coin_id'])->get();
+        //     if ($total_sell_unit > 0) {
+        //         for ($i = 0; $i < count($current_transactions); $i++) {
+        //             $current_transaction = $current_transactions[$i];
+        //             $purchase_unit_price = $current_transaction->purchase_price / $current_transaction->units;
+        //             $profit_loss_rate = $sell_unit_price - $purchase_unit_price;
+        //             $total_units = $current_transaction->units;
+        //             $total_debited_units = $current_transaction->partial_units_debited;
+        //             $slot_units_available = $total_units - $total_debited_units;
+        //             $profit_earned = $current_transaction->profit_earned;
+        //             if ($slot_units_available > 0) {
+        //                 if ($slot_units_available >= $total_sell_unit) {
+        //                     if ($total_sell_unit > 0) {
+        //                         $current_transaction->update([
+        //                             "partial_units_debited" => $total_debited_units + $total_sell_unit,
+        //                             "profit_earned" => $profit_earned + $profit_loss_rate * $total_sell_unit
+        //                         ]);
+        //                         $sell_log = new Sell_log();
+        //                         $sell_log->transaction_id = $current_transaction->id;
+        //                         $sell_log->profit_loss = $profit_loss_rate;
+        //                         $sell_log->units_debited = $total_sell_unit;
+        //                         $sell_log->save();
+        //                         $total_sell_unit = $total_sell_unit - $total_debited_units;
+        //                         break;
+        //                     }
+        //                 } elseif ($slot_units_available < $total_sell_unit) {
+        //                     if ($total_sell_unit > 0) {
 
-                                $current_transaction->update([
-                                    "partial_units_debited" => $total_debited_units + $slot_units_available,
-                                    "profit_earned" => $profit_earned + $profit_loss_rate * $slot_units_available
-                                ]);
-                                $sell_log = new Sell_log();
-                                $sell_log->transaction_id = $current_transaction->id;
-                                $sell_log->profit_loss = $profit_loss_rate;
-                                $sell_log->units_debited = $slot_units_available;
-                                $sell_log->save();
-                                $total_sell_unit = $total_sell_unit - $slot_units_available;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //                         $current_transaction->update([
+        //                             "partial_units_debited" => $total_debited_units + $slot_units_available,
+        //                             "profit_earned" => $profit_earned + $profit_loss_rate * $slot_units_available
+        //                         ]);
+        //                         $sell_log = new Sell_log();
+        //                         $sell_log->transaction_id = $current_transaction->id;
+        //                         $sell_log->profit_loss = $profit_loss_rate;
+        //                         $sell_log->units_debited = $slot_units_available;
+        //                         $sell_log->save();
+        //                         $total_sell_unit = $total_sell_unit - $slot_units_available;
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         if ($transaction->save()) {
             if ($data['coin_investment_type'] == 'buy') {
