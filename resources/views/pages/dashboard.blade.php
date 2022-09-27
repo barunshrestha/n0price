@@ -224,7 +224,7 @@
                         width: 90,
                     },
                     {
-                        field: "PURCHASE DATE",
+                        field: "DATE",
                         width: 180,
                     },
                     {
@@ -288,20 +288,37 @@
                     $('#hiddentable').removeClass("hidden");
                 }
             );
+
             $('#purchase_quantity').change(
                 function() {
-                    var selected_coin = $('#selected_coin .coin_org_symbol').val();
-                    var price_today = $('#selected_coin .coin_org_price').val();
-                    var quantity = $('#purchase_quantity').val();
-                    var total_price = parseFloat(quantity) * parseFloat(price_today);
-                    $('#purchase_price').val(total_price);
+                    var org_date = $('#purchase_date').val();
+                    let currentDate = new Date().toJSON().slice(0, 10);
+                    if (org_date == currentDate) {
+                        var selected_coin = $('#selected_coin .coin_org_symbol').val();
+                        var price_today = $('#selected_coin .coin_org_price').val();
+                        var quantity = $('#purchase_quantity').val();
+                        var total_price = parseFloat(quantity) * parseFloat(price_today);
+                        $('#purchase_price').val(total_price);
+                    } else {
+                        $('#purchase_price').val(0);
+                    }
+
                 });
+            $('#purchase_date').change(function() {
+                var org_date = $('#purchase_date').val();
+                let currentDate = new Date().toJSON().slice(0, 10);
+                if (org_date != currentDate) {
+                    $('#purchase_price').val(0);
+                }
+
+            });
+
+
 
         });
 
         function selectCoinFromCoinsList(event) {
             var parent = event.target.parentElement;
-            console.log(parent);
             $('#selected_coin').html(parent)
             $('#selected_coin').removeClass("hidden");
             $('#investment-description').removeClass("hidden");
@@ -375,7 +392,6 @@
             }).fail(function(xhr, ajaxOps, error) {
                 console.log('Failed: ' + error);
             });
-
         }
     </script>
 @endsection

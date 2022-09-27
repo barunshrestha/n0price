@@ -23,7 +23,7 @@
                     <th class="text-center">SYMBOL</th>
                     <th class="text-center">TICKER</th>
                     <th class="text-center">TYPE</th>
-                    <th class="text-center">PURCHASE DATE</th>
+                    <th class="text-center">DATE</th>
                     <th class="text-center">UNITS</th>
                     <th class="text-center">PRICE(PER UNIT)</th>
                     <th class="text-center">ACTIONS</th>
