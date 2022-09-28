@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssetMatrixConstraints;
 use App\Models\Coin;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -31,7 +32,7 @@ class DashboardController extends Controller
             $active_coins = $active_coins . "," . $value->coin_id;
         }
         $active_coins = ltrim($active_coins, ',');
-        $url = "https://pro-api.coingecko.com/api/v3/simple/price?ids=" . $active_coins . "&vs_currencies=usd&include_24hr_vol=true&include_24hr_change=true&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+        $url = "https://pro-api.coingecko.com/api/v3/simple/price?ids=" . $active_coins . "&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
         // return([$url]);
         // return ([$active_coins]);
         $ch = curl_init();
@@ -60,6 +61,23 @@ class DashboardController extends Controller
             ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
             ->get();
         $this->_data['transactions'] = $transactions;
+        
+
+
+
+
+        $asset_matrix_constraints=AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
+        $this->_data['asset_matrix_constraints'] = $asset_matrix_constraints;
+
+
+
+
+
+
+
+
+
+
 
         return view($this->_page . 'dashboard', $this->_data);
     }

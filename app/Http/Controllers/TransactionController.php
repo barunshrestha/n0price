@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssetMatrixConstraints;
 use App\Models\Sell_log;
 use App\Models\Transaction;
 use App\Models\User;
@@ -215,7 +216,7 @@ class TransactionController extends Controller
 
         $current_transactions = array();
         foreach ($coins_available as $coins) {
-            array_push($total_profit, array($coins->name,0));
+            array_push($total_profit, array($coins->name, 0));
         }
 
 
@@ -269,10 +270,65 @@ class TransactionController extends Controller
             $profit = $total_profit[$i];
             foreach ($current_transactions as $ct) {
                 if ($profit[0] == $ct[0]) {
-                    $total_profit[$i][1]=$total_profit[$i][1]+$ct[4];
+                    $total_profit[$i][1] = $total_profit[$i][1] + $ct[4];
                 }
             }
         }
-        return response()->json(["success"=>true,"data"=>$total_profit]);
+        return response()->json(["success" => true, "data" => $total_profit]);
+    }
+
+
+    public function assign_asset_matrix_constraints()
+    {
+        $users = User::all('id');
+        foreach ($users as $user) {
+
+            $constraints = new AssetMatrixConstraints();
+            $constraints->user_id = $user->id;
+            $constraints->risk = "Very High";
+            $constraints->market_cap = "<25M";
+            $constraints->color = "#ffe599";
+            $constraints->save();
+
+            $constraints = new AssetMatrixConstraints();
+            $constraints->user_id = $user->id;
+            $constraints->risk = "High";
+            $constraints->market_cap = "25M - 250M";
+            $constraints->color = "#ffff00";
+            $constraints->save();
+
+            $constraints = new AssetMatrixConstraints();
+            $constraints->user_id = $user->id;
+            $constraints->risk = "Medium";
+            $constraints->market_cap = "250M - 1B";
+            $constraints->color = "#00ff00";
+            $constraints->save();
+
+            $constraints = new AssetMatrixConstraints();
+            $constraints->user_id = $user->id;
+            $constraints->risk = "Low";
+            $constraints->market_cap = "1B - 25B";
+            $constraints->color = "#ff9900";
+            $constraints->save();
+
+            $constraints = new AssetMatrixConstraints();
+            $constraints->user_id = $user->id;
+            $constraints->risk = "Very Low";
+            $constraints->market_cap = ">25B";
+            $constraints->color = "#ff0000";
+            $constraints->save();
+            // return([$user]);
+        }
+    }
+    public function change_allocation(Request $request)
+    {
+        $data = $request->except('_token')['allocation_percentage'];
+        $to_change_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
+        for ($i=0; $i <count($to_change_constraints) ; $i++) { 
+            $to_change_constraints[$i]->update([
+                "percentage_allocation"=>$data[$i]
+            ]);
+        }
+        return redirect()->back();
     }
 }

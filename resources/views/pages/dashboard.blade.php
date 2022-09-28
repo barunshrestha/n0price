@@ -157,6 +157,103 @@
     <script src="{{ asset('js/pages/widgets.js') }}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            $('.allocationEditBtn').click(function() {
+                $('.allocationEditBtn').addClass('hidden');
+                $('.hideBeforeedit').removeClass('hidden');
+                $('.hideAfteredit').addClass('hidden');
+                $('.allocationSaveBtn').removeClass('hidden');
+            });
+
+
+            var verylow = $('.tabledata-verylow').map((_, el) => el.innerHTML).get();
+            var sum_verylow = 0;
+            verylow.forEach(element => {
+                var value = Number(element);
+                sum_verylow = sum_verylow + value;
+            });
+            var low = $('.tabledata-low').map((_, el) => el.innerHTML).get();
+            var sum_low = 0;
+            low.forEach(element => {
+                var value = Number(element);
+                sum_low = sum_low + value;
+            });
+            var medium = $('.tabledata-medium').map((_, el) => el.innerHTML).get();
+            var sum_medium = 0;
+            medium.forEach(element => {
+                var value = Number(element);
+                sum_medium = sum_medium + value;
+            });
+            var high = $('.tabledata-high').map((_, el) => el.innerHTML).get();
+            var sum_high = 0;
+            high.forEach(element => {
+                var value = Number(element);
+                sum_high = sum_high + value;
+            });
+            var veryhigh = $('.tabledata-veryhigh').map((_, el) => el.innerHTML).get();
+            var sum_veryhigh = 0;
+            veryhigh.forEach(element => {
+                var value = Number(element);
+                sum_veryhigh = sum_veryhigh + value;
+            });
+
+            $('#allocated-verylow').html(sum_verylow.toFixed(2));
+            $('#allocated-low').html(sum_low.toFixed(2));
+            $('#allocated-medium').html(sum_medium.toFixed(2));
+            $('#allocated-high').html(sum_high.toFixed(2));
+            $('#allocated-veryhigh').html(sum_veryhigh.toFixed(2));
+            var total_allocated = sum_verylow + sum_low + sum_medium + sum_high + sum_veryhigh;
+
+            var allocation_percentage = $('.allocation-percentage').map((_, el) => el.innerHTML).get();
+
+            var allocated_verylow = Number(allocation_percentage[0]) * total_allocated / 100;
+            var allocated_low = Number(allocation_percentage[1]) * total_allocated / 100;
+            var allocated_medium = Number(allocation_percentage[2]) * total_allocated / 100;
+            var allocated_high = Number(allocation_percentage[3]) * total_allocated / 100;
+            var allocated_veryhigh = Number(allocation_percentage[4]) * total_allocated / 100;
+            
+            $('#toallocate-verylow').html(allocated_verylow.toFixed(2));
+            $('#toallocate-low').html(allocated_low.toFixed(2));
+            $('#toallocate-medium').html(allocated_medium.toFixed(2));
+            $('#toallocate-high').html(allocated_high.toFixed(2));
+            $('#toallocate-veryhigh').html(allocated_veryhigh.toFixed(2));
+
+            $('#allocated-total').html(total_allocated.toFixed(2));
+
+
+            var not_allocated_verylow=sum_verylow-allocated_verylow;
+            var not_allocated_low=sum_low-allocated_low;
+            var not_allocated_medium=sum_medium-allocated_medium;
+            var not_allocated_high=sum_high-allocated_high;
+            var not_allocated_veryhigh=sum_veryhigh-allocated_veryhigh;
+
+            var total_not_allocated = not_allocated_verylow + not_allocated_low + not_allocated_medium + not_allocated_high + not_allocated_veryhigh;
+
+
+            $('#not_allocated-verylow').html(not_allocated_verylow.toFixed(2));
+            $('#not_allocated-low').html(not_allocated_low.toFixed(2));
+            $('#not_allocated-medium').html(not_allocated_medium.toFixed(2));
+            $('#not_allocated-high').html(not_allocated_high.toFixed(2));
+            $('#not_allocated-veryhigh').html(not_allocated_veryhigh.toFixed(2));
+
+            $('#not_allocated-total').html(total_not_allocated.toFixed(2));
+            console.log(sum_verylow);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             var portfolio_datatable = $('#kt_datatable_portfolio').KTDatatable({
                 data: {
                     saveState: {
