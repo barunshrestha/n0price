@@ -11,8 +11,8 @@ return [
             'page' => '/',
             'new-tab' => false,
         ],
-        
-       
+
+
         // Custom
         [
             'section' => 'User',
@@ -21,21 +21,9 @@ return [
             'title' => 'Users',
             'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
             'bullet' => 'line',
-            'page'=>'/users',
+            'page' => '/users',
             'root' => true,
-            'new-tab'=>false,
-        ],
-        [
-            'title' => 'Points',
-            'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
-            'bullet' => 'line',
-            'root' => true,
-            'submenu' => [
-                [
-                   
-
-                ]
-            ]
+            'new-tab' => false,
         ],
         [
             'section' => 'Coin',
@@ -44,9 +32,9 @@ return [
             'title' => 'Coin',
             'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
             'bullet' => 'line',
-            'page'=>'/coins',
+            'page' => '/coins',
             'root' => true,
-            'new-tab'=>false,
+            'new-tab' => false,
         ],
         [
             'title' => 'Transaction',
@@ -54,10 +42,7 @@ return [
             'bullet' => 'line',
             'root' => true,
             'submenu' => [
-                [
-                   
-
-                ]
+                []
             ]
         ],
         [
@@ -71,6 +56,6 @@ return [
             'page' => '/logout',
             'new-tab' => false,
         ],
-        
+
     ]
 ];
