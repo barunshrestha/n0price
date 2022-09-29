@@ -18,7 +18,7 @@ class CreateCoinsTable extends Migration
             $table->string('coin_id');
             $table->string('symbol');
             $table->string('name');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->string('status')->default('0');
             $table->timestamps();
         });
