@@ -243,7 +243,7 @@
                                           <div class="col-md-12 mt-2 mt-md-0">
                                               <div class="input-icon">
                                                   <input type="text" class="form-control"
-                                                      placeholder="Enter the investment type ..."
+                                                      placeholder="Enter the Coin Name ..."
                                                       id="kt_coin_datatable_search_query" />
                                                   <span><i class="flaticon2-search-1 text-muted"></i></span>
                                               </div>
