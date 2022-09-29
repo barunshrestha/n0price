@@ -25,7 +25,7 @@ class DashboardController extends Controller
     {
         $active_coins = '';
         $query = Coin::where('status', '=', '1');
-        $available_coins = $query->get();
+        $available_coins = $query->limit(10)->get();
         $this->_data['available_coins'] = $available_coins;
 
         foreach ($available_coins as $key => $value) {
