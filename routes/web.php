@@ -28,8 +28,8 @@ Route::get('/login', 'AuthController@login')->name('login');
 Route::post('/login', 'AuthController@loginAction');
 
 Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, '__invoke'])
-->middleware(['signed', 'throttle:6,1'])
-->name('verification.verify');
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
 
 
 Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
@@ -45,7 +45,8 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/sync/coin', [CoinController::class, 'sync_coin'])->name('coins.sync');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     Route::get('/transactions/delete/{id}', [TransactionController::class, 'destroy'])->name('destroyTransaction');
-    Route::get('/profit_calc',[TransactionController::class,'profit_calculation']);
+    Route::get('/profit_calc', [TransactionController::class, 'profit_calculation']);
+    Route::post('/change_allocation', [TransactionController::class, 'change_allocation'])->name('percentage.allocation');
 });
 
 
@@ -82,4 +83,3 @@ Route::group(['middleware' => 'auth'], function () {
 
 
 // Route::get('/asset',[TransactionController::class,'assign_asset_matrix_constraints']);
-Route::post('/change_allocation',[TransactionController::class,'change_allocation'])->name('percentage.allocation');
