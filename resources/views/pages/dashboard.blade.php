@@ -91,24 +91,24 @@
                 <div class="card-header card-header-tabs-line">
                     <div class="card-toolbar">
                         <ul class="nav nav-tabs nav-bold nav-tabs-line row">
-                            <li class="nav-item col-sm-12 col-md-3">
+                            <li class="nav-item col-sm-12 col-md-5">
                                 <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_1_4" id="portfolio-btn">
                                     <span class="nav-icon"><i class="flaticon2-chat-1"></i></span>
                                     <span class="nav-text">Portfolio</span>
                                 </a>
                             </li>
-                            <li class="nav-item col-sm-12 col-md-4">
+                            <li class="nav-item col-sm-12 col-md-7">
                                 <a class="nav-link mx-sm-5" data-toggle="tab" href="#kt_tab_pane_2_4" id="transaction-btn">
                                     <span class="nav-icon"><i class="flaticon2-drop"></i></span>
                                     <span class="nav-text">Transaction</span>
                                 </a>
                             </li>
-                            <li class="nav-item col-sm-12 col-md-5">
+                            {{-- <li class="nav-item col-sm-12 col-md-5">
                                 <a class="nav-link mx-sm-5" data-toggle="tab" href="#kt_tab_pane_3_4" id="assetmatrix-btn">
                                     <span class="nav-icon"><i class="flaticon2-pie-chart-4"></i></span>
                                     <span class="nav-text">Asset Matrix</span>
                                 </a>
-                            </li>
+                            </li> --}}
                         </ul>
                     </div>
                     @if (Auth::user()->role_id == '2')
@@ -140,10 +140,10 @@
 
                             @include('pages.dashboard-content.transaction')
                         </div>
-                        <div class="tab-pane fade" id="kt_tab_pane_3_4" role="tabpanel" aria-labelledby="kt_tab_pane_3_4">
+                        {{-- <div class="tab-pane fade" id="kt_tab_pane_3_4" role="tabpanel" aria-labelledby="kt_tab_pane_3_4">
 
                             @include('pages.dashboard-content.asset-matrix')
-                        </div>
+                        </div> --}}
 
                     </div>
                 </div>
@@ -236,64 +236,48 @@
             $('#not_allocated-veryhigh').html(not_allocated_veryhigh.toFixed(2));
 
             $('#not_allocated-total').html(total_not_allocated.toFixed(2));
-            console.log(sum_verylow);
+            
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            var portfolio_datatable = $('#kt_datatable_portfolio').KTDatatable({
-                data: {
-                    saveState: {
-                        cookie: false
-                    }
-                },
-                columns: [{
-                        field: "SN",
-                        width: 50,
-                        textAlign: 'center'
-                    },
-                    {
-                        field: "SYMBOL",
-                        width: 52,
-                        sortable: false,
-                    },
-                    {
-                        field: "NAME",
-                        width: 65,
-                        overflow: 'visible'
-                    },
-                    {
-                        field: "PRICE(CURRENT)",
-                        width: 115,
-                    },
-                    {
-                        field: "GAIN",
-                        width: 91,
-                    },
-                    {
-                        field: "QUANTITY",
-                        width: 91,
-                    },
-                ],
-                search: {
-                    input: $('#kt_datatable_search_query_portfolio'),
-                    key: 'generalSearch'
-                }
-            });
-            get_profit_data();
+            // var portfolio_datatable = $('#kt_datatable_portfolio').KTDatatable({
+            //     data: {
+            //         saveState: {
+            //             cookie: false
+            //         }
+            //     },
+            //     columns: [{
+            //             field: "SN",
+            //             width: 50,
+            //             textAlign: 'center'
+            //         },
+            //         {
+            //             field: "SYMBOL",
+            //             width: 52,
+            //             sortable: false,
+            //         },
+            //         {
+            //             field: "NAME",
+            //             width: 65,
+            //             overflow: 'visible'
+            //         },
+            //         {
+            //             field: "PRICE(CURRENT)",
+            //             width: 115,
+            //         },
+            //         {
+            //             field: "GAIN",
+            //             width: 91,
+            //         },
+            //         {
+            //             field: "QUANTITY",
+            //             width: 91,
+            //         },
+            //     ],
+            //     search: {
+            //         input: $('#kt_datatable_search_query_portfolio'),
+            //         key: 'generalSearch'
+            //     }
+            // });
+            // get_profit_data();
             var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
                 data: {
                     saveState: {
@@ -355,21 +339,21 @@
                 }
             });
 
-            $('#portfolio-btn').click(function() {
-                portfolio_datatable.reload();
-                setTimeout(() => {
-                    get_profit_data();
-                }, 500);
+            // $('#portfolio-btn').click(function() {
+            //     portfolio_datatable.reload();
+            //     setTimeout(() => {
+            //         get_profit_data();
+            //     }, 500);
 
-            });
+            // });
 
             $('#transaction-btn').click(function() {
                 datatable_transactions.reload();
 
             });
-            $('#assetmatrix-btn').click(function() {
-                datatable_assetmatrix.reload();
-            });
+            // $('#assetmatrix-btn').click(function() {
+            //     datatable_assetmatrix.reload();
+            // });
 
             var coin_datatable = $('#kt_datatable_coin_select').KTDatatable({
                 data: {
@@ -454,7 +438,6 @@
         }
 
         function transactionsaveBtn(event) {
-            // var all_id = this.id;
             var all_id = event.target.parentElement.id;
             id = all_id.split('-')[1];
             var investment_type = '#investment_type-' + id;
@@ -493,36 +476,36 @@
             });
         }
 
-        function get_profit_data() {
-            $.ajax({
-                'url': '/profit_calc',
-                'type': 'GET',
-                'dataType': 'json',
-            }).done(function(response) {
-                if (response.success == true) {
-                    // console.log(response.data);
-                    var profit_data = response.data;
-                    profit_data.forEach(element => {
-                        var class_name = element[0] + "-profit"
-                        if (element[1] > 0) {
-                            var html =
-                                '<span class=" text-success font-weight-bold gain-button\">' +
-                                element[1] + ' USD </span>';
-                        } else {
-                            var html =
-                                '<span class=" text-danger font-weight-bold gain-button\">' +
-                                element[1] + ' USD </span>';
-                        }
-                        $('.' + class_name).html(html);
-                        // console.log("classname",$('.'class_name).val());
-                    });
-                } else {
-                    console.error(response.data);
+        // function get_profit_data() {
+        //     $.ajax({
+        //         'url': '/profit_calc',
+        //         'type': 'GET',
+        //         'dataType': 'json',
+        //     }).done(function(response) {
+        //         if (response.success == true) {
+        //             // console.log(response.data);
+        //             var profit_data = response.data;
+        //             profit_data.forEach(element => {
+        //                 var class_name = element[0] + "-profit"
+        //                 if (element[1] > 0) {
+        //                     var html =
+        //                         '<span class=" text-success font-weight-bold gain-button\">' +
+        //                         element[1] + ' USD </span>';
+        //                 } else {
+        //                     var html =
+        //                         '<span class=" text-danger font-weight-bold gain-button\">' +
+        //                         element[1] + ' USD </span>';
+        //                 }
+        //                 $('.' + class_name).html(html);
+        //                 // console.log("classname",$('.'class_name).val());
+        //             });
+        //         } else {
+        //             console.error(response.data);
 
-                }
-            }).fail(function(xhr, ajaxOps, error) {
-                console.log('Failed: ' + error);
-            });
-        }
+        //         }
+        //     }).fail(function(xhr, ajaxOps, error) {
+        //         console.log('Failed: ' + error);
+        //     });
+        // }
     </script>
 @endsection

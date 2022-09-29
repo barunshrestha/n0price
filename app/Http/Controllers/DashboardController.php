@@ -33,8 +33,6 @@ class DashboardController extends Controller
         }
         $active_coins = ltrim($active_coins, ',');
         $url = "https://pro-api.coingecko.com/api/v3/simple/price?ids=" . $active_coins . "&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
-        // return([$url]);
-        // return ([$active_coins]);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -43,42 +41,20 @@ class DashboardController extends Controller
         curl_close($ch);
         $this->_data['current_price'] = $current_price;
 
-        // $curr="ethereum";
-        // return ([$current_price->$curr]);
-        // return ([$current_price->$curr->usd]);
-
         $user = Auth::user();
         $this->_data['user'] = $user;
 
-        $portfolio=DB::select('CALL usp_get_current_transaction('.$user->id.')');
+        $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ')');
         $this->_data['portfolio'] = $portfolio;
-
-        // $portfolio_details = Transaction::all()->where('user_id',$user->id);
-        // $this->_data['portfolio_details'] = $portfolio_details;
 
         $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
             ->where('transactions.user_id', $user->id)
             ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
             ->get();
         $this->_data['transactions'] = $transactions;
-        
 
-
-
-
-        $asset_matrix_constraints=AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
+        $asset_matrix_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
         $this->_data['asset_matrix_constraints'] = $asset_matrix_constraints;
-
-
-
-
-
-
-
-
-
-
-
         return view($this->_page . 'dashboard', $this->_data);
     }
 }
