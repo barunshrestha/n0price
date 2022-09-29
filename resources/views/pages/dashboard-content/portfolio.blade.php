@@ -302,7 +302,6 @@
                                                                   echo "<span class=\"text-danger font-weight-bold gain-button \">" . (string) $round_usd . '% <i class="text-danger flaticon2-arrow-down"></i>  </button>';
                                                               }
                                                               ?>
-
                                                           </div>
                                                       </div>
                                                   </div>

@@ -362,10 +362,37 @@
                         cookie: false
                     }
                 },
-                pagination: false,
+                toolbar: {
+                    items: {
+                        info: false,
+                        pagination: {
+                            navigation: {
+                                prev: false,
+                                next: false,
+                                first: false,
+                                last: false
+                            },
+                            pages:{
+                                desktop:{
+                                    layout: 'compact'
+                                },
+                                tablet:{
+                                    layout: 'compact'
+                                },
+                                mobile:{
+                                    layout: 'compact'
+                                }
+                            }
+                        }
+                    }
+                },
+                pagination: true,
                 search: {
                     input: $('#kt_coin_datatable_search_query'),
                     key: 'generalSearch'
+                },
+                rows: {
+                    autoHide: true,
                 }
             });
 
