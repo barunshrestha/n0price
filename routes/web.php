@@ -32,28 +32,30 @@ Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, '__i
     ->name('verification.verify');
 
 
-Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
-    Route::get('/', 'DashboardController@index')->name('dashboard');
+Route::middleware(['auth', 'verified', 'topLevelApproval','adminAuth'])->group(function () {
     Route::get('/user/approve/{id}', [UserController::class, 'approveUser'])->name('user.approve');
     Route::get('/user/unnapprove/{id}', [UserController::class, 'unapproveUser'])->name('user.unapprove');
     Route::post('/user/status', [UserController::class, 'approvalFilter'])->name('user.approvalFilter');
     Route::resource('users', 'UserController');
-    Route::resource('transactions', 'TransactionController');
     Route::resource('coins', 'CoinController');
     Route::get('/coin/active/{id}', [CoinController::class, 'activeCoin'])->name('coins.active');
     Route::get('/coin/inactive/{id}', [CoinController::class, 'inactiveCoin'])->name('coins.inactive');
     Route::get('/sync/coin', [CoinController::class, 'sync_coin'])->name('coins.sync');
-    Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+    Route::resource('users', 'UserController');
+});
+
+Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
+    Route::get('/', 'DashboardController@index')->name('dashboard');
+    Route::resource('transactions', 'TransactionController');
     Route::get('/transactions/delete/{id}', [TransactionController::class, 'destroy'])->name('destroyTransaction');
     Route::get('/profit_calc', [TransactionController::class, 'profit_calculation']);
     Route::post('/change_allocation', [TransactionController::class, 'change_allocation'])->name('percentage.allocation');
+    Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 });
-
 
 Route::group(['middleware' => 'auth'], function () {
 
     Route::post('check_username', 'UserController@checkUsername')->name('check_username');
-    Route::resource('users', 'UserController');
     Route::get('/reset_password/{id}', 'UserController@reset')->name('users.reset');
     Route::resource('roles', 'RoleController');
 

@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\admin;
 use App\Http\Middleware\topLevelApproval;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -65,5 +66,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'verifyToken' => \App\Http\Middleware\verifyToken::class,
         'topLevelApproval'=>topLevelApproval::class,
+        'adminAuth'=>admin::class
     ];
 }

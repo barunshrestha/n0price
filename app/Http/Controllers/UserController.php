@@ -94,13 +94,13 @@ class UserController extends Controller
         $user->role_id = $data['role_id'];
         $user->password = Hash::make($data['password']);
         if ($user->save()) {
-            $date=Carbon::now();
+            $date = Carbon::now();
             $data = [
-                ['user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#ffe599','created_at'=>$date,'updated_at'=>$date],
-                ['user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#ffff00','created_at'=>$date,'updated_at'=>$date],
-                ['user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#00ff00','created_at'=>$date,'updated_at'=>$date],
-                ['user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ff9900','created_at'=>$date,'updated_at'=>$date],
-                ['user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ff0000','created_at'=>$date,'updated_at'=>$date],
+                ['user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#ffe599', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#ffff00', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#00ff00', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ff9900', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ff0000', 'created_at' => $date, 'updated_at' => $date],
             ];
             AssetMatrixConstraints::insert($data);
             event(new Registered($user));
@@ -185,32 +185,5 @@ class UserController extends Controller
         } else {
             return redirect()->back()->with('fail', 'Your Old Password is incorrect');
         }
-    }
-
-    public function checkUsername(Request $request)
-    {
-        $username = User::where(['username' => $request->username])->pluck('username')->first();
-        if (!empty($username)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public function disabledUsersList()
-    {
-        $this->_data['users'] = User::whereNotIn('role_id', [1, 2])->where('status', 0)->get();
-        $this->_data['roles'] = Role::pluck('name', 'id')->prepend('Select Role', '');
-        return view($this->_page . 'disabled-users', $this->_data);
-    }
-
-    public function enableUser($id)
-    {
-        if ($id) {
-            if (User::where('id', $id)->update(['status' => 1, 'attempts' => 0])) {
-                return redirect()->back()->with('success', 'User has been successfully enabled .');
-            }
-        }
-        return redirect()->back()->with('fail', 'User could not be enabled at the moment.');
     }
 }

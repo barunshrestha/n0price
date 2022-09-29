@@ -60,11 +60,9 @@ License: You must have a valid license purchased only from themeforest(the above
                     <div class="login-signin ">
                         <div class="mb-20">
                             <h3 class="text-muted font-weight-bold">Sign Up</h3>
-                            {{-- @if (Auth::user()->role->name == 'admin') --}}
 
                             <div class="text-muted font-weight-bold">Enter your details to create your account</div>
 
-                            {{-- @endif --}}
                         </div>
                         <form class="form" action="{{ route('register') }}" method="POST">
                             @csrf

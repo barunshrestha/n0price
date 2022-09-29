@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
 
 class admin
 {
@@ -17,14 +19,12 @@ class admin
    
     public function handle(Request $request, Closure $next, $redirectToRoute = null)
     {
-        $email = $request->user()->role_id;
-        // $approval_status = User::where('email', $email)->get('approval_status');
-        // $status = $approval_status[0]->approval_status;
-        // if ($status == '0') {
-        //     return $request->expectsJson()
-        //         ? abort(403, 'Your application is not verified.')
-        //         : Redirect::guest(URL::route($redirectToRoute ?: 'approvalpage'));
-        // }
+        $role = $request->user()->role_id;
+        if ($role != '1') {
+            return $request->expectsJson()
+                ? abort(403, 'Your application is not verified.')
+                : Redirect::guest(URL::route($redirectToRoute ?: 'dashboard'));
+        }
         return $next($request);
     }
 }
