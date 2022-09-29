@@ -41,17 +41,30 @@
             <table class="datatable datatable-bordered table-responsive" id="kt_all_transaction">
                 <thead>
                     <tr>
-                        <th> id </th>
-                        <th> user_id </th>
-                        <th> coin_id </th>
-                        <th> units </th>
-                        <th> purchase_price </th>
-                        <th> investment_type </th>
-                        <th> purchase_date </th>
+                        <th> ID </th>
+                        <th> User </th>
+                        <th> Coin </th>
+                        <th> Units </th>
+                        <th> Price </th>
+                        <th> Status </th>
+                        <th> Date </th>
                     </tr>
                 </thead>
                 <tbody>
-
+                    <?php
+                    $key = 0;
+                    ?>
+                    @foreach ($transactions as $transaction)
+                        <tr>
+                            <td>{{ $key + 1 }}</td>
+                            <td>{{ $transaction->username }}</td>
+                            <td>{{ $transaction->coin_name }}</td>
+                            <td>{{ $transaction->units }}</td>
+                            <td>{{ $transaction->purchase_price }}</td>
+                            <td>{{ $transaction->status }}</td>
+                            <td>{{ $transaction->date }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -64,52 +77,37 @@
     <script type="text/javascript">
         var datatable = $('#kt_all_transaction').KTDatatable({
             data: {
-                source: {
-                    read: {
-                        url: '/get/all/transactions',
-                        method: 'GET',
-                        map: function(raw) {
-                            var dataSet = raw;
-                            if (typeof raw.data !== 'undefined') {
-                                dataSet = raw.data;
-                            }
-                            return dataSet;
-                        }
-                    },
-                },
-                pageSize: 10,
-                serverPaging: true,
-                serverFiltering: true,
+
                 saveState: {
                     cookie: false
                 }
             },
             columns: [{
-                    data: "id",
+                    field: "ID",
                     width: 20,
                 },
                 {
-                    data: "user_id",
+                    field: "User",
                     width: 130,
                 },
                 {
-                    data: "coin_id",
+                    field: "Coin",
                     width: 130,
                 },
                 {
-                    data: "units",
+                    field: "Units",
                     width: 130,
                 },
                 {
-                    data: "purchase_price",
+                    field: "Price",
                     width: 130,
                 },
                 {
-                    data: "investment_type",
+                    field: "Status",
                     width: 130,
                 },
                 {
-                    data: "purchase_date",
+                    field: "Date",
                     width: 130,
                 },
 

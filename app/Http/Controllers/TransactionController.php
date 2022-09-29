@@ -299,19 +299,32 @@ class TransactionController extends Controller
     {
         $data = $request->except('_token')['allocation_percentage'];
         $to_change_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
-        for ($i=0; $i <count($to_change_constraints) ; $i++) { 
+        for ($i = 0; $i < count($to_change_constraints); $i++) {
             $to_change_constraints[$i]->update([
-                "percentage_allocation"=>$data[$i]
+                "percentage_allocation" => $data[$i]
             ]);
         }
         return redirect()->back();
     }
 
-    public function all_transaction(){
-        return view($this->_page . 'index');
+    public function all_transaction()
+    {
+        // $transactions = Transaction::all();
+        $query = " Select t.units as units,t.purchase_price as purchase_price, t.investment_type as status, t.purchase_date as date,
+                c.name as coin_name,u.name as username
+                from transactions as t
+                join coins as c on t.coin_id=c.id
+                join users as u on t.user_id=u.id";
+        $transactions = DB::select($query);
+        $this->_data['transactions'] = $transactions;
+
+
+
+        return view($this->_page . 'index', $this->_data);
     }
-    public function getall_transactions(){
-        $transaction=User::paginate(50);
+    public function getall_transactions()
+    {
+        $transaction = User::paginate(50);
         return response()->json([$transaction]);
     }
 }
