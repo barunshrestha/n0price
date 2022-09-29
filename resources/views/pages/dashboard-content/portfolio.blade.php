@@ -324,6 +324,10 @@
                                                                 $round_usd = round($usd_24h_change / 100, 2);
                                                                 echo "<span class=\"text-danger font-weight-bold gain-button \">" . (string) $round_usd . '% <i class="text-danger flaticon2-arrow-down"></i>  </button>';
                                                             }
+                                                            else{
+                                                                $round_usd = round($usd_24h_change / 100, 2);
+                                                                echo "<span class=\"text-dark font-weight-bold gain-button \">" . (string) $round_usd . '% <i class="text-dark flaticon2-hexagonal"></i>  </button>';
+                                                            }
                                                             ?>
                                                         </div>
                                                     </div>
