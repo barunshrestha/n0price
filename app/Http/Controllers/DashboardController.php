@@ -28,18 +28,18 @@ class DashboardController extends Controller
         $available_coins = $query->limit(10)->get();
         $this->_data['available_coins'] = $available_coins;
 
-        foreach ($available_coins as $key => $value) {
-            $active_coins = $active_coins . "," . $value->coin_id;
-        }
-        $active_coins = ltrim($active_coins, ',');
-        $url = "https://pro-api.coingecko.com/api/v3/simple/price?ids=" . $active_coins . "&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        $current_price = json_decode($response);
-        curl_close($ch);
-        $this->_data['current_price'] = $current_price;
+        // foreach ($available_coins as $key => $value) {
+        //     $active_coins = $active_coins . "," . $value->coin_id;
+        // }
+        // $active_coins = ltrim($active_coins, ',');
+        // $url = "https://pro-api.coingecko.com/api/v3/simple/price?ids=" . $active_coins . "&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+        // $ch = curl_init();
+        // curl_setopt($ch, CURLOPT_URL, $url);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $response = curl_exec($ch);
+        // $current_price = json_decode($response);
+        // curl_close($ch);
+        // $this->_data['current_price'] = $current_price;
 
         $user = Auth::user();
         $this->_data['user'] = $user;
