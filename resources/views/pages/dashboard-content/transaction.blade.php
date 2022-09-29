@@ -120,7 +120,8 @@
                                         id="transaction_save_btn-{{ $transaction->id }}" onclick="transactionsaveBtn(event)"><i
                                             class="flaticon2-check-mark"></i></button>
 
-                                    <button type="button" value="Discard" onclick="window.location.reload();"
+                                    <button type="button" value="Discard" onclick="transactionDiscardBtn(event)"
+                                    id="transactionDiscard-{{ $transaction->id }}"
                                         class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip"
                                         title="Discard"><i class="flaticon2-cross"></i></button>
                                 </div>

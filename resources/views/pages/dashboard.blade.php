@@ -210,7 +210,7 @@
             var allocated_medium = Number(allocation_percentage[2]) * total_allocated / 100;
             var allocated_high = Number(allocation_percentage[3]) * total_allocated / 100;
             var allocated_veryhigh = Number(allocation_percentage[4]) * total_allocated / 100;
-            
+
             $('#toallocate-verylow').html(allocated_verylow.toFixed(2));
             $('#toallocate-low').html(allocated_low.toFixed(2));
             $('#toallocate-medium').html(allocated_medium.toFixed(2));
@@ -220,13 +220,14 @@
             $('#allocated-total').html(total_allocated.toFixed(2));
 
 
-            var not_allocated_verylow=sum_verylow-allocated_verylow;
-            var not_allocated_low=sum_low-allocated_low;
-            var not_allocated_medium=sum_medium-allocated_medium;
-            var not_allocated_high=sum_high-allocated_high;
-            var not_allocated_veryhigh=sum_veryhigh-allocated_veryhigh;
+            var not_allocated_verylow = sum_verylow - allocated_verylow;
+            var not_allocated_low = sum_low - allocated_low;
+            var not_allocated_medium = sum_medium - allocated_medium;
+            var not_allocated_high = sum_high - allocated_high;
+            var not_allocated_veryhigh = sum_veryhigh - allocated_veryhigh;
 
-            var total_not_allocated = not_allocated_verylow + not_allocated_low + not_allocated_medium + not_allocated_high + not_allocated_veryhigh;
+            var total_not_allocated = not_allocated_verylow + not_allocated_low + not_allocated_medium +
+                not_allocated_high + not_allocated_veryhigh;
 
 
             $('#not_allocated-verylow').html(not_allocated_verylow.toFixed(2));
@@ -236,7 +237,7 @@
             $('#not_allocated-veryhigh').html(not_allocated_veryhigh.toFixed(2));
 
             $('#not_allocated-total').html(total_not_allocated.toFixed(2));
-            
+
 
             // var portfolio_datatable = $('#kt_datatable_portfolio').KTDatatable({
             //     data: {
@@ -349,8 +350,8 @@
 
             $('#transaction-btn').click(function() {
                 datatable_transactions.reload();
-
             });
+
             // $('#assetmatrix-btn').click(function() {
             //     datatable_assetmatrix.reload();
             // });
@@ -437,6 +438,28 @@
             $(transaction_action_buttons + ' .hide_after_edit').addClass('hidden');
         }
 
+        function transactionDiscardBtn(event) {
+            var all_id = event.target.parentElement.id;
+            id = all_id.split('-')[1];
+            var investment_type = '#investment_type-' + id;
+            var purchase_date = '#purchase_date-' + id;
+            var units = '#units-' + id;
+            var purchase_price = '#purchase_price-' + id;
+            var transaction_action_buttons = '#transaction_action_buttons-' + id;
+
+            $(investment_type + ' .hide_before_edit').addClass('hidden');
+            $(purchase_date + ' .hide_before_edit').addClass('hidden');
+            $(units + ' .hide_before_edit').addClass('hidden');
+            $(purchase_price + ' .hide_before_edit').addClass('hidden');
+            $(transaction_action_buttons + ' .hide_before_edit').addClass('hidden');
+
+            $(investment_type + ' .hide_after_edit').removeClass('hidden');
+            $(purchase_date + ' .hide_after_edit').removeClass('hidden');
+            $(units + ' .hide_after_edit').removeClass('hidden');
+            $(purchase_price + ' .hide_after_edit').removeClass('hidden');
+            $(transaction_action_buttons + ' .hide_after_edit').removeClass('hidden');
+        }
+
         function transactionsaveBtn(event) {
             var all_id = event.target.parentElement.id;
             id = all_id.split('-')[1];
@@ -463,19 +486,30 @@
                     $('.errorbox').html(
                         "<div class='p-4 bg-success text-white'>Transaction has been updated.</div>"
                     );
-                    setTimeout(window.location.reload('/'), 100);
+                    $('#transaction-btn').click();
+
+                    setTimeout(removeerrbox, 3000);
+
+                    function removeerrbox() {
+                        $('.errorbox').html("")
+                    }
+
                 } else {
                     $('.errorbox').html(
                         "<div class='p-4 bg-danger text-white'>Transaction couldnt be updated.</div>"
                     );
-                    setTimeout(window.location.reload('/'), 100);
+                    $('#transaction-btn').click();
+                    setTimeout(removeerrbox, 3000);
+
+                    function removeerrbox() {
+                        $('.errorbox').html("")
+                    }
                 }
 
             }).fail(function(xhr, ajaxOps, error) {
                 console.log('Failed: ' + error);
             });
         }
-
         // function get_profit_data() {
         //     $.ajax({
         //         'url': '/profit_calc',
