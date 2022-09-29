@@ -6,6 +6,7 @@ use App\Models\AssetMatrixConstraints;
 use App\Models\Sell_log;
 use App\Models\Transaction;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -283,41 +284,15 @@ class TransactionController extends Controller
         $users = User::all('id');
         foreach ($users as $user) {
 
-            $constraints = new AssetMatrixConstraints();
-            $constraints->user_id = $user->id;
-            $constraints->risk = "Very High";
-            $constraints->market_cap = "<25M";
-            $constraints->color = "#ffe599";
-            $constraints->save();
-
-            $constraints = new AssetMatrixConstraints();
-            $constraints->user_id = $user->id;
-            $constraints->risk = "High";
-            $constraints->market_cap = "25M - 250M";
-            $constraints->color = "#ffff00";
-            $constraints->save();
-
-            $constraints = new AssetMatrixConstraints();
-            $constraints->user_id = $user->id;
-            $constraints->risk = "Medium";
-            $constraints->market_cap = "250M - 1B";
-            $constraints->color = "#00ff00";
-            $constraints->save();
-
-            $constraints = new AssetMatrixConstraints();
-            $constraints->user_id = $user->id;
-            $constraints->risk = "Low";
-            $constraints->market_cap = "1B - 25B";
-            $constraints->color = "#ff9900";
-            $constraints->save();
-
-            $constraints = new AssetMatrixConstraints();
-            $constraints->user_id = $user->id;
-            $constraints->risk = "Very Low";
-            $constraints->market_cap = ">25B";
-            $constraints->color = "#ff0000";
-            $constraints->save();
-            // return([$user]);
+            $date = Carbon::now();
+            $data = [
+                ['user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#ffe599', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#ffff00', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#00ff00', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ff9900', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ff0000', 'created_at' => $date, 'updated_at' => $date],
+            ];
+            AssetMatrixConstraints::insert($data);
         }
     }
     public function change_allocation(Request $request)
@@ -330,5 +305,13 @@ class TransactionController extends Controller
             ]);
         }
         return redirect()->back();
+    }
+
+    public function all_transaction(){
+        return view($this->_page . 'index');
+    }
+    public function getall_transactions(){
+        $transaction=User::paginate(50);
+        return response()->json([$transaction]);
     }
 }
