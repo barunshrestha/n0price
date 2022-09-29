@@ -81,5 +81,5 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 
-Route::get('/asset',[TransactionController::class,'assign_asset_matrix_constraints']);
+// Route::get('/asset',[TransactionController::class,'assign_asset_matrix_constraints']);
 Route::post('/change_allocation',[TransactionController::class,'change_allocation'])->name('percentage.allocation');

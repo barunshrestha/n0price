@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Mail\CustomEmail;
+use App\Models\AssetMatrixConstraints;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
@@ -51,7 +53,7 @@ class UserController extends Controller
         $user->save();
         Mail::to($user->email)->send(new CustomEmail([
             'body' => 'Your account has been approved. You can now start using NoPrice',
-            'user'=>$user->name,
+            'user' => $user->name,
         ]));
 
         return redirect(route('users.index'));
@@ -65,7 +67,7 @@ class UserController extends Controller
         $user->save();
         Mail::to($user->email)->send(new CustomEmail([
             'body' => 'Your account has been suspended! Until NoPrice approves you, you cannot use it.',
-            'user'=>$user->name,
+            'user' => $user->name,
         ]));
         return redirect(route('users.index'));
     }
@@ -92,6 +94,15 @@ class UserController extends Controller
         $user->role_id = $data['role_id'];
         $user->password = Hash::make($data['password']);
         if ($user->save()) {
+            $date=Carbon::now();
+            $data = [
+                ['user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#ffe599','created_at'=>$date,'updated_at'=>$date],
+                ['user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#ffff00','created_at'=>$date,'updated_at'=>$date],
+                ['user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#00ff00','created_at'=>$date,'updated_at'=>$date],
+                ['user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ff9900','created_at'=>$date,'updated_at'=>$date],
+                ['user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ff0000','created_at'=>$date,'updated_at'=>$date],
+            ];
+            AssetMatrixConstraints::insert($data);
             event(new Registered($user));
             return redirect()->route('users.index')->with('success', 'Your Information has been Added .');
         }
@@ -202,5 +213,4 @@ class UserController extends Controller
         }
         return redirect()->back()->with('fail', 'User could not be enabled at the moment.');
     }
-
 }

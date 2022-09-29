@@ -16,5 +16,7 @@ class AssetMatrixConstraints extends Model
         'risk',
         'percentage_allocation',
         'color',
+        'created_at',
+        'updated_at'
     ];
 }
