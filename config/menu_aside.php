@@ -40,10 +40,9 @@ return [
             'title' => 'Transaction',
             'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
             'bullet' => 'line',
+            'page'=>'/all/transactions',
             'root' => true,
-            'submenu' => [
-                []
-            ]
+            
         ],
         [
             'section' => 'Settings',
