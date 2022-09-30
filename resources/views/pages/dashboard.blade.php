@@ -204,12 +204,23 @@
             var total_allocated = sum_verylow + sum_low + sum_medium + sum_high + sum_veryhigh;
 
             var allocation_percentage = $('.allocation-percentage').map((_, el) => el.innerHTML).get();
+            var total_allocation_percentage = 0;
+            $.each(allocation_percentage,function(){
+                total_allocation_percentage += parseInt(this, 10);
+            });
+            $('#total_allocation').html(total_allocation_percentage.toFixed(2) + '%');
+            if(total_allocation_percentage !== 100){
+                $('#total_allocation').css('color','red');
+                $('#total_allocation').css('font-weight','bold');
+            }
+            //console.log("allocation_percentage " + allocation_percentage[0].replace(/[^0-9]/g,''));
 
-            var allocated_verylow = Number(allocation_percentage[0]) * total_allocated / 100;
-            var allocated_low = Number(allocation_percentage[1]) * total_allocated / 100;
-            var allocated_medium = Number(allocation_percentage[2]) * total_allocated / 100;
-            var allocated_high = Number(allocation_percentage[3]) * total_allocated / 100;
-            var allocated_veryhigh = Number(allocation_percentage[4]) * total_allocated / 100;
+
+            var allocated_verylow = Number(allocation_percentage[0].replace(/[^0-9]/g,'')) * total_allocated / 100;
+            var allocated_low = Number(allocation_percentage[1].replace(/[^0-9]/g,'')) * total_allocated / 100;
+            var allocated_medium = Number(allocation_percentage[2].replace(/[^0-9]/g,'')) * total_allocated / 100;
+            var allocated_high = Number(allocation_percentage[3].replace(/[^0-9]/g,'')) * total_allocated / 100;
+            var allocated_veryhigh = Number(allocation_percentage[4].replace(/[^0-9]/g,'')) * total_allocated / 100;
 
             $('#toallocate-verylow').html(allocated_verylow.toFixed(2));
             $('#toallocate-low').html(allocated_low.toFixed(2));
