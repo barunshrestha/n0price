@@ -146,10 +146,12 @@
                         </div> --}}
 
                     </div>
+                    @include('pages.transaction_add')
                 </div>
             </div>
         </div>
     </div>
+    
 @endsection
 @section('scripts')
     <script src="{{ asset('js/pages/crud/ktdatatable/base/html-table.js') }}" type="text/javascript"></script>

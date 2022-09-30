@@ -6,6 +6,12 @@
             </h3>
         </div>
         <div class="card-toolbar">
+        <button type="button" class="btn btn-primary mx-2 my-3" data-toggle="modal"
+                data-target="#new_transaction_modal">
+                <i class="flaticon2-plus"></i>
+                Transaction</button>
+        
+        
             <div class="input-icon">
                 <input type="text" class="form-control" placeholder="Search by ticker..." id="_portfolio_search_transaction" />
                 <span>
