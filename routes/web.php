@@ -53,6 +53,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/profit_calc', [TransactionController::class, 'profit_calculation']);
     Route::post('/change_allocation', [TransactionController::class, 'change_allocation'])->name('percentage.allocation');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+    Route::get('/portfolio_summary', 'DashboardController@portfolio_summary')->name('portfolio_summary');
 });
 
 Route::group(['middleware' => 'auth'], function () {

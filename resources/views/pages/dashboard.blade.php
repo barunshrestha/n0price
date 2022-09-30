@@ -579,5 +579,12 @@
         //         console.log('Failed: ' + error);
         //     });
         // }
+
+        $.ajax({
+                url: "{{ route('portfolio_summary') }}",
+                success: function(result) {
+                    $("#portfolio_summary").html(result);
+                }
+            });
     </script>
 @endsection
