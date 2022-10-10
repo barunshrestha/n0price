@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AssetMatrixConstraints;
+use App\Models\Coin;
 use App\Models\Sell_log;
 use App\Models\Transaction;
 use App\Models\User;
@@ -286,11 +287,11 @@ class TransactionController extends Controller
 
             $date = Carbon::now();
             $data = [
-                ['user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#ffe599', 'created_at' => $date, 'updated_at' => $date],
-                ['user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#ffff00', 'created_at' => $date, 'updated_at' => $date],
-                ['user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#00ff00', 'created_at' => $date, 'updated_at' => $date],
-                ['user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ff9900', 'created_at' => $date, 'updated_at' => $date],
-                ['user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ff0000', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
+                ['user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
             ];
             AssetMatrixConstraints::insert($data);
         }
@@ -317,14 +318,16 @@ class TransactionController extends Controller
                 join users as u on t.user_id=u.id";
         $transactions = DB::select($query);
         $this->_data['transactions'] = $transactions;
-
-
-
         return view($this->_page . 'index', $this->_data);
     }
     public function getall_transactions()
     {
-        $transaction = User::paginate(50);
-        return response()->json([$transaction]);
+        $query = " Select t.units as units,t.purchase_price as purchase_price, t.investment_type as status, t.purchase_date as date,
+        c.name as coin_name,u.name as username
+        from transactions as t
+        join coins as c on t.coin_id=c.id
+        join users as u on t.user_id=u.id";
+        $transactions = DB::select($query);
+        return response()->json(["data"=>$transactions]);
     }
 }

@@ -130,7 +130,7 @@
                         $req_unit = $total_buy_unit - $total_sell_unit;
                         ?>
                         @if ($usd_market_cap < 25000000)
-                            <td style="background:#ffe599;color:black;">
+                            <td style="background:#e9fac8;color:black;">
                                 {{ $data->coin_name }}
                             </td>
                             <td class="tabledata-veryhigh">
@@ -149,7 +149,7 @@
                             </td>
                         @endif
                         @if ($usd_market_cap > 25000000 && $usd_market_cap < 250000000)
-                            <td style="background:#ffff00;color:black;">
+                            <td style="background:#fff3bf;color:black;">
                                 {{ $data->coin_name }}
                             </td>
                             <td class="tabledata-veryhigh">
@@ -170,7 +170,7 @@
                             </td>
                         @endif
                         @if ($usd_market_cap > 250000000 && $usd_market_cap < 1000000000)
-                            <td style="background:#00ff00;color:black;">
+                            <td style="background:#d3f9d8;color:black;">
                                 {{ $data->coin_name }}
                             </td>
                             <td class="tabledata-veryhigh">
@@ -191,7 +191,7 @@
                             </td>
                         @endif
                         @if ($usd_market_cap > 1000000000 && $usd_market_cap < 25000000000)
-                            <td style="background:#ff9900;color:black;">
+                            <td style="background:#ffd8a8;color:black;">
                                 {{ $data->coin_name }}
                             </td>
                             <td class="tabledata-veryhigh">
@@ -212,7 +212,7 @@
                             </td>
                         @endif
                         @if ($usd_market_cap > 25000000000)
-                            <td style="background:#ff0000;color:black;">
+                            <td style="background:#ffa8a8;color:black;">
                                 {{ $data->coin_name }}
                             </td>
                             <td class="tabledata-veryhigh">
@@ -237,7 +237,7 @@
         </table>
     </div>
 </div>
-<!-- <div class="modal fade" id="new_transaction_modal" data-backdrop="static" tabindex="-1" role="dialog"
+ {{-- <div class="modal fade" id="new_transaction_modal" data-backdrop="static" tabindex="-1" role="dialog"
     aria-labelledby="staticBackdrop" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -278,8 +278,8 @@
                                         <th></th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @foreach ($available_coins as $coin)
+                                <tbody> --}}
+                                    {{-- @foreach ($available_coins as $coin)
                                         <tr onclick="selectCoinFromCoinsList(event)">
                                             <td class="coin-table-data">
                                                 <?php
@@ -338,8 +338,8 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                    @endforeach
-                                </tbody>
+                                    @endforeach --}}
+                                {{-- </tbody>
                             </table>
                         </div>
                     </div>
@@ -398,4 +398,4 @@
             </div>
         </div>
     </div>
-</div> -->
+</div> --}}

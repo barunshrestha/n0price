@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TransactionController;
 
 /*
@@ -58,6 +59,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
 
 Route::group(['middleware' => 'auth'], function () {
 
+    Route::get('/get/all/coins', [DashboardController::class, 'getallcoins']);
     Route::post('check_username', 'UserController@checkUsername')->name('check_username');
     Route::get('/reset_password/{id}', 'UserController@reset')->name('users.reset');
     Route::resource('roles', 'RoleController');

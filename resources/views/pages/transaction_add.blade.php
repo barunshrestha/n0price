@@ -40,7 +40,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($available_coins as $coin)
+                                    {{-- @foreach ($available_coins as $coin)
                                         <tr onclick="selectCoinFromCoinsList(event)">
                                             <td class="coin-table-data">
                                                 <?php
@@ -99,7 +99,7 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>

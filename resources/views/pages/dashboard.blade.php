@@ -151,7 +151,6 @@
             </div>
         </div>
     </div>
-    
 @endsection
 @section('scripts')
     <script src="{{ asset('js/pages/crud/ktdatatable/base/html-table.js') }}" type="text/javascript"></script>
@@ -207,22 +206,23 @@
 
             var allocation_percentage = $('.allocation-percentage').map((_, el) => el.innerHTML).get();
             var total_allocation_percentage = 0;
-            $.each(allocation_percentage,function(){
+            $.each(allocation_percentage, function() {
                 total_allocation_percentage += parseInt(this, 10);
             });
             $('#total_allocation').html(total_allocation_percentage.toFixed(2) + '%');
-            if(total_allocation_percentage !== 100){
-                $('#total_allocation').css('color','red');
-                $('#total_allocation').css('font-weight','bold');
+            if (total_allocation_percentage !== 100) {
+                $('#total_allocation').css('color', 'red');
+                $('#total_allocation').css('font-weight', 'bold');
             }
             //console.log("allocation_percentage " + allocation_percentage[0].replace(/[^0-9]/g,''));
 
 
-            var allocated_verylow = Number(allocation_percentage[0].replace(/[^0-9]/g,'')) * total_allocated / 100;
-            var allocated_low = Number(allocation_percentage[1].replace(/[^0-9]/g,'')) * total_allocated / 100;
-            var allocated_medium = Number(allocation_percentage[2].replace(/[^0-9]/g,'')) * total_allocated / 100;
-            var allocated_high = Number(allocation_percentage[3].replace(/[^0-9]/g,'')) * total_allocated / 100;
-            var allocated_veryhigh = Number(allocation_percentage[4].replace(/[^0-9]/g,'')) * total_allocated / 100;
+            var allocated_verylow = Number(allocation_percentage[0].replace(/[^0-9]/g, '')) * total_allocated / 100;
+            var allocated_low = Number(allocation_percentage[1].replace(/[^0-9]/g, '')) * total_allocated / 100;
+            var allocated_medium = Number(allocation_percentage[2].replace(/[^0-9]/g, '')) * total_allocated / 100;
+            var allocated_high = Number(allocation_percentage[3].replace(/[^0-9]/g, '')) * total_allocated / 100;
+            var allocated_veryhigh = Number(allocation_percentage[4].replace(/[^0-9]/g, '')) * total_allocated /
+                100;
 
             $('#toallocate-verylow').html(allocated_verylow.toFixed(2));
             $('#toallocate-low').html(allocated_low.toFixed(2));
@@ -371,42 +371,44 @@
 
             var coin_datatable = $('#kt_datatable_coin_select').KTDatatable({
                 data: {
+                    type: 'remote',
+                    source: {
+                        read: {
+                            method: 'GET',
+                            url: '/get/all/coins',
+                            contentType: 'application/json',
+                            params: {
+                                generalSearch: '',
+                            },
+                            map: function(data) {
+                                // console.log(data);
+                                return data.data;
+                            }
+                        }
+                    },
+                    pageSize: 10,
+                    serverPaging: true,
+                    serverFiltering: true,
+                    serverSorting: true,
                     saveState: {
                         cookie: false
                     }
                 },
-                toolbar: {
-                    items: {
-                        info: false,
-                        pagination: {
-                            navigation: {
-                                prev: false,
-                                next: false,
-                                first: false,
-                                last: false
-                            },
-                            pages:{
-                                desktop:{
-                                    layout: 'compact'
-                                },
-                                tablet:{
-                                    layout: 'compact'
-                                },
-                                mobile:{
-                                    layout: 'compact'
-                                }
-                            }
-                        }
-                    }
-                },
-                pagination: true,
+                columns: [{
+                    field: "title",
+                    template: function(row) {
+                        return '<div onclick="selectCoinFromCoinsList(event)"> <div class="coin-table-data"> <div class="align-items-center d-flex" onclick="selectCoinFromCoinsList(event)"> <div class="d-flex align-items-center"><img src="' +
+                            row.image +
+                            '" alt="img" class="dropdown-image mx-2 "><div class="mx-2 font-weight-bold">' + row.name + '</div><input type="hidden" value="' + row.coin_id +'"class="coin_org_symbol" /><input type="hidden" value="' + row.id +'"class="coin_table_id" name="coin_id" /><div class="align-items-center d-flex ml-auto price_and_gain"></div></div></div></div></div>';
+                    },
+                    width: 130,
+                }],
+
                 search: {
                     input: $('#kt_coin_datatable_search_query'),
                     key: 'generalSearch'
                 },
-                rows: {
-                    autoHide: true,
-                }
+
             });
 
             $('#kt_coin_datatable_search_query').click(
@@ -443,6 +445,7 @@
 
         function selectCoinFromCoinsList(event) {
             var parent = event.target.parentElement;
+
             $('#selected_coin').html(parent)
             $('#selected_coin').removeClass("hidden");
             $('#investment-description').removeClass("hidden");
@@ -450,9 +453,37 @@
             $('#coin-search-bar').addClass('hidden');
             $('.coin-in-coin-list-button').addClass('hidden');
 
-            var price_today = $('#selected_coin .coin_org_price').val();
-            $('#purchase_price').val(price_today);
+            // var price_today = $('#selected_coin .coin_org_price').val();
+
             $('.modal.fade.show').css('display', 'flex');
+
+
+            var coin_id = $('#selected_coin .coin_org_symbol').val();
+            console.log(coin_id);
+            const url = 'https://pro-api.coingecko.com/api/v3/simple/price?ids=' + coin_id +
+                '&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX';
+
+            // console.log(curr);
+            let fetchRes = fetch(url);
+            fetchRes.then(res =>
+                res.json()).then(data => {
+                    console.log(data);
+                var price_today = data[Object.keys(data)[0]].usd;
+                var usd_24h_change = data[Object.keys(data)[0]].usd_24h_change ? data[Object.keys(data)[0]].usd_24h_change : 0;
+                var round_usd=Number((usd_24h_change).toFixed(2));
+                if(usd_24h_change >0 ){
+                    $('#selected_coin .price_and_gain').html('<div class="mx-2 font-weight-bold usd-price"><div class="mx-2 ml-5"><span class="text-success font-weight-bold gain-button"> '+ round_usd + '% <i class="text-success flaticon2-arrow-up"></i></span></div></div>');
+                }
+                else if (usd_24h_change < 0){
+                    $('#selected_coin .price_and_gain').html('<div class="mx-2 font-weight-bold usd-price"><div class="mx-2 ml-5"><span class="text-danger font-weight-bold gain-button"> '+ round_usd + '% <i class="text-danger flaticon2-arrow-down"></i></span></div></div>');
+                }
+                else{
+                    $('#selected_coin .price_and_gain').html('<div class="mx-2 font-weight-bold usd-price"><div class="mx-2 ml-5"><span class="text-dark font-weight-bold gain-button"> '+ round_usd + '% <i class="text-dark flaticon2-hexagonal"></i></span></div></div>');
+                }
+                $('#purchase_price').val(price_today);
+                
+            })
+            // console.log(coin_id);
         }
 
 
@@ -582,11 +613,11 @@
         //     });
         // }
 
-        $.ajax({
-                url: "{{ route('portfolio_summary') }}",
-                success: function(result) {
-                    $("#portfolio_summary").html(result);
-                }
-            });
+        // $.ajax({
+        //     url: "{{ route('portfolio_summary') }}",
+        //     success: function(result) {
+        //         $("#portfolio_summary").html(result);
+        //     }
+        // });
     </script>
 @endsection

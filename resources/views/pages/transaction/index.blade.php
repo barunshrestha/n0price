@@ -40,31 +40,8 @@
             </div>
             <table class="datatable datatable-bordered table-responsive" id="kt_all_transaction">
                 <thead>
-                    <tr>
-                        <th> ID </th>
-                        <th> User </th>
-                        <th> Coin </th>
-                        <th> Units </th>
-                        <th> Price </th>
-                        <th> Status </th>
-                        <th> Date </th>
-                    </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    $key = 0;
-                    ?>
-                    @foreach ($transactions as $transaction)
-                        <tr>
-                            <td>{{ $key + 1 }}</td>
-                            <td>{{ $transaction->username }}</td>
-                            <td>{{ $transaction->coin_name }}</td>
-                            <td>{{ $transaction->units }}</td>
-                            <td>{{ $transaction->purchase_price }}</td>
-                            <td>{{ $transaction->status }}</td>
-                            <td>{{ $transaction->date }}</td>
-                        </tr>
-                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -77,37 +54,59 @@
     <script type="text/javascript">
         var datatable = $('#kt_all_transaction').KTDatatable({
             data: {
-
+                type: 'remote',
+                source: {
+                    read: {
+                        method: 'GET',
+                        url: '/get/all/transactions',
+                        contentType: 'application/json',
+                        params: {
+                            generalSearch: '',
+                        },
+                        map: function(data){
+                            console.log(data);
+                            var my_data=data.data;
+                           return data.data;
+                        }
+                    }
+                },
+                pageSize: 10,
+                serverPaging: true,
+                serverFiltering: true,
+                serverSorting: true,
                 saveState: {
                     cookie: false
                 }
             },
-            columns: [{
-                    field: "ID",
-                    width: 20,
-                },
+            columns: [
                 {
-                    field: "User",
+                    field: "username",
+                    title:"User",
                     width: 130,
                 },
                 {
-                    field: "Coin",
+                    field: "coin_name",
+                    title: "Coin",
                     width: 130,
                 },
                 {
-                    field: "Units",
+                    field: "units",
+                    title: "Units",
                     width: 130,
                 },
                 {
-                    field: "Price",
+                    field: "purchase_price",
+                    title: "Price",
                     width: 130,
                 },
                 {
-                    field: "Status",
+                    field: "status",
+                    title: "Status",
                     width: 130,
                 },
                 {
-                    field: "Date",
+                    field: "date",
+                    title: "Date",
                     width: 130,
                 },
 

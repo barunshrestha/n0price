@@ -24,30 +24,12 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        $active_coins = '';
-        $query = Coin::where('status', '=', '1');
-        $available_coins = $query->limit(20)->get();
-        $this->_data['available_coins'] = $available_coins;
-
-        // foreach ($available_coins as $key => $value) {
-        //     $active_coins = $active_coins . "," . $value->coin_id;
-        // }
-        // $active_coins = ltrim($active_coins, ',');
-        // $url = "https://pro-api.coingecko.com/api/v3/simple/price?ids=" . $active_coins . "&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
-        // $ch = curl_init();
-        // curl_setopt($ch, CURLOPT_URL, $url);
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // $response = curl_exec($ch);
-        // $current_price = json_decode($response);
-        // curl_close($ch);
-        // $this->_data['current_price'] = $current_price;
-
         $user = Auth::user();
         $this->_data['user'] = $user;
 
         $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ')');
         $this->_data['portfolio'] = $portfolio;
-        
+
         $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
             ->where('transactions.user_id', $user->id)
             ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
@@ -59,7 +41,8 @@ class DashboardController extends Controller
         return view($this->_page . 'dashboard', $this->_data);
     }
 
-    public function portfolio_summary(){
+    public function portfolio_summary()
+    {
         $user = Auth::user();
         $this->_data['user'] = $user;
 
@@ -69,7 +52,7 @@ class DashboardController extends Controller
         $total_holdings_valuation = 0;
         $total_holdings_valuation_yesterday = 0;
         $total_investment = 0;
-        foreach($portfolio as $stock){
+        foreach ($portfolio as $stock) {
             $stock->current_holdings = $stock->buy_unit - $stock->sell_unit;
             $coin_id = $stock->coin_id;
             $url = "https://pro-api.coingecko.com/api/v3/simple/price?ids=" . $coin_id . "&vs_currencies=usd&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
@@ -84,8 +67,8 @@ class DashboardController extends Controller
             $stock->current_value_total = $stock->current_holdings * $stock->current_price;
             $total_holdings_valuation += $stock->current_value_total;
             $yesterday = Carbon::now()->subDays(1)->format('d-m-Y');
-            
-            $url = "https://api.coingecko.com/api/v3/coins/".$coin_id."/history?date=".$yesterday."&localization=false&vs_currencies=usd&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+
+            $url = "https://api.coingecko.com/api/v3/coins/" . $coin_id . "/history?date=" . $yesterday . "&localization=false&vs_currencies=usd&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -97,13 +80,25 @@ class DashboardController extends Controller
 
             $stock->total_investment = $stock->buy_amount - $stock->sell_amount;
             $total_investment += $stock->total_investment;
-
-            
         }
-        $this->_data['total_holdings_valuation'] = round($total_holdings_valuation,2);
+        $this->_data['total_holdings_valuation'] = round($total_holdings_valuation, 2);
         $this->_data['total_holdings_valuation_yesterday'] = $total_holdings_valuation_yesterday;
         $this->_data['total_investment'] = $total_investment;
         //dd($total_holdings_valuation);
-        return view($this->_page.'portfolio_summary',$this->_data);
+        return view($this->_page . 'portfolio_summary', $this->_data);
+    }
+
+    public function getallcoins(Request $request)
+    {
+        $query = Coin::where('status', '=', '1');
+        $data = $request->all();
+        if (isset($data['query'])) {
+            $searchkeyword = $data['query']['generalSearch'];
+            if (isset($searchkeyword)) {
+                $query->where('name', 'LIKE', '%' . $searchkeyword . '%');
+            }
+        }
+        $available_coins = $query->get();
+        return response()->json(["data" => $available_coins,"request"=>$data]);
     }
 }
