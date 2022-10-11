@@ -50,7 +50,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval', 'adminAuth'])->group(
 Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/', 'DashboardController@index')->name('dashboard');
     Route::resource('transactions', 'TransactionController');
-    Route::post('/destroyTransaction', [TransactionController::class, 'destroy'])->name('destroyTransaction');
+    Route::post('/destroyTransaction', [TransactionController::class, 'destroy'])->name('destroymyTransaction');
     Route::get('/profit_calc', [TransactionController::class, 'profit_calculation']);
     Route::post('/change_allocation', [TransactionController::class, 'change_allocation'])->name('percentage.allocation');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');

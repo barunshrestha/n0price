@@ -643,7 +643,7 @@
             }).then(function(result) {
                 if (result.hasOwnProperty('value')) {
                     $.ajax({
-                        url: "{{ route('destroyTransaction') }}",
+                        url: "{{ route('destroymyTransaction') }}",
                         type: "POST",
                         data: {
                             id: tid
