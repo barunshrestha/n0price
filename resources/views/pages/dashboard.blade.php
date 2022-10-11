@@ -689,9 +689,10 @@
                             cookie: false
                         }
                     },
-                    columns: [{
+                    columns: [
+                        {
                             field: "SN",
-                            width: 50,
+                            width: 20,
                             textAlign: 'center'
                         },
                         {
@@ -729,6 +730,7 @@
                         input: $('#_portfolio_search_transaction'),
                         key: 'generalSearch'
                     },
+                   
 
                 });
             }

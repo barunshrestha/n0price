@@ -120,6 +120,7 @@ class DashboardController extends Controller
         $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
         ->where('transactions.user_id', $user->id)
         ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
+        ->orderBy('purchase_date','desc')
         ->get();
         $this->_data['transactions'] = $transactions;
         return view($this->_page . 'dashboard-content.'.'dashboard-transactions-partials', $this->_data);
