@@ -197,11 +197,11 @@
                 sum_veryhigh = sum_veryhigh + value;
             });
 
-            $('#allocated-verylow').html(sum_verylow.toFixed(2));
-            $('#allocated-low').html(sum_low.toFixed(2));
-            $('#allocated-medium').html(sum_medium.toFixed(2));
-            $('#allocated-high').html(sum_high.toFixed(2));
-            $('#allocated-veryhigh').html(sum_veryhigh.toFixed(2));
+            $('#allocated-verylow').html(sum_verylow.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#allocated-low').html(sum_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#allocated-medium').html(sum_medium.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#allocated-high').html(sum_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#allocated-veryhigh').html(sum_veryhigh.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
             var total_allocated = sum_verylow + sum_low + sum_medium + sum_high + sum_veryhigh;
 
             var allocation_percentage = $('.allocation-percentage').map((_, el) => el.innerHTML).get();
@@ -209,7 +209,7 @@
             $.each(allocation_percentage, function() {
                 total_allocation_percentage += parseInt(this, 10);
             });
-            $('#total_allocation').html(total_allocation_percentage.toFixed(2) + '%');
+            $('#total_allocation').html(total_allocation_percentage.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '%');
             if (total_allocation_percentage !== 100) {
                 $('#total_allocation').css('color', 'red');
                 $('#total_allocation').css('font-weight', 'bold');
@@ -224,13 +224,13 @@
             var allocated_veryhigh = Number(allocation_percentage[4].replace(/[^0-9]/g, '')) * total_allocated /
                 100;
 
-            $('#toallocate-verylow').html(allocated_verylow.toFixed(2));
-            $('#toallocate-low').html(allocated_low.toFixed(2));
-            $('#toallocate-medium').html(allocated_medium.toFixed(2));
-            $('#toallocate-high').html(allocated_high.toFixed(2));
-            $('#toallocate-veryhigh').html(allocated_veryhigh.toFixed(2));
+            $('#toallocate-verylow').html(allocated_verylow.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#toallocate-low').html(allocated_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#toallocate-medium').html(allocated_medium.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#toallocate-high').html(allocated_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#toallocate-veryhigh').html(allocated_veryhigh.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
-            $('#allocated-total').html(total_allocated.toFixed(2));
+            $('#allocated-total').html(total_allocated.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
 
             var not_allocated_verylow = sum_verylow - allocated_verylow;
@@ -243,12 +243,12 @@
                 not_allocated_high + not_allocated_veryhigh;
 
 
-            $('#not_allocated-verylow').html(not_allocated_verylow.toFixed(2));
-            $('#not_allocated-low').html(not_allocated_low.toFixed(2));
-            $('#not_allocated-medium').html(not_allocated_medium.toFixed(2));
-            $('#not_allocated-high').html(not_allocated_high.toFixed(2));
-            $('#not_allocated-veryhigh').html(not_allocated_veryhigh.toFixed(2));
-            $('#not_allocated-total').html(total_not_allocated.toFixed(2));
+            $('#not_allocated-verylow').html(not_allocated_verylow.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#not_allocated-low').html(not_allocated_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#not_allocated-medium').html(not_allocated_medium.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#not_allocated-high').html(not_allocated_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#not_allocated-veryhigh').html(not_allocated_veryhigh.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#not_allocated-total').html(total_not_allocated.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
             var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
                 data: {
