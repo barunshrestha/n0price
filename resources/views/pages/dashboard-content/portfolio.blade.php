@@ -26,7 +26,7 @@
                            {{ $constraints->market_cap }}
                         </th>
                     @endforeach
-                    <th>Total</th>
+                    <th style="text-align:center;">Total</th>
                 </tr>
             </thead>
             <tbody>

@@ -76,7 +76,7 @@
                         </td>
                         <td class="text-center align-middle">
                             <div id="purchase_date-{{ $transaction->id }}">
-                                <div class="hide_after_edit ">
+                                <div class="hide_after_edit justify-content-center">
                                     {{ $transaction->purchase_date }}
                                 </div>
                                 <input type="date" name="purchase_date" class="form-control hidden hide_before_edit"
@@ -104,7 +104,7 @@
                         </td>
                         <td>
                             <div id="transaction_action_buttons-{{ $transaction->id }}">
-                                <div class="hide_after_edit d-flex">
+                                <div class="hide_after_edit d-flex justify-content-center">
                                     <button class="btn btn-icon btn-success btn-xs mr-2 transactionEditBtn"
                                         data-toggle="tooltip" title="Edit"
                                         id="transactionEdit-{{ $transaction->id }}"
@@ -123,7 +123,7 @@
                                         title="Delete"><i class="fa fa-trash"></i></button> --}}
                                     </form>
                                 </div>
-                                <div class="hide_before_edit hidden d-flex">
+                                <div class="hide_before_edit hidden d-flex justify-content-center">
                                     <button type="button" value="Save" class="btn btn-icon btn-success btn-xs mr-2"
                                         data-toggle="tooltip" title="Save"
                                         id="transaction_save_btn-{{ $transaction->id }}" onclick="transactionsaveBtn(event)"><i
