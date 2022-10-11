@@ -199,11 +199,11 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $transaction = Transaction::findOrFail($id);
+        $transaction = Transaction::findOrFail($request->id);
         $transaction->delete();
-        return redirect()->back()->with('success', 'Transaction has been deleted');
+        return response()->json(["msg"=>"Your response has been deleted"]);
     }
 
     public function profit_calculation()

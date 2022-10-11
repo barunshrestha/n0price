@@ -1,4 +1,5 @@
 <div class="card card-custom">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <div class="card-header flex-wrap border-0 pt-6 pb-0">
         <div class="card-title">
             <h3 class="card-label">Transactions
@@ -110,14 +111,16 @@
                                         onclick="transactionEditBtn(event)">
                                         <i class="fa fa-pen"></i>
                                     </button>
-
-                                    <form action="{{ route('transactions.destroy', $transaction->id) }}"
+                                    <button type="button" value="Delete"
+                                    class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip" onclick="deleteTransaction({{$transaction->id}})"
+                                    title="Delete"><i class="fa fa-trash"></i></button>
+                                    <form action="{{ route('transactions.destroy', $transaction->id) }}" id="deleteMyTransaction-{{$transaction->id}}"
                                         style="display: inline-block;" method="post">
                                         {{ method_field('DELETE') }}
                                         {{ csrf_field() }}
-                                        <button type="submit" value="Delete"
-                                            class="btn btn-icon btn-danger btn-xs mr-2 transactiondeleteBtn"
-                                            data-toggle="tooltip" title="Delete"><i class="fa fa-trash"></i></button>
+                                        {{-- <button type="submit" value="Delete"
+                                        class="btn btn-icon btn-danger btn-xs mr-2 deleteBtn transactiondeleteBtn" data-toggle="tooltip"
+                                        title="Delete"><i class="fa fa-trash"></i></button> --}}
                                     </form>
                                 </div>
                                 <div class="hide_before_edit hidden d-flex">

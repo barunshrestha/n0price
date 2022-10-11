@@ -215,14 +215,15 @@
                 $('#total_allocation').css('font-weight', 'bold');
             }
             //console.log("allocation_percentage " + allocation_percentage[0].replace(/[^0-9]/g,''));
-            
+
             var allocated_verylow = Number(allocation_percentage[4].replace(/[^0-9]/g, '')) * total_allocated / 100;
             var allocated_low = Number(allocation_percentage[3].replace(/[^0-9]/g, '')) * total_allocated / 100;
             var allocated_medium = Number(allocation_percentage[2].replace(/[^0-9]/g, '')) * total_allocated / 100;
             var allocated_high = Number(allocation_percentage[1].replace(/[^0-9]/g, '')) * total_allocated / 100;
-            var allocated_veryhigh = Number(allocation_percentage[0].replace(/[^0-9]/g, '')) * total_allocated /100;
-            
-            
+            var allocated_veryhigh = Number(allocation_percentage[0].replace(/[^0-9]/g, '')) * total_allocated /
+                100;
+
+
             $('#toallocate-verylow').html(allocated_verylow.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
             $('#toallocate-low').html(allocated_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
             $('#toallocate-medium').html(allocated_medium.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
@@ -246,7 +247,8 @@
             $('#not_allocated-low').html(not_allocated_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
             $('#not_allocated-medium').html(not_allocated_medium.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
             $('#not_allocated-high').html(not_allocated_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-            $('#not_allocated-veryhigh').html(not_allocated_veryhigh.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            $('#not_allocated-veryhigh').html(not_allocated_veryhigh.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+                '$&,'));
             $('#not_allocated-total').html(total_not_allocated.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
             var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
@@ -496,7 +498,6 @@
                 $('#purchase_price').val(price_today);
 
             })
-            // console.log(coin_id);
         }
 
 
@@ -625,6 +626,51 @@
         //         console.log('Failed: ' + error);
         //     });
         // }
+
+        function deleteTransaction(tid) {
+            swal.fire({
+                title: "Delete!",
+                text: "Are you sure you want to delete this transaction?",
+                icon: "question",
+                buttonsStyling: false,
+                confirmButtonText: "Yes I'm sure",
+                showCancelButton: true,
+                cancelButtonText: "No",
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: "btn btn-default"
+                }
+            }).then(function(result) {
+                if (result.hasOwnProperty('value')) {
+                    $.ajax({
+                        url: "{{ route('destroyTransaction') }}",
+                        type: "POST",
+                        data: {
+                            id: tid
+                        },
+                        success: function(result) {
+                            $('.errorbox').html(
+                                "<div class='p-4 bg-success text-white'>Transaction has been deleted.</div>"
+                            );
+                            $('#transaction-btn').click();
+
+                            setTimeout(removeerrbox, 3000);
+
+                            function removeerrbox() {
+                                $('.errorbox').html("")
+                            }
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+
+
+                    // var form_id = "deleteMyTransaction-" + tid;
+                    // $("#" + form_id).submit();
+                }
+            });
+        }
 
         $.ajax({
             url: "{{ route('portfolio_summary') }}",
