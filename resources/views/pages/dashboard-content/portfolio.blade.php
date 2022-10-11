@@ -2,7 +2,7 @@
     <div class="card-header flex-wrap border-0 pt-6 pb-0">
         <div class="card-title">
             <h3 class="card-label">Asset Matrix </h3>
-            
+
         </div>
         <div class="card-toolbar">
             <button type="button" class="btn btn-primary mx-2 my-3" data-toggle="modal"
@@ -11,19 +11,20 @@
                 Transaction</button>
         </div>
     </div>
-    
+
     <div class="card-body">
-    
+
         <table class="table table-responsive-sm table-bordered" style="width: 100%">
-        <tr>
-        <div id='portfolio_summary'></div>
-        </tr>
+            <tr>
+                <div id='portfolio_summary'></div>
+            </tr>
             <thead>
                 <tr>
                     <th scope="col">Market Cap</th>
                     @foreach ($asset_matrix_constraints as $constraints)
-                        <th scope="col" style="background: {{ $constraints->color }};color:black;">
-                            {{ $constraints->market_cap }}</th>
+                        <th scope="col" style="background: {{ $constraints->color }};color:black;text-align:center;">
+                           {{ $constraints->market_cap }}
+                        </th>
                     @endforeach
                     <th>Total</th>
                 </tr>
@@ -34,20 +35,20 @@
                         Risk
                     </td>
                     @foreach ($asset_matrix_constraints as $constraints)
-                        <td>
+                        <td style="text-align:center;">
                             {{ $constraints->risk }}
                         </td>
                     @endforeach
                 </tr>
                 <tr>
                     <td>
-                        Allocation % <span id ="total_allocation"></span>
+                        Allocation % <span id="total_allocation"></span>
                     </td>
                     <form action="{{ route('percentage.allocation') }}" method="POST">
                         @csrf
                         @foreach ($asset_matrix_constraints as $constraints)
                             <td>
-                                <div class="hideAfteredit allocation-percentage">
+                                <div class="hideAfteredit allocation-percentage" style="text-align: center;">
                                     {{ $constraints->percentage_allocation }} %
                                 </div>
                                 <input type="text" class="form-control hideBeforeedit hidden"
@@ -55,7 +56,7 @@
                             </td>
                         @endforeach
                         <td>
-                            <div class="d-flex">
+                            <div class="d-flex justify-content-center">
                                 <button class="btn btn-icon btn-success btn-xs allocationEditBtn" type="button"
                                     data-toggle="tooltip" title="Edit">
                                     <i class="fa fa-pen"></i>
@@ -73,35 +74,35 @@
                     <td>
                         To Allocate $
                     </td>
-                    <td id="toallocate-veryhigh"></td>
-                    <td id="toallocate-high"></td>
-                    <td id="toallocate-medium"></td>
-                    <td id="toallocate-low"></td>
-                    <td id="toallocate-verylow"></td>
+                    <td style="text-align: right;" id="toallocate-veryhigh"></td>
+                    <td style="text-align: right;" id="toallocate-high"></td>
+                    <td style="text-align: right;" id="toallocate-medium"></td>
+                    <td style="text-align: right;" id="toallocate-low"></td>
+                    <td style="text-align: right;" id="toallocate-verylow"></td>
                 </tr>
                 <tr>
 
                     <td>
                         Allocated
                     </td>
-                    <td id="allocated-veryhigh"></td>
-                    <td id="allocated-high"></td>
-                    <td id="allocated-medium"></td>
-                    <td id="allocated-low"></td>
-                    <td id="allocated-verylow"></td>
-                    <td id="allocated-total"></td>
+                    <td style="text-align: right;" id="allocated-veryhigh"></td>
+                    <td style="text-align: right;" id="allocated-high"></td>
+                    <td style="text-align: right;" id="allocated-medium"></td>
+                    <td style="text-align: right;" id="allocated-low"></td>
+                    <td style="text-align: right;" id="allocated-verylow"></td>
+                    <td style="text-align: right;" id="allocated-total"></td>
                 </tr>
                 <tr>
 
                     <td>
                         Not Allocated
                     </td>
-                    <td id="not_allocated-veryhigh"></td>
-                    <td id="not_allocated-high"></td>
-                    <td id="not_allocated-medium"></td>
-                    <td id="not_allocated-low"></td>
-                    <td id="not_allocated-verylow"></td>
-                    <td id="not_allocated-total"></td>
+                    <td style="text-align: right;" id="not_allocated-veryhigh"></td>
+                    <td style="text-align: right;" id="not_allocated-high"></td>
+                    <td style="text-align: right;" id="not_allocated-medium"></td>
+                    <td style="text-align: right;" id="not_allocated-low"></td>
+                    <td style="text-align: right;" id="not_allocated-verylow"></td>
+                    <td style="text-align: right;" id="not_allocated-total"></td>
                 </tr>
                 @foreach ($portfolio as $key => $data)
                     <tr>
@@ -133,19 +134,19 @@
                             <td style="background:#e9fac8;color:black;">
                                 {{ $data->coin_name }}
                             </td>
-                            <td class="tabledata-veryhigh">
-                                {{ $req_unit * $usd }}
+                            <td class="tabledata-veryhigh" style="text-align: right;">
+                                {{ round($req_unit * $usd,2) }}
                             </td>
-                            <td class="tabledata-high">
+                            <td class="tabledata-high" style="text-align: right;">
 
                             </td>
-                            <td class="tabledata-medium">
+                            <td class="tabledata-medium" style="text-align: right;">
 
                             </td>
-                            <td class="tabledata-low">
+                            <td class="tabledata-low" style="text-align: right;">
 
                             </td>
-                            <td class="tabledata-verylow">
+                            <td class="tabledata-verylow" style="text-align: right;">
                             </td>
                         @endif
                         @if ($usd_market_cap > 25000000 && $usd_market_cap < 250000000)
@@ -155,8 +156,8 @@
                             <td class="tabledata-veryhigh">
 
                             </td>
-                            <td class="tabledata-high">
-                                {{ $req_unit * $usd }}
+                            <td class="tabledata-high" style="text-align: right;">
+                                {{ round($req_unit * $usd,2) }}
 
                             </td>
                             <td class="tabledata-medium">
@@ -179,8 +180,8 @@
                             <td class="tabledata-high">
 
                             </td>
-                            <td class="tabledata-medium">
-                                {{ $req_unit * $usd }}
+                            <td class="tabledata-medium" style="text-align: right;">
+                                {{ round($req_unit * $usd,2) }}
 
                             </td>
                             <td class="tabledata-low">
@@ -203,8 +204,8 @@
                             <td class="tabledata-medium">
 
                             </td>
-                            <td class="tabledata-low">
-                                {{ $req_unit * $usd }}
+                            <td class="tabledata-low" style="text-align: right;">
+                                {{ round($req_unit * $usd,2) }}
 
                             </td>
                             <td class="tabledata-verylow">
@@ -227,8 +228,8 @@
                             <td class="tabledata-low">
 
                             </td>
-                            <td class="tabledata-verylow">
-                                {{ $req_unit * $usd }}
+                            <td class="tabledata-verylow" style="text-align: right;">
+                                {{ round($req_unit * $usd,2) }}
                             </td>
                         @endif
                     </tr>
@@ -237,7 +238,7 @@
         </table>
     </div>
 </div>
- {{-- <div class="modal fade" id="new_transaction_modal" data-backdrop="static" tabindex="-1" role="dialog"
+{{-- <div class="modal fade" id="new_transaction_modal" data-backdrop="static" tabindex="-1" role="dialog"
     aria-labelledby="staticBackdrop" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -279,7 +280,7 @@
                                     </tr>
                                 </thead>
                                 <tbody> --}}
-                                    {{-- @foreach ($available_coins as $coin)
+{{-- @foreach ($available_coins as $coin)
                                         <tr onclick="selectCoinFromCoinsList(event)">
                                             <td class="coin-table-data">
                                                 <?php
@@ -327,8 +328,7 @@
                                                             } elseif ($usd_24h_change < 0) {
                                                                 $round_usd = round($usd_24h_change / 100, 2);
                                                                 echo "<span class=\"text-danger font-weight-bold gain-button \">" . (string) $round_usd . '% <i class="text-danger flaticon2-arrow-down"></i>  </button>';
-                                                            }
-                                                            else{
+                                                            } else {
                                                                 $round_usd = round($usd_24h_change / 100, 2);
                                                                 echo "<span class=\"text-dark font-weight-bold gain-button \">" . (string) $round_usd . '% <i class="text-dark flaticon2-hexagonal"></i>  </button>';
                                                             }
@@ -339,7 +339,7 @@
                                             </td>
                                         </tr>
                                     @endforeach --}}
-                                {{-- </tbody>
+{{-- </tbody>
                             </table>
                         </div>
                     </div>

@@ -56,11 +56,11 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     Route::get('/portfolio_summary', 'DashboardController@portfolio_summary')->name('portfolio_summary');
     Route::get('/dashboardTransactionPartials', 'DashboardController@dashboardTransactionPartials')->name('dashboardTransactionPartials');
+    Route::get('/get/all/coins', [DashboardController::class, 'getallcoins']);
 });
 
 Route::group(['middleware' => 'auth'], function () {
 
-    Route::get('/get/all/coins', [DashboardController::class, 'getallcoins']);
     Route::post('check_username', 'UserController@checkUsername')->name('check_username');
     Route::get('/reset_password/{id}', 'UserController@reset')->name('users.reset');
     Route::resource('roles', 'RoleController');

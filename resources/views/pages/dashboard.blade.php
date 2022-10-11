@@ -248,7 +248,6 @@
             $('#not_allocated-medium').html(not_allocated_medium.toFixed(2));
             $('#not_allocated-high').html(not_allocated_high.toFixed(2));
             $('#not_allocated-veryhigh').html(not_allocated_veryhigh.toFixed(2));
-
             $('#not_allocated-total').html(total_not_allocated.toFixed(2));
 
             var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
