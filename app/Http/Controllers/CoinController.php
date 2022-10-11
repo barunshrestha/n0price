@@ -21,10 +21,22 @@ class CoinController extends Controller
      */
     public function index()
     {
-        $this->_data['coins'] = Coin::paginate(500);
-        return view($this->_page . 'index', $this->_data);
+        // $this->_data['coins'] = Coin::paginate(500);
+        return view($this->_page . 'index');
     }
-
+    public function adminGetAllCoins(Request $request)
+    {
+        $query = Coin::all();
+        $data = $request->all();
+        if (isset($data['query'])) {
+            $searchkeyword = $data['query']['generalSearch'];
+            if (isset($searchkeyword)) {
+                $query->where('name', 'LIKE', '%' . $searchkeyword . '%');
+            }
+        }
+        $available_coins = $query;
+        return response()->json(["data" => $available_coins, "request" => $data]);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -57,20 +69,20 @@ class CoinController extends Controller
 
         return redirect()->back()->with('fail', 'Coin Information could not be added .');
     }
-    public function activeCoin($id)
+    public function activeCoin(Request $request)
     {
-        $coin = Coin::find($id);
+        $coin = Coin::find($request->id);
         $coin->status = '1';
         $coin->save();
 
-        return redirect()->route('coins.index')->with('success', 'Coin Information has been updated .');
+        // return redirect()->route('coins.index')->with('success', 'Coin Information has been updated .');
     }
-    public function inactiveCoin($id)
+    public function inactiveCoin(Request $request)
     {
-        $coin = Coin::find($id);
+        $coin = Coin::find($request->id);
         $coin->status = '0';
         $coin->save();
-        return redirect()->route('coins.index')->with('success', 'Coin Information has been updated .');
+        // return redirect()->route('coins.index')->with('success', 'Coin Information has been updated .');
     }
 
     /**
@@ -165,4 +177,5 @@ class CoinController extends Controller
         }
         return redirect()->back()->with('success', 'Coin Synced Successfully');
     }
+
 }

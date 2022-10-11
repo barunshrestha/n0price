@@ -39,12 +39,13 @@ Route::middleware(['auth', 'verified', 'topLevelApproval', 'adminAuth'])->group(
     Route::post('/user/status', [UserController::class, 'approvalFilter'])->name('user.approvalFilter');
     Route::resource('users', 'UserController');
     Route::resource('coins', 'CoinController');
-    Route::get('/coin/active/{id}', [CoinController::class, 'activeCoin'])->name('coins.active');
-    Route::get('/coin/inactive/{id}', [CoinController::class, 'inactiveCoin'])->name('coins.inactive');
+    Route::post('/coin/active', [CoinController::class, 'activeCoin'])->name('coins.active');
+    Route::post('/coin/inactive', [CoinController::class, 'inactiveCoin'])->name('coins.inactive');
     Route::get('/sync/coin', [CoinController::class, 'sync_coin'])->name('coins.sync');
     Route::resource('users', 'UserController');
     Route::get('/all/transactions', [TransactionController::class, 'all_transaction'])->name('all.transactions');
     Route::get('/get/all/transactions', [TransactionController::class, 'getall_transactions'])->name('get.all.transactions');
+    Route::get('/admin/get/all/coins', [CoinController::class, 'adminGetAllCoins'])->name('adminGetAllCoins');
 });
 
 Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {

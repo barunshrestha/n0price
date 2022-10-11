@@ -1,0 +1,45 @@
+@foreach ($coins as $key => $coin)
+                        <tr>
+                            <td>{{ $key + 1 }}</td>
+                            <td>{{ $coin->name }}</td>
+
+                            <td>
+                                @if ($coin->status == '0')
+                                    <span class="text-danger fs-6">
+                                        Inactive
+                                    </span>
+                                @else
+                                    <span class="text-success fs-6">
+                                        Active
+                                    </span>
+                                @endif
+                                {{-- {{ $user->approval_status == '0' ? 'Unapproved' : 'Approved' }} --}}
+                            </td>
+
+                            <td>
+                                @if ($coin->status == '0')
+                                    <a href="{{ route('coins.active', $coin->id) }}"
+                                        class="btn btn-icon btn-info btn-xs mr-2" data-toggle="tooltip" title="Approve">
+                                        <i class="fa fa-check"></i>
+                                    </a>
+                                @else
+                                    <a href="{{ route('coins.inactive', $coin->id) }}"
+                                        class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip" title="Disable">
+                                        <i class="fa fa-minus"></i>
+                                    </a>
+                                @endif
+                                <a href="{{ route('coins.edit', $coin->id) }}" class="btn btn-icon btn-success btn-xs mr-2"
+                                    data-toggle="tooltip" title="Edit">
+                                    <i class="fa fa-pen"></i>
+                                </a>
+                                <form action="{{ route('coins.destroy', $coin->id) }}" style="display: inline-block;"
+                                    method="post">
+                                    {{ method_field('DELETE') }}
+                                    {{ csrf_field() }}
+                                    <button type="submit" value="Delete"
+                                        class="btn btn-icon btn-danger btn-xs mr-2 deleteBtn" data-toggle="tooltip"
+                                        title="Delete"><i class="fa fa-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
