@@ -26,19 +26,30 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $this->_data['user'] = $user;
+        $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
+        ->where('transactions.user_id', $user->id)
+        ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
+        ->get();
+        $this->_data['transactions'] = $transactions;
 
         $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ')');
         $this->_data['portfolio'] = $portfolio;
 
-        $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
-            ->where('transactions.user_id', $user->id)
-            ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
-            ->get();
-        $this->_data['transactions'] = $transactions;
+
 
         $asset_matrix_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
         $this->_data['asset_matrix_constraints'] = $asset_matrix_constraints;
         return view($this->_page . 'dashboard', $this->_data);
+    }
+    public function get_transaction_of_specific_user()
+    {
+        $user = Auth::user();
+        $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
+            ->where('transactions.user_id', $user->id)
+            ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
+            ->get();
+        // $this->_data['transactions'] = $transactions;
+        return response()->json(["data"=>$transactions]);
     }
 
     public function portfolio_summary()
@@ -99,6 +110,6 @@ class DashboardController extends Controller
             }
         }
         $available_coins = $query->get();
-        return response()->json(["data" => $available_coins,"request"=>$data]);
+        return response()->json(["data" => $available_coins, "request" => $data]);
     }
 }

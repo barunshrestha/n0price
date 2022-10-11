@@ -251,60 +251,16 @@
 
             $('#not_allocated-total').html(total_not_allocated.toFixed(2));
 
-
-            // var portfolio_datatable = $('#kt_datatable_portfolio').KTDatatable({
-            //     data: {
-            //         saveState: {
-            //             cookie: false
-            //         }
-            //     },
-            //     columns: [{
-            //             field: "SN",
-            //             width: 50,
-            //             textAlign: 'center'
-            //         },
-            //         {
-            //             field: "SYMBOL",
-            //             width: 52,
-            //             sortable: false,
-            //         },
-            //         {
-            //             field: "NAME",
-            //             width: 65,
-            //             overflow: 'visible'
-            //         },
-            //         {
-            //             field: "PRICE(CURRENT)",
-            //             width: 115,
-            //         },
-            //         {
-            //             field: "GAIN",
-            //             width: 91,
-            //         },
-            //         {
-            //             field: "QUANTITY",
-            //             width: 91,
-            //         },
-            //     ],
-            //     search: {
-            //         input: $('#kt_datatable_search_query_portfolio'),
-            //         key: 'generalSearch'
-            //     }
-            // });
-            // get_profit_data();
             var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
                 data: {
                     saveState: {
                         cookie: false
-                    },
-                },
-                search: {
-                    input: $('#_portfolio_search_transaction'),
-                    key: 'generalSearch'
+                    }
                 },
                 columns: [{
                         field: "SN",
-                        width: 46,
+                        width: 50,
+                        textAlign: 'center'
                     },
                     {
                         field: "SYMBOL",
@@ -314,6 +270,7 @@
                     {
                         field: "TICKER",
                         width: 65,
+                        overflow: 'visible'
                     },
                     {
                         field: "TYPE",
@@ -335,10 +292,13 @@
                         field: "ACTIONS",
                         width: 147,
                     },
-
                 ],
+                search: {
+                    input: $('#_portfolio_search_transaction'),
+                    key: 'generalSearch'
+                },
+                
             });
-
 
             var datatable_assetmatrix = $('#kt_datatable_assetmatrix').KTDatatable({
                 data: {
@@ -399,7 +359,10 @@
                     template: function(row) {
                         return '<div onclick="selectCoinFromCoinsList(event)"> <div class="coin-table-data"> <div class="align-items-center d-flex" onclick="selectCoinFromCoinsList(event)"> <div class="d-flex align-items-center"><img src="' +
                             row.image +
-                            '" alt="img" class="dropdown-image mx-2 "><div class="mx-2 font-weight-bold">' + row.name + '</div><input type="hidden" value="' + row.coin_id +'"class="coin_org_symbol" /><input type="hidden" value="' + row.id +'"class="coin_table_id" name="coin_id" /><div class="align-items-center d-flex ml-auto price_and_gain"></div></div></div></div></div>';
+                            '" alt="img" class="dropdown-image mx-2 "><div class="mx-2 font-weight-bold">' +
+                            row.name + '</div><input type="hidden" value="' + row.coin_id +
+                            '"class="coin_org_symbol" /><input type="hidden" value="' + row.id +
+                            '"class="coin_table_id" name="coin_id" /><div class="align-items-center d-flex ml-auto price_and_gain"></div></div></div></div></div>';
                     },
                     width: 130,
                 }],
@@ -452,9 +415,6 @@
             $('#hiddentable').addClass("hidden");
             $('#coin-search-bar').addClass('hidden');
             $('.coin-in-coin-list-button').addClass('hidden');
-
-            // var price_today = $('#selected_coin .coin_org_price').val();
-
             $('.modal.fade.show').css('display', 'flex');
 
 
@@ -467,21 +427,26 @@
             let fetchRes = fetch(url);
             fetchRes.then(res =>
                 res.json()).then(data => {
-                    console.log(data);
+                console.log(data);
                 var price_today = data[Object.keys(data)[0]].usd;
-                var usd_24h_change = data[Object.keys(data)[0]].usd_24h_change ? data[Object.keys(data)[0]].usd_24h_change : 0;
-                var round_usd=Number((usd_24h_change).toFixed(2));
-                if(usd_24h_change >0 ){
-                    $('#selected_coin .price_and_gain').html('<div class="mx-2 font-weight-bold usd-price"><div class="mx-2 ml-5"><span class="text-success font-weight-bold gain-button"> '+ round_usd + '% <i class="text-success flaticon2-arrow-up"></i></span></div></div>');
-                }
-                else if (usd_24h_change < 0){
-                    $('#selected_coin .price_and_gain').html('<div class="mx-2 font-weight-bold usd-price"><div class="mx-2 ml-5"><span class="text-danger font-weight-bold gain-button"> '+ round_usd + '% <i class="text-danger flaticon2-arrow-down"></i></span></div></div>');
-                }
-                else{
-                    $('#selected_coin .price_and_gain').html('<div class="mx-2 font-weight-bold usd-price"><div class="mx-2 ml-5"><span class="text-dark font-weight-bold gain-button"> '+ round_usd + '% <i class="text-dark flaticon2-hexagonal"></i></span></div></div>');
+                var usd_24h_change = data[Object.keys(data)[0]].usd_24h_change ? data[Object.keys(data)[0]]
+                    .usd_24h_change : 0;
+                var round_usd = Number((usd_24h_change).toFixed(2));
+                if (usd_24h_change > 0) {
+                    $('#selected_coin .price_and_gain').html(
+                        '<div class="mx-2 font-weight-bold usd-price"><div class="mx-2 ml-5"><span class="text-success font-weight-bold gain-button"> ' +
+                        round_usd + '% <i class="text-success flaticon2-arrow-up"></i></span></div></div>');
+                } else if (usd_24h_change < 0) {
+                    $('#selected_coin .price_and_gain').html(
+                        '<div class="mx-2 font-weight-bold usd-price"><div class="mx-2 ml-5"><span class="text-danger font-weight-bold gain-button"> ' +
+                        round_usd + '% <i class="text-danger flaticon2-arrow-down"></i></span></div></div>');
+                } else {
+                    $('#selected_coin .price_and_gain').html(
+                        '<div class="mx-2 font-weight-bold usd-price"><div class="mx-2 ml-5"><span class="text-dark font-weight-bold gain-button"> ' +
+                        round_usd + '% <i class="text-dark flaticon2-hexagonal"></i></span></div></div>');
                 }
                 $('#purchase_price').val(price_today);
-                
+
             })
             // console.log(coin_id);
         }

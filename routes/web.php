@@ -72,6 +72,9 @@ Route::group(['middleware' => 'auth'], function () {
     //     ->middleware(['signed', 'throttle:6,1'])
     //     ->name('verification.verify');
 
+    Route::get('/get/specific/user/transaction', [DashboardController::class, 'get_transaction_of_specific_user'])->name('get_transaction_of_specific_user');
+
+
     Route::post('email/verification-notification', [EmailVerificationController::class, 'store'])
         ->middleware('throttle:6,1')
         ->name('verification.send');
