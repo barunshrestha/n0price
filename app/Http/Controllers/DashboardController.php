@@ -85,9 +85,11 @@ class DashboardController extends Controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);
             $yesterday_price = json_decode($response);
-            $stock->yesterday_price = $yesterday_price->market_data->current_price->usd;
-            $stock->yesterday_value_total = $stock->yesterday_price * $stock->current_holdings;
-            $total_holdings_valuation_yesterday += $stock->yesterday_value_total;
+            if(isset($yesterday_price->market_data)){
+                $stock->yesterday_price = $yesterday_price->market_data->current_price->usd;
+                $stock->yesterday_value_total = $stock->yesterday_price * $stock->current_holdings;
+                $total_holdings_valuation_yesterday += $stock->yesterday_value_total;
+            }
 
             $stock->total_investment = $stock->buy_amount - $stock->sell_amount;
             $total_investment += $stock->total_investment;
@@ -111,5 +113,15 @@ class DashboardController extends Controller
         }
         $available_coins = $query->get();
         return response()->json(["data" => $available_coins, "request" => $data]);
+    }
+    public function dashboardTransactionPartials(Request $request){
+        $user = Auth::user();
+        $this->_data['user'] = $user;
+        $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
+        ->where('transactions.user_id', $user->id)
+        ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
+        ->get();
+        $this->_data['transactions'] = $transactions;
+        return view($this->_page . 'dashboard-content.'.'dashboard-transactions-partials', $this->_data);
     }
 }

@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::post('/change_allocation', [TransactionController::class, 'change_allocation'])->name('percentage.allocation');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     Route::get('/portfolio_summary', 'DashboardController@portfolio_summary')->name('portfolio_summary');
+    Route::get('/dashboardTransactionPartials', 'DashboardController@dashboardTransactionPartials')->name('dashboardTransactionPartials');
 });
 
 Route::group(['middleware' => 'auth'], function () {

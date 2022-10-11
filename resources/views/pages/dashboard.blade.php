@@ -297,7 +297,7 @@
                     input: $('#_portfolio_search_transaction'),
                     key: 'generalSearch'
                 },
-                
+
             });
 
             var datatable_assetmatrix = $('#kt_datatable_assetmatrix').KTDatatable({
@@ -322,12 +322,62 @@
             // });
 
             $('#transaction-btn').click(function() {
-                datatable_transactions.reload();
-            });
+                $.ajax({
+                    url: "{{ route('dashboardTransactionPartials') }}",
+                    success: function(result) {
+                        $("#dashboard-transaction-partials").html(result);
+                        var datatable_transactions = $('#kt_datatable_transactions')
+                            .KTDatatable({
+                                data: {
+                                    saveState: {
+                                        cookie: false
+                                    }
+                                },
+                                columns: [{
+                                        field: "SN",
+                                        width: 50,
+                                        textAlign: 'center'
+                                    },
+                                    {
+                                        field: "SYMBOL",
+                                        width: 52,
+                                        sortable: false,
+                                    },
+                                    {
+                                        field: "TICKER",
+                                        width: 65,
+                                        overflow: 'visible'
+                                    },
+                                    {
+                                        field: "TYPE",
+                                        width: 90,
+                                    },
+                                    {
+                                        field: "DATE",
+                                        width: 180,
+                                    },
+                                    {
+                                        field: "UNITS",
+                                        width: 180,
+                                    },
+                                    {
+                                        field: "PRICE(PER UNIT)",
+                                        width: 147,
+                                    },
+                                    {
+                                        field: "ACTIONS",
+                                        width: 147,
+                                    },
+                                ],
+                                search: {
+                                    input: $('#_portfolio_search_transaction'),
+                                    key: 'generalSearch'
+                                },
 
-            // $('#assetmatrix-btn').click(function() {
-            //     datatable_assetmatrix.reload();
-            // });
+                            });
+                    }
+                });
+            });
 
             var coin_datatable = $('#kt_datatable_coin_select').KTDatatable({
                 data: {
@@ -582,6 +632,61 @@
             url: "{{ route('portfolio_summary') }}",
             success: function(result) {
                 $("#portfolio_summary").html(result);
+            }
+        });
+
+        $.ajax({
+            url: "{{ route('dashboardTransactionPartials') }}",
+            success: function(result) {
+                $("#dashboard-transaction-partials").html(result);
+                var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
+                    data: {
+                        saveState: {
+                            cookie: false
+                        }
+                    },
+                    columns: [{
+                            field: "SN",
+                            width: 50,
+                            textAlign: 'center'
+                        },
+                        {
+                            field: "SYMBOL",
+                            width: 52,
+                            sortable: false,
+                        },
+                        {
+                            field: "TICKER",
+                            width: 65,
+                            overflow: 'visible'
+                        },
+                        {
+                            field: "TYPE",
+                            width: 90,
+                        },
+                        {
+                            field: "DATE",
+                            width: 180,
+                        },
+                        {
+                            field: "UNITS",
+                            width: 180,
+                        },
+                        {
+                            field: "PRICE(PER UNIT)",
+                            width: 147,
+                        },
+                        {
+                            field: "ACTIONS",
+                            width: 147,
+                        },
+                    ],
+                    search: {
+                        input: $('#_portfolio_search_transaction'),
+                        key: 'generalSearch'
+                    },
+
+                });
             }
         });
     </script>
