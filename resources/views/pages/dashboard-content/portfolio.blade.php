@@ -74,35 +74,35 @@
                     <td>
                         To Allocate $
                     </td>
-                    <td style="text-align: right;" id="toallocate-veryhigh"></td>
-                    <td style="text-align: right;" id="toallocate-high"></td>
-                    <td style="text-align: right;" id="toallocate-medium"></td>
-                    <td style="text-align: right;" id="toallocate-low"></td>
-                    <td style="text-align: right;" id="toallocate-verylow"></td>
+                    <td style="text-align: right;">$<span id="toallocate-veryhigh"></span></td>
+                    <td style="text-align: right;">$<span id="toallocate-high"></span></td>
+                    <td style="text-align: right;">$<span id="toallocate-medium"></span></td>
+                    <td style="text-align: right;">$<span id="toallocate-low"></span></td>
+                    <td style="text-align: right;">$<span id="toallocate-verylow"></span></td>
                 </tr>
                 <tr>
 
                     <td>
                         Allocated
                     </td>
-                    <td style="text-align: right;" id="allocated-veryhigh"></td>
-                    <td style="text-align: right;" id="allocated-high"></td>
-                    <td style="text-align: right;" id="allocated-medium"></td>
-                    <td style="text-align: right;" id="allocated-low"></td>
-                    <td style="text-align: right;" id="allocated-verylow"></td>
-                    <td style="text-align: right;" id="allocated-total"></td>
+                    <td style="text-align: right;">$<span id="allocated-veryhigh"></span></td>
+                    <td style="text-align: right;">$<span id="allocated-high"></span></td>
+                    <td style="text-align: right;">$<span id="allocated-medium"></span></td>
+                    <td style="text-align: right;">$<span id="allocated-low"></span></td>
+                    <td style="text-align: right;">$<span id="allocated-verylow"></span></td>
+                    <td style="text-align: right;">$<span id="allocated-total"></span></td>
                 </tr>
                 <tr>
 
                     <td>
                         Not Allocated
                     </td>
-                    <td style="text-align: right;" id="not_allocated-veryhigh"></td>
-                    <td style="text-align: right;" id="not_allocated-high"></td>
-                    <td style="text-align: right;" id="not_allocated-medium"></td>
-                    <td style="text-align: right;" id="not_allocated-low"></td>
-                    <td style="text-align: right;" id="not_allocated-verylow"></td>
-                    <td style="text-align: right;" id="not_allocated-total"></td>
+                    <td style="text-align: right;">$<span id="not_allocated-veryhigh"></span></td>
+                    <td style="text-align: right;">$<span id="not_allocated-high"></span></td>
+                    <td style="text-align: right;">$<span id="not_allocated-medium"></span></td>
+                    <td style="text-align: right;">$<span id="not_allocated-low"></span></td>
+                    <td style="text-align: right;">$<span id="not_allocated-verylow"></span></td>
+                    <td style="text-align: right;">$<span id="not_allocated-total"></span></td>
                 </tr>
                 @foreach ($portfolio as $key => $data)
                     <tr>
@@ -135,7 +135,7 @@
                                 {{ $data->coin_name }}
                             </td>
                             <td class="tabledata-veryhigh" style="text-align: right;">
-                                {{ round($req_unit * $usd,2) }}
+                                ${{ number_format($req_unit * $usd,2) }}
                             </td>
                             <td class="tabledata-high" style="text-align: right;">
 
@@ -157,7 +157,7 @@
 
                             </td>
                             <td class="tabledata-high" style="text-align: right;">
-                                {{ round($req_unit * $usd,2) }}
+                                ${{ number_format($req_unit * $usd,2) }}
 
                             </td>
                             <td class="tabledata-medium">
@@ -181,7 +181,7 @@
 
                             </td>
                             <td class="tabledata-medium" style="text-align: right;">
-                                {{ round($req_unit * $usd,2) }}
+                                ${{ number_format($req_unit * $usd,2) }}
 
                             </td>
                             <td class="tabledata-low">
@@ -205,7 +205,7 @@
 
                             </td>
                             <td class="tabledata-low" style="text-align: right;">
-                                {{ round($req_unit * $usd,2) }}
+                                ${{ number_format($req_unit * $usd,2) }}
 
                             </td>
                             <td class="tabledata-verylow">
@@ -229,7 +229,7 @@
 
                             </td>
                             <td class="tabledata-verylow" style="text-align: right;">
-                                {{ round($req_unit * $usd,2) }}
+                                ${{ number_format($req_unit * $usd,2) }}
                             </td>
                         @endif
                     </tr>

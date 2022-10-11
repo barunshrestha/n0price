@@ -169,31 +169,31 @@
             var verylow = $('.tabledata-verylow').map((_, el) => el.innerHTML).get();
             var sum_verylow = 0;
             verylow.forEach(element => {
-                var value = Number(element);
+                var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
                 sum_verylow = sum_verylow + value;
             });
             var low = $('.tabledata-low').map((_, el) => el.innerHTML).get();
             var sum_low = 0;
             low.forEach(element => {
-                var value = Number(element);
+                var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
                 sum_low = sum_low + value;
             });
             var medium = $('.tabledata-medium').map((_, el) => el.innerHTML).get();
             var sum_medium = 0;
             medium.forEach(element => {
-                var value = Number(element);
+                var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
                 sum_medium = sum_medium + value;
             });
             var high = $('.tabledata-high').map((_, el) => el.innerHTML).get();
             var sum_high = 0;
             high.forEach(element => {
-                var value = Number(element);
+                var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
                 sum_high = sum_high + value;
             });
             var veryhigh = $('.tabledata-veryhigh').map((_, el) => el.innerHTML).get();
             var sum_veryhigh = 0;
             veryhigh.forEach(element => {
-                var value = Number(element);
+                var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
                 sum_veryhigh = sum_veryhigh + value;
             });
 

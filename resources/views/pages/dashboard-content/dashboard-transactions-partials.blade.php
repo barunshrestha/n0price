@@ -94,7 +94,7 @@
                         <td class="text-center align-middle">
                             <div id="purchase_price-{{ $transaction->id }}">
                                 <div class="hide_after_edit ">
-                                    {{ round($transaction->purchase_price / $transaction->units, 2) }}
+                                    {{ number_format($transaction->purchase_price / $transaction->units, 2) }}
                                 </div>
                                 <input type="text" name="price_per_unit"
                                     class="form-control hidden  hide_before_edit" style="width: 85%;"
