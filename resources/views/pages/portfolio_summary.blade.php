@@ -6,7 +6,6 @@
         $day_gain = $total_holdings_valuation - $total_holdings_valuation_yesterday;
         $day_gain = round($day_gain,2);
         $total_gain = $total_holdings_valuation - $total_investment;
-        $total_gain = round($total_gain,2);
     ?>
     <p class="card-text" style="color:<?php echo $day_gain > 0 ? 'green': 'red';?>  ">Total Gain : ${{number_format($total_gain,2)}}</p>
     <p class="card-text" style="color:<?php echo $day_gain > 0 ? 'green': 'red';?>  ">Day Gain : ${{number_format($day_gain,2)}}</p>
