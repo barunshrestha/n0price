@@ -239,12 +239,13 @@
                                 ${{ number_format($req_unit * $usd, 2) }}
                             </td>
                         @endif
-                        <td>{{$returns_on_current_date[$curr]}} %</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{$returns_on_current_date[$curr]["return"]}} %</td>
+                        <td>{{$returns_on_current_date[$curr]["24hr"]}} %</td>
+                        <td>{{$returns_on_current_date[$curr]["7d"]}} %</td>
+                        <td>{{$returns_on_current_date[$curr]["ATH"]}} %</td>
                     </tr>
                 @endforeach
+
             </tbody>
         </table>
     </div>

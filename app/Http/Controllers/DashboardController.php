@@ -24,20 +24,16 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
+
         $user = Auth::user();
         $this->_data['user'] = $user;
-        // $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
-        // ->where('transactions.user_id', $user->id)
-        // ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
-        // ->get();
-        // $this->_data['transactions'] = $transactions;
-
         $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ')');
         $this->_data['portfolio'] = $portfolio;
 
         $asset_matrix_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
         $this->_data['asset_matrix_constraints'] = $asset_matrix_constraints;
-        $this->_data['returns_on_current_date']=$this->return_calculation();
+        $this->_data['returns_on_current_date'] = $this->return_calculation();
+
         return view($this->_page . 'dashboard', $this->_data);
     }
     public function get_transaction_of_specific_user()
@@ -48,7 +44,7 @@ class DashboardController extends Controller
             ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
             ->get();
         // $this->_data['transactions'] = $transactions;
-        return response()->json(["data"=>$transactions]);
+        return response()->json(["data" => $transactions]);
     }
 
     public function portfolio_summary()
@@ -84,7 +80,7 @@ class DashboardController extends Controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);
             $yesterday_price = json_decode($response);
-            if(isset($yesterday_price->market_data)){
+            if (isset($yesterday_price->market_data)) {
                 $stock->yesterday_price = $yesterday_price->market_data->current_price->usd;
                 $stock->yesterday_value_total = $stock->yesterday_price * $stock->current_holdings;
                 $total_holdings_valuation_yesterday += $stock->yesterday_value_total;
@@ -113,22 +109,23 @@ class DashboardController extends Controller
         $available_coins = $query->get();
         return response()->json(["data" => $available_coins, "request" => $data]);
     }
-    public function dashboardTransactionPartials(Request $request){
+    public function dashboardTransactionPartials(Request $request)
+    {
         $user = Auth::user();
         $this->_data['user'] = $user;
         $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
-        ->where('transactions.user_id', $user->id)
-        ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
-        ->orderBy('purchase_date','desc')
-        ->get();
+            ->where('transactions.user_id', $user->id)
+            ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
+            ->orderBy('purchase_date', 'desc')
+            ->get();
         $this->_data['transactions'] = $transactions;
-        return view($this->_page . 'dashboard-content.'.'dashboard-transactions-partials', $this->_data);
+        return view($this->_page . 'dashboard-content.' . 'dashboard-transactions-partials', $this->_data);
     }
     private function return_calculation()
     {
         $user = Auth::user();
         $coins_available = DB::select('select coin_name,coin_id,buy_amount,buy_unit,sell_unit from vw_final_transaction where user_id = ?', [$user->id]);
-
+        
         $buy_transactions = DB::select('select units,name,purchase_price,coin_id from vw_buy_transactions where user_id = ? order by name asc', [$user->id]);
         $sell_transactions = DB::select('select units,name,purchase_price,coin_id from vw_sell_transactions where user_id = ? order by name asc', [$user->id]);
         $total_worth = array();
@@ -185,14 +182,24 @@ class DashboardController extends Controller
                 }
             }
         }
+
         $worth = array();
         $given_coins = implode(",", array_keys($total_worth));
-        $url = "https://pro-api.coingecko.com/api/v3/simple/price?ids=" . $given_coins . "&vs_currencies=usd&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        $current_prices_list = json_decode($response);
+        // $url = "https://api.coingecko.com/api/v3/coins/" . "bitcoin" . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+        // $ch = curl_init();
+        // curl_setopt($ch, CURLOPT_URL, $url);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $response = curl_exec($ch);
+        // $current_prices_list = json_decode($response);
+        // dd($current_prices_list);
+
+        // $url = "https://pro-api.coingecko.com/api/v3/simple/price?ids=" . $given_coins . "&vs_currencies=usd&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+        //     $ch = curl_init();
+        //     curl_setopt($ch, CURLOPT_URL, $url);
+        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //     $response = curl_exec($ch);
+        //     $current_prices_list = json_decode($response);
+
 
 
         foreach ($coins_available as $coins) {
@@ -201,7 +208,17 @@ class DashboardController extends Controller
             $total_sell = $coins->sell_unit ? $coins->sell_unit : 0;
             $remaining_coins = $total_buy - $total_sell;
             $coin_id = "$coins->coin_id";
-            $current_price = $current_prices_list->$coin_id->usd;
+            $url = "https://api.coingecko.com/api/v3/coins/" . $coin_id . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            $current_prices_list_details_from_server = json_decode($response);
+
+            $current_price = $current_prices_list_details_from_server->market_data->current_price->usd;
+            $price_change_percentage_24h = $current_prices_list_details_from_server->market_data->price_change_percentage_24h;
+            $price_change_percentage_7d = $current_prices_list_details_from_server->market_data->price_change_percentage_7d;
+            $all_time_high_price_percentage = $current_prices_list_details_from_server->market_data->ath_change_percentage->usd;
             $todaysWorth = $remaining_coins * $current_price;
 
             if ($total_current_invested == 0) {
@@ -209,11 +226,8 @@ class DashboardController extends Controller
             } else {
                 $return = round(($todaysWorth - $total_current_invested) / $total_current_invested, 2);
             }
-
-            $worth = array_merge($worth, array($coin_id => $return));
+            $worth = array_merge($worth, array($coin_id => array("return" => $return, "24hr" => round($price_change_percentage_24h,2), "7d" => round($price_change_percentage_7d,2), "ATH" => round($all_time_high_price_percentage,2))));
         }
-
-        return $worth;
+        return $worth;   
     }
-
 }
