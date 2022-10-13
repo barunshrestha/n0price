@@ -27,12 +27,10 @@ class DashboardController extends Controller
 
         $user = Auth::user();
         $this->_data['user'] = $user;
-        $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ')');
-        $this->_data['portfolio'] = $portfolio;
 
         $asset_matrix_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
         $this->_data['asset_matrix_constraints'] = $asset_matrix_constraints;
-        $this->_data['returns_on_current_date'] = $this->return_calculation();
+        // $this->_data['returns_on_current_date'] = $this->return_calculation();
 
         return view($this->_page . 'dashboard', $this->_data);
     }
@@ -121,16 +119,20 @@ class DashboardController extends Controller
         $this->_data['transactions'] = $transactions;
         return view($this->_page . 'dashboard-content.' . 'dashboard-transactions-partials', $this->_data);
     }
-    private function return_calculation()
+    public function return_calculation(Request $request)
     {
+
         $user = Auth::user();
+        $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ')');
+        $this->_data['portfolio'] = $portfolio;
+
         $coins_available = DB::select('select coin_name,coin_id,buy_amount,buy_unit,sell_unit from vw_final_transaction where user_id = ?', [$user->id]);
-        
+
         $buy_transactions = DB::select('select units,name,purchase_price,coin_id from vw_buy_transactions where user_id = ? order by name asc', [$user->id]);
         $sell_transactions = DB::select('select units,name,purchase_price,coin_id from vw_sell_transactions where user_id = ? order by name asc', [$user->id]);
         $total_worth = array();
-
         $current_transactions = array();
+
         foreach ($coins_available as $coins) {
             $total_worth = array_merge($total_worth, array($coins->coin_id => $coins->buy_amount));
         }
@@ -144,7 +146,7 @@ class DashboardController extends Controller
         }
         foreach ($total_sell_units as $sell_unit) {
             $total_sell_unit = $sell_unit[1];
-            $sell_unit_price = $sell_unit[2] / $sell_unit[1];
+            // $sell_unit_price = $sell_unit[2] / $sell_unit[1];
             $sell_unit_coin_name = $sell_unit[0];
 
             if ($total_sell_unit > 0) {
@@ -152,16 +154,16 @@ class DashboardController extends Controller
                     if ($sell_unit_coin_name == $current_transactions[$i][0]) {
                         $current_transaction = $current_transactions[$i];
                         $purchase_unit_price = $current_transaction[2] / $current_transaction[1];
-                        $profit_loss_rate = $sell_unit_price - $purchase_unit_price;
+                        // $profit_loss_rate = $sell_unit_price - $purchase_unit_price;
                         $total_units = $current_transaction[1];
                         $total_debited_units = $current_transaction[3];
                         $slot_units_available = $total_units - $total_debited_units;
-                        $profit_earned = $current_transaction[4];
+                        // $profit_earned = $current_transaction[4];
                         if ($slot_units_available > 0) {
                             if ($slot_units_available >= $total_sell_unit) {
                                 if ($total_sell_unit > 0) {
                                     $current_transactions[$i][3] = $total_debited_units + $total_sell_unit;
-                                    $current_transactions[$i][4] = $profit_earned + $profit_loss_rate * $total_sell_unit;
+                                    // $current_transactions[$i][4] = $profit_earned + $profit_loss_rate * $total_sell_unit;
 
                                     $total_worth[$current_transactions[$i][0]] = $total_worth[$current_transactions[$i][0]] - $total_sell_unit * $purchase_unit_price;
 
@@ -172,7 +174,7 @@ class DashboardController extends Controller
                             } elseif ($slot_units_available < $total_sell_unit) {
                                 if ($total_sell_unit > 0) {
                                     $current_transactions[$i][3] = $total_debited_units + $slot_units_available;
-                                    $current_transactions[$i][4] = $profit_earned + $profit_loss_rate * $slot_units_available;
+                                    // $current_transactions[$i][4] = $profit_earned + $profit_loss_rate * $slot_units_available;
                                     $total_worth[$current_transactions[$i][0]] = $total_worth[$current_transactions[$i][0]] - $slot_units_available * $purchase_unit_price;
                                     $total_sell_unit = $total_sell_unit - $slot_units_available;
                                 }
@@ -184,37 +186,20 @@ class DashboardController extends Controller
         }
 
         $worth = array();
-        $given_coins = implode(",", array_keys($total_worth));
-        // $url = "https://api.coingecko.com/api/v3/coins/" . "bitcoin" . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
-        // $ch = curl_init();
-        // curl_setopt($ch, CURLOPT_URL, $url);
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // $response = curl_exec($ch);
-        // $current_prices_list = json_decode($response);
-        // dd($current_prices_list);
-
-        // $url = "https://pro-api.coingecko.com/api/v3/simple/price?ids=" . $given_coins . "&vs_currencies=usd&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
-        //     $ch = curl_init();
-        //     curl_setopt($ch, CURLOPT_URL, $url);
-        //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        //     $response = curl_exec($ch);
-        //     $current_prices_list = json_decode($response);
-
-
-
+       
         foreach ($coins_available as $coins) {
             $total_current_invested = $total_worth[$coins->coin_id];
             $total_buy = $coins->buy_unit ? $coins->buy_unit : 0;
             $total_sell = $coins->sell_unit ? $coins->sell_unit : 0;
             $remaining_coins = $total_buy - $total_sell;
             $coin_id = "$coins->coin_id";
-            $url = "https://api.coingecko.com/api/v3/coins/" . $coin_id . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+            $url = "https://api.coingecko.com/api/v3/coins/" .$coin_id . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);
             $current_prices_list_details_from_server = json_decode($response);
-
+            $current_market_capital = $current_prices_list_details_from_server->market_data->market_cap->usd;
             $current_price = $current_prices_list_details_from_server->market_data->current_price->usd;
             $price_change_percentage_24h = $current_prices_list_details_from_server->market_data->price_change_percentage_24h;
             $price_change_percentage_7d = $current_prices_list_details_from_server->market_data->price_change_percentage_7d;
@@ -226,8 +211,9 @@ class DashboardController extends Controller
             } else {
                 $return = round(($todaysWorth - $total_current_invested) / $total_current_invested, 2);
             }
-            $worth = array_merge($worth, array($coin_id => array("return" => $return, "24hr" => round($price_change_percentage_24h,2), "7d" => round($price_change_percentage_7d,2), "ATH" => round($all_time_high_price_percentage,2))));
+            $worth = array_merge($worth, array($coin_id => array("usd_market_cap"=>$current_market_capital,"current_usd"=>$current_price,"return" => $return, "24hr" => round($price_change_percentage_24h, 2), "7d" => round($price_change_percentage_7d, 2), "ATH" => round($all_time_high_price_percentage, 2))));
         }
-        return $worth;   
+        $this->_data['worth'] = $worth;
+        return view($this->_page . 'dashboard-content.' . 'coin_worth', $this->_data);
     }
 }

@@ -158,6 +158,16 @@
     <script src="{{ asset('js/pages/widgets.js') }}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+
+            $.ajax({
+                url: "{{ route('return_calculation') }}",
+                success: function(result) {
+                    $("#coin_worth_all_summary").html(result);
+                }
+            });
+
+
+
             $('.allocationEditBtn').click(function() {
                 $('.allocationEditBtn').addClass('hidden');
                 $('.hideBeforeedit').removeClass('hidden');
@@ -689,8 +699,7 @@
                             cookie: false
                         }
                     },
-                    columns: [
-                        {
+                    columns: [{
                             field: "SN",
                             width: 20,
                             textAlign: 'center'
@@ -730,7 +739,7 @@
                         input: $('#_portfolio_search_transaction'),
                         key: 'generalSearch'
                     },
-                   
+
 
                 });
             }

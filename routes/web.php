@@ -56,7 +56,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::post('/change_allocation', [TransactionController::class, 'change_allocation'])->name('percentage.allocation');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     Route::get('/portfolio_summary', 'DashboardController@portfolio_summary')->name('portfolio_summary');
-    Route::get('/return_calculation', 'DashboardController@return_calculation')->name('return_calculation');
+    Route::get('/return_calculation', [DashboardController::class,'return_calculation'])->name('return_calculation');
     Route::get('/dashboardTransactionPartials', 'DashboardController@dashboardTransactionPartials')->name('dashboardTransactionPartials');
     Route::get('/get/all/coins', [DashboardController::class, 'getallcoins']);
 });

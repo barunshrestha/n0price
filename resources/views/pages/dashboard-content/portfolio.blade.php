@@ -91,7 +91,6 @@
                     <td style="text-align: right;">$<span id="allocated-medium"></span></td>
                     <td style="text-align: right;">$<span id="allocated-low"></span></td>
                     <td style="text-align: right;">$<span id="allocated-verylow"></span></td>
-                    {{-- <td style="text-align: right;">$<span id="allocated-total"></span></td> --}}
                     <td style="text-align: center; font-weight:bold;" colspan="4">Price</td>
                 </tr>
                 <tr>
@@ -104,148 +103,13 @@
                     <td style="text-align: right;">$<span id="not_allocated-medium"></span></td>
                     <td style="text-align: right;">$<span id="not_allocated-low"></span></td>
                     <td style="text-align: right;">$<span id="not_allocated-verylow"></span></td>
-
-                    {{-- <td style="text-align: right;">$<span id="not_allocated-total"></span></td> --}}
                     <td>Return</td>
                     <td>24hr</td>
                     <td>7d</td>
                     <td>ATH</td>
                 </tr>
-                @foreach ($portfolio as $key => $data)
-                    <tr>
-                        <?php
-                        $coin_id = $data->coin_id;
-                        $url = 'https://pro-api.coingecko.com/api/v3/simple/price?ids=' . $coin_id . '&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX';
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, $url);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        $response = curl_exec($ch);
-                        $current_price = json_decode($response);
-                        curl_close($ch);
-                        
-                        $curr = "$data->coin_id";
-                        $usd = $current_price->$curr->usd;
-                        $usd_24h_vol = $current_price->$curr->usd_24h_vol;
-                        $usd_24h_change = $current_price->$curr->usd_24h_change;
-                        $usd_market_cap = $current_price->$curr->usd_market_cap;
-                        
-                        // $curr = "$data->coin_id";
-                        // $usd = $current_price->$curr->usd;
-                        // $usd_24h_change = $current_price->$curr->usd_24h_change;
-                        
-                        $total_buy_unit = $data->buy_unit ? $data->buy_unit : 0;
-                        $total_sell_unit = $data->sell_unit ? $data->sell_unit : 0;
-                        $req_unit = $total_buy_unit - $total_sell_unit;
-                        ?>
-                        @if ($usd_market_cap < 25000000)
-                            <td style="background:#e9fac8;color:black;">
-                                {{ $data->coin_name }}
-                            </td>
-                            <td class="tabledata-veryhigh" style="text-align: right;">
-                                ${{ number_format($req_unit * $usd, 2) }}
-                            </td>
-                            <td class="tabledata-high" style="text-align: right;">
-
-                            </td>
-                            <td class="tabledata-medium" style="text-align: right;">
-
-                            </td>
-                            <td class="tabledata-low" style="text-align: right;">
-
-                            </td>
-                            <td class="tabledata-verylow" style="text-align: right;">
-                            </td>
-                        @endif
-                        @if ($usd_market_cap > 25000000 && $usd_market_cap < 250000000)
-                            <td style="background:#fff3bf;color:black;">
-                                {{ $data->coin_name }}
-                            </td>
-                            <td class="tabledata-veryhigh">
-
-                            </td>
-                            <td class="tabledata-high" style="text-align: right;">
-                                ${{ number_format($req_unit * $usd, 2) }}
-
-                            </td>
-                            <td class="tabledata-medium">
-
-                            </td>
-                            <td class="tabledata-low">
-
-                            </td>
-                            <td class="tabledata-verylow">
-
-                            </td>
-                        @endif
-                        @if ($usd_market_cap > 250000000 && $usd_market_cap < 1000000000)
-                            <td style="background:#d3f9d8;color:black;">
-                                {{ $data->coin_name }}
-                            </td>
-                            <td class="tabledata-veryhigh">
-
-                            </td>
-                            <td class="tabledata-high">
-
-                            </td>
-                            <td class="tabledata-medium" style="text-align: right;">
-                                ${{ number_format($req_unit * $usd, 2) }}
-
-                            </td>
-                            <td class="tabledata-low">
-
-                            </td>
-                            <td class="tabledata-verylow">
-
-                            </td>
-                        @endif
-                        @if ($usd_market_cap > 1000000000 && $usd_market_cap < 25000000000)
-                            <td style="background:#ffd8a8;color:black;">
-                                {{ $data->coin_name }}
-                            </td>
-                            <td class="tabledata-veryhigh">
-
-                            </td>
-                            <td class="tabledata-high">
-
-                            </td>
-                            <td class="tabledata-medium">
-
-                            </td>
-                            <td class="tabledata-low" style="text-align: right;">
-                                ${{ number_format($req_unit * $usd, 2) }}
-
-                            </td>
-                            <td class="tabledata-verylow">
-
-                            </td>
-                        @endif
-                        @if ($usd_market_cap > 25000000000)
-                            <td style="background:#ffa8a8;color:black;">
-                                {{ $data->coin_name }}
-                            </td>
-                            <td class="tabledata-veryhigh">
-
-                            </td>
-                            <td class="tabledata-high">
-
-                            </td>
-                            <td class="tabledata-medium">
-
-                            </td>
-                            <td class="tabledata-low">
-
-                            </td>
-                            <td class="tabledata-verylow" style="text-align: right;">
-                                ${{ number_format($req_unit * $usd, 2) }}
-                            </td>
-                        @endif
-                        <td>{{$returns_on_current_date[$curr]["return"]}} %</td>
-                        <td>{{$returns_on_current_date[$curr]["24hr"]}} %</td>
-                        <td>{{$returns_on_current_date[$curr]["7d"]}} %</td>
-                        <td>{{$returns_on_current_date[$curr]["ATH"]}} %</td>
-                    </tr>
-                @endforeach
-
+            </tbody>
+            <tbody id="coin_worth_all_summary">
             </tbody>
         </table>
     </div>
