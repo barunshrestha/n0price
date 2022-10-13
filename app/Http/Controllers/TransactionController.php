@@ -203,9 +203,12 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::findOrFail($request->id);
         $transaction->delete();
-        return response()->json(["msg"=>"Your response has been deleted"]);
+        return response()->json(["msg" => "Your response has been deleted"]);
     }
 
+   
+
+    // backup
     public function profit_calculation()
     {
         $user = Auth::user();
@@ -231,7 +234,6 @@ class TransactionController extends Controller
         foreach ($sell_transactions as $s_t) {
             array_push($total_sell_units, array($s_t->name, $s_t->units, $s_t->purchase_price));
         }
-
         foreach ($total_sell_units as $sell_unit) {
             $total_sell_unit = $sell_unit[1];
             $sell_unit_price = $sell_unit[2] / $sell_unit[1];
@@ -319,6 +321,6 @@ class TransactionController extends Controller
         join coins as c on t.coin_id=c.id
         join users as u on t.user_id=u.id order by t.id desc";
         $transactions = DB::select($query);
-        return response()->json(["data"=>$transactions]);
+        return response()->json(["data" => $transactions]);
     }
 }

@@ -23,10 +23,10 @@
                     <th scope="col">Market Cap</th>
                     @foreach ($asset_matrix_constraints as $constraints)
                         <th scope="col" style="background: {{ $constraints->color }};color:black;text-align:center;">
-                           {{ $constraints->market_cap }}
+                            {{ $constraints->market_cap }}
                         </th>
                     @endforeach
-                    <th style="text-align:center;">Total</th>
+                    <th style="text-align:center; border:none;" colspan="4"></th>
                 </tr>
             </thead>
             <tbody>
@@ -55,8 +55,8 @@
                                     name="allocation_percentage[]" value="{{ $constraints->percentage_allocation }}">
                             </td>
                         @endforeach
-                        <td>
-                            <div class="d-flex justify-content-center">
+                        <td colspan="4" style="border: none;">
+                            <div class="d-flex justify-content-left">
                                 <button class="btn btn-icon btn-success btn-xs allocationEditBtn" type="button"
                                     data-toggle="tooltip" title="Edit">
                                     <i class="fa fa-pen"></i>
@@ -79,6 +79,7 @@
                     <td style="text-align: right;">$<span id="toallocate-medium"></span></td>
                     <td style="text-align: right;">$<span id="toallocate-low"></span></td>
                     <td style="text-align: right;">$<span id="toallocate-verylow"></span></td>
+
                 </tr>
                 <tr>
 
@@ -90,7 +91,8 @@
                     <td style="text-align: right;">$<span id="allocated-medium"></span></td>
                     <td style="text-align: right;">$<span id="allocated-low"></span></td>
                     <td style="text-align: right;">$<span id="allocated-verylow"></span></td>
-                    <td style="text-align: right;">$<span id="allocated-total"></span></td>
+                    {{-- <td style="text-align: right;">$<span id="allocated-total"></span></td> --}}
+                    <td style="text-align: center; font-weight:bold;" colspan="4">Price</td>
                 </tr>
                 <tr>
 
@@ -102,7 +104,12 @@
                     <td style="text-align: right;">$<span id="not_allocated-medium"></span></td>
                     <td style="text-align: right;">$<span id="not_allocated-low"></span></td>
                     <td style="text-align: right;">$<span id="not_allocated-verylow"></span></td>
-                    <td style="text-align: right;">$<span id="not_allocated-total"></span></td>
+
+                    {{-- <td style="text-align: right;">$<span id="not_allocated-total"></span></td> --}}
+                    <td>Return</td>
+                    <td>24hr</td>
+                    <td>7d</td>
+                    <td>ATH</td>
                 </tr>
                 @foreach ($portfolio as $key => $data)
                     <tr>
@@ -135,7 +142,7 @@
                                 {{ $data->coin_name }}
                             </td>
                             <td class="tabledata-veryhigh" style="text-align: right;">
-                                ${{ number_format($req_unit * $usd,2) }}
+                                ${{ number_format($req_unit * $usd, 2) }}
                             </td>
                             <td class="tabledata-high" style="text-align: right;">
 
@@ -157,7 +164,7 @@
 
                             </td>
                             <td class="tabledata-high" style="text-align: right;">
-                                ${{ number_format($req_unit * $usd,2) }}
+                                ${{ number_format($req_unit * $usd, 2) }}
 
                             </td>
                             <td class="tabledata-medium">
@@ -181,7 +188,7 @@
 
                             </td>
                             <td class="tabledata-medium" style="text-align: right;">
-                                ${{ number_format($req_unit * $usd,2) }}
+                                ${{ number_format($req_unit * $usd, 2) }}
 
                             </td>
                             <td class="tabledata-low">
@@ -205,7 +212,7 @@
 
                             </td>
                             <td class="tabledata-low" style="text-align: right;">
-                                ${{ number_format($req_unit * $usd,2) }}
+                                ${{ number_format($req_unit * $usd, 2) }}
 
                             </td>
                             <td class="tabledata-verylow">
@@ -229,9 +236,13 @@
 
                             </td>
                             <td class="tabledata-verylow" style="text-align: right;">
-                                ${{ number_format($req_unit * $usd,2) }}
+                                ${{ number_format($req_unit * $usd, 2) }}
                             </td>
                         @endif
+                        <td>{{$returns_on_current_date[$curr]}} %</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 @endforeach
             </tbody>
