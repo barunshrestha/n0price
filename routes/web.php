@@ -22,6 +22,10 @@ use App\Http\Controllers\TransactionController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/test',function(){
+    return view('auth.verify-email');
+});
+
 
 
 Route::get('/signup', [AuthController::class, 'signup'])->name('signup');

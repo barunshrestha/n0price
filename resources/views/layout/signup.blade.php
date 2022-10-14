@@ -57,7 +57,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </div>
 
-                    <div class="login-signin ">
+                    <div class="login-signin">
                         <div class="mb-20">
                             <h3 class="text-muted font-weight-bold">Sign Up</h3>
 
@@ -84,8 +84,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             </div>
 
                             <div class="form-group d-flex flex-wrap flex-center mt-10">
-                                <button id="kt_login_signup_submit"
-                                    class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2">Sign Up</button>
+                                <button id="kt_login_signup_submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2">Sign Up</button>
                             </div>
                         </form>
                         <div class="mt-10">

@@ -1,4 +1,3 @@
-
 <!--
 Template Name: Metronic - Bootstrap 4 HTML, React, Angular 9 & VueJS Admin Dashboard Theme
 Author: KeenThemes
@@ -17,7 +16,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <head>
     <base href="../../../">
     <meta charset="utf-8" />
-    <title>NoPrice | Signup Page</title>
+    <title>NoPrice | Forgot Password</title>
     <meta name="description" content="Login page example" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <!--begin::Fonts-->
@@ -58,25 +57,23 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </div>
 
-                    <div class="mb-4 text-sm text-gray-600">
-                        Forgot your password? No problem. Just let us know your email address and we will email you a
+                    <p class="mb-4 text-sm text-white">
+                        Forgot your password? No problem.
+                    </p>
+                    <p class="mb-4 text-sm text-white">
+                        Just let us know your email address and we will email you a
                         password reset link that will allow you to choose a new one.
-                    </div>
+                    </p>
 
                     <form method="POST" action="{{ route('password.email') }}">
                         @csrf
 
-                        <!-- Email Address -->
-                        <div>
-                            <label for="email">Email</label>
-                            <input id="email" class="block mt-1 w-full" type="email" name="email" required
-                                autofocus />
+                        <div class="form-group mb-5">
+                            <input class="form-control h-auto form-control-solid py-4 px-8" type="email"
+                                placeholder="Email" name="email" autocomplete="off" autofocus />
                         </div>
-
-                        <div class="flex items-center justify-end mt-4">
-                            <button class="btn-primary">
-                                Email Password Reset Link
-                            </button>
+                        <div class="form-group d-flex flex-wrap flex-center mt-10">
+                            <button class="btn btn-warning font-weight-bold px-9 py-4 my-3 mx-2" type="submit">Reset Password</button>
                         </div>
                     </form>
 
@@ -86,9 +83,7 @@ License: You must have a valid license purchased only from themeforest(the above
         <!--end::Login-->
     </div>
     <!--end::Main-->
-    <script>
-        var HOST_URL = "https://keenthemes.com/metronic/tools/preview";
-    </script>
+    
     <!--begin::Global Config(global config for global JS scripts)-->
     <script>
         var KTAppSettings = {
@@ -135,17 +130,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         "dark": "#ffffff"
                     }
                 },
-                "gray": {
-                    "gray-100": "#F3F6F9",
-                    "gray-200": "#ECF0F3",
-                    "gray-300": "#E5EAEE",
-                    "gray-400": "#D6D6E0",
-                    "gray-500": "#B5B5C3",
-                    "gray-600": "#80808F",
-                    "gray-700": "#464E5F",
-                    "gray-800": "#1B283F",
-                    "gray-900": "#212121"
-                }
+
             },
             "font-family": "Poppins"
         };

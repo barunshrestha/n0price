@@ -16,7 +16,7 @@ License: You must have a valid license purchased only from themeforest(the above
        <head>
            <base href="../../../">
            <meta charset="utf-8" />
-           <title>NoPrice | Signup Page</title>
+           <title>NoPrice | Reset Password</title>
            <meta name="description" content="Login page example" />
            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
            <!--begin::Fonts-->
@@ -53,7 +53,6 @@ License: You must have a valid license purchased only from themeforest(the above
                            <!--begin::Login Header-->
                            <div class="d-flex flex-center mb-6">
                                <a href="#">
-                                   {{-- Logo here --}}
                                </a>
                            </div>
 
@@ -63,35 +62,29 @@ License: You must have a valid license purchased only from themeforest(the above
                                <!-- Password Reset Token -->
                                <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-                               <!-- Email Address -->
-                               <div>
-                                   <label>Email</label>
-
-                                   <input id="email" class="block mt-1 w-full" type="email" name="email"
+                               <div class="form-group mb-5 d-flex justify-content-between">
+                                   <label class="h-auto form-control-solid py-4 px-8 mr-7 text-white">Email</label>
+                                   <input class="form-control h-auto form-control-solid py-4 px-8" type="email"
+                                       placeholder="Email" name="email" autocomplete="off"
                                        value={{ $request->email }} required autofocus />
                                </div>
 
-                               <!-- Password -->
-                               <div class="mt-4">
-                                   <label>Password</label>
-
-                                   <input  id="password" class="block mt-1 w-full" type="password"
-                                       name="password" required />
+                               <div class="form-group mb-5 d-flex justify-content-between">
+                                   <label class="h-auto form-control-solid py-4 px-8 text-white">Password</label>
+                                   <input class="form-control h-auto form-control-solid py-4 px-8" type="password"
+                                       placeholder="Password" name="password" autocomplete="off" required />
+                               </div>
+                               <div class="form-group mb-5 d-flex justify-content-between">
+                                   <label class="h-auto form-control-solid py-1 px-6 text-white">Confirm Password</label>
+                                   <input class="form-control h-auto form-control-solid px-7" type="password"
+                                       id="password_confirmation" placeholder="Confirm password"
+                                       name="password_confirmation" autocomplete="off" required />
                                </div>
 
-                               <!-- Confirm Password -->
-                               <div class="mt-4">
-                                   <label>Confirm Password</label>
-
-                                   <input id="password_confirmation" class="block mt-1 w-full" type="password"
-                                       name="password_confirmation" required />
-                               </div>
-
-                               <div class="flex items-center justify-end mt-4">
-                                   <button class="btn btn-primary">
+                               <div class="d-flex justify-content-end py-5">
+                                   <button class="btn btn-primary px-28">
                                        Reset Password
                                    </button>
-
                                </div>
                            </form>
 
