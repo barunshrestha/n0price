@@ -93,6 +93,7 @@ class UserController extends Controller
         $user->email = $data['email'];
         $user->role_id = $data['role_id'];
         $user->password = Hash::make($data['password']);
+        $user->approval_status='1';
         if ($user->save()) {
             $date = Carbon::now();
             $data = [

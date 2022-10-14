@@ -41,6 +41,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'approval_status'=>'1'
         ]);
         $date = Carbon::now();
         $data = [
