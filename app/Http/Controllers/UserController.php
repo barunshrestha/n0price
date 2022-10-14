@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Mail\AccountVerification;
 use App\Mail\CustomEmail;
 use App\Models\AssetMatrixConstraints;
 use Illuminate\Http\Request;
@@ -51,11 +52,10 @@ class UserController extends Controller
         $user = User::find($id);
         $user->approval_status = '1';
         $user->save();
-        Mail::to($user->email)->send(new CustomEmail([
+        Mail::to($user->email)->send(new AccountVerification([
             'body' => 'Your account has been approved. You can now start using NoPrice',
             'user' => $user->name,
         ]));
-
         return redirect(route('users.index'));
     }
 
@@ -65,7 +65,7 @@ class UserController extends Controller
         $user = User::find($id);
         $user->approval_status = '0';
         $user->save();
-        Mail::to($user->email)->send(new CustomEmail([
+        Mail::to($user->email)->send(new AccountVerification([
             'body' => 'Your account has been suspended! Until NoPrice approves you, you cannot use it.',
             'user' => $user->name,
         ]));
