@@ -68,9 +68,9 @@ License: You must have a valid license purchased only from themeforest(the above
                             @if (session('fail'))
                                 <div class="alert alert-danger alert-dismissible" role="alert">
                                     <div class="alert-text">{!! session('fail') !!}</div>
-                                    <!-- <div class="alert-close">
-           <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
-          </div>	 -->
+                                    <div class="alert-close">
+                                        <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                                    </div>
                                 </div>
                             @endif
                             <div class="form-group mb-5">
@@ -81,17 +81,15 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <input class="form-control h-auto form-control-solid py-4 px-8 password" type="password"
                                     placeholder="Password" name="password" />
                             </div>
-                            <!-- 	<div class="form-group row">
-       <div class="col-lg-4 col-md-9 col-sm-12">
-       <div class="g-recaptcha" data-sitekey="6LdnLwgUAAAAAAIb9L3PQlHQgvSCi16sYgbMIMFR"></div>
-       </div>
-      </div> -->
-                            <!-- <div class="form-group d-flex flex-wrap justify-content-between align-items-center">
-         <label class="checkbox m-0 text-muted">
-         <input type="checkbox" name="remember" />Remember me
-         <span></span></label>
-         <a href="javascript:;" id="kt_login_forgot" class="text-muted text-hover-primary">Forget Password ?</a>
-        </div> -->
+                            {{-- <div class="form-group row">
+                                <div class="col-lg-4 col-md-9 col-sm-12">
+                                    <div class="g-recaptcha" data-sitekey="6LdnLwgUAAAAAAIb9L3PQlHQgvSCi16sYgbMIMFR">
+                                    </div>
+                                </div>
+                            </div> --}}
+                            <div class="form-group d-flex flex-wrap justify-content-between align-items-center">
+                                <a href="/forgot-password" class="text-muted text-hover-primary">Forget Password ?</a>
+                            </div>
                             <button type="submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4">Sign
                                 In</button>
                         </form>
