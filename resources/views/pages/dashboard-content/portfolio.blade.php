@@ -41,9 +41,8 @@
                     @endforeach
                 </tr>
                 <tr>
-                    <td>
-                        Allocation % <span id="total_allocation"></span>
-                    </td>
+                    <td class="d-flex">Allocation <span id="total_allocation" class="ml-auto"></span></td>
+
                     <form action="{{ route('percentage.allocation') }}" method="POST">
                         @csrf
                         @foreach ($asset_matrix_constraints as $constraints)
