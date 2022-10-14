@@ -24,13 +24,19 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-
         $user = Auth::user();
         $this->_data['user'] = $user;
+        $transaction_count = Transaction::where('user_id', $user->id)->count();
+        $asset_matrix_total = DB::select('select sum(percentage_allocation) as asset_total from asset_matrix_constraints where user_id =1 group by user_id');
+        $this->_data['asset_total'] = $asset_matrix_total[0]->asset_total;
+        $this->_data['transaction_count'] = $transaction_count;
 
         $asset_matrix_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
         $this->_data['asset_matrix_constraints'] = $asset_matrix_constraints;
-        // $this->_data['returns_on_current_date'] = $this->return_calculation();
+
+        if ($transaction_count == 0 || $asset_matrix_total[0]->asset_total==0 ) {
+            return view($this->_page . 'no-content-dashboard', $this->_data);
+        }
 
         return view($this->_page . 'dashboard', $this->_data);
     }
@@ -186,14 +192,14 @@ class DashboardController extends Controller
         }
 
         $worth = array();
-       
+
         foreach ($coins_available as $coins) {
             $total_current_invested = $total_worth[$coins->coin_id];
             $total_buy = $coins->buy_unit ? $coins->buy_unit : 0;
             $total_sell = $coins->sell_unit ? $coins->sell_unit : 0;
             $remaining_coins = $total_buy - $total_sell;
             $coin_id = "$coins->coin_id";
-            $url = "https://api.coingecko.com/api/v3/coins/" .$coin_id . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+            $url = "https://api.coingecko.com/api/v3/coins/" . $coin_id . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -211,7 +217,7 @@ class DashboardController extends Controller
             } else {
                 $return = round(($todaysWorth - $total_current_invested) / $total_current_invested, 2);
             }
-            $worth = array_merge($worth, array($coin_id => array("usd_market_cap"=>$current_market_capital,"current_usd"=>$current_price,"return" => $return, "24hr" => round($price_change_percentage_24h, 2), "7d" => round($price_change_percentage_7d, 2), "ATH" => round($all_time_high_price_percentage, 2))));
+            $worth = array_merge($worth, array($coin_id => array("usd_market_cap" => $current_market_capital, "current_usd" => $current_price, "return" => $return, "24hr" => round($price_change_percentage_24h, 2), "7d" => round($price_change_percentage_7d, 2), "ATH" => round($all_time_high_price_percentage, 2))));
         }
         $this->_data['worth'] = $worth;
         return view($this->_page . 'dashboard-content.' . 'coin_worth', $this->_data);

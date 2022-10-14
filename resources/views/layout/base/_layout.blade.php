@@ -27,16 +27,6 @@
                 <div class="mb-7">
                 </div>
 
-                @if (config('layout.subheader.display'))
-                    @if (array_key_exists(config('layout.subheader.layout'), config('layout.subheader.layouts')))
-                        {{-- @include('layout.partials.subheader._' . config('layout.subheader.layout')) --}}
-                    @else
-                        {{-- @include('layout.partials.subheader._' . array_key_first(config('layout.subheader.layouts'))) --}}
-                    @endif
-                @endif
-
-
-
                 @include('layout.base._content')
             </div>
 

@@ -22,12 +22,6 @@ use App\Http\Controllers\TransactionController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/test',function(){
-    return view('auth.verify-email');
-});
-
-
-
 Route::get('/signup', [AuthController::class, 'signup'])->name('signup');
 Route::post('/signup', [AuthController::class, 'signupAction'])->name('register');
 
@@ -88,10 +82,7 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('approvalpage');
     Route::get('verify-email', [EmailVerificationController::class, 'verify_email_invoke'])
         ->name('verification.notice');
-    // Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, '__invoke'])
-    //     ->middleware(['signed', 'throttle:6,1'])
-    //     ->name('verification.verify');
-
+    
     Route::get('/get/specific/user/transaction', [DashboardController::class, 'get_transaction_of_specific_user'])->name('get_transaction_of_specific_user');
 
 

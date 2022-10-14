@@ -14,7 +14,6 @@ use Carbon\Carbon;
 
 class AuthController extends Controller
 {
-
     private $_app = "";
     private $_page = null;
     private $_data = [];
