@@ -76,6 +76,7 @@
 @endsection
 {{-- Content --}}
 @section('content')
+<input type="hidden" id="total_holding_valuation_hidden" value="0">
     <div class="row">
         <div class="col-md-12">
             <div class="card card-custom gutter-b">
@@ -157,6 +158,7 @@
     <script src="{{ asset('js/pages/crud/datatables/extensions/buttons.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/pages/widgets.js') }}" type="text/javascript"></script>
     <script type="text/javascript">
+    
         $(document).ready(function() {
             $('.allocationEditBtn').click(function() {
                 $('.allocationEditBtn').addClass('hidden');
@@ -165,119 +167,7 @@
                 $('.allocationSaveBtn').removeClass('hidden');
             });
 
-            $.ajax({
-                url: "{{ route('return_calculation') }}",
-                success: function(result) {
-                    $("#coin_worth_all_summary").html(result);
-                    var verylow = $('.tabledata-verylow').map((_, el) => el.innerHTML).get();
-                    var sum_verylow = 0;
-                    verylow.forEach(element => {
-                        var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
-                        sum_verylow = sum_verylow + value;
-                    });
-                    var low = $('.tabledata-low').map((_, el) => el.innerHTML).get();
-                    var sum_low = 0;
-                    low.forEach(element => {
-                        var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
-                        sum_low = sum_low + value;
-                    });
-                    var medium = $('.tabledata-medium').map((_, el) => el.innerHTML).get();
-                    var sum_medium = 0;
-                    medium.forEach(element => {
-                        var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
-                        sum_medium = sum_medium + value;
-                    });
-                    var high = $('.tabledata-high').map((_, el) => el.innerHTML).get();
-                    var sum_high = 0;
-                    high.forEach(element => {
-                        var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
-                        sum_high = sum_high + value;
-                    });
-                    var veryhigh = $('.tabledata-veryhigh').map((_, el) => el.innerHTML).get();
-                    var sum_veryhigh = 0;
-                    veryhigh.forEach(element => {
-                        var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
-                        sum_veryhigh = sum_veryhigh + value;
-                    });
-
-                    $('#allocated-verylow').html(sum_verylow.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                        '$&,'));
-                    $('#allocated-low').html(sum_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                    $('#allocated-medium').html(sum_medium.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                        '$&,'));
-                    $('#allocated-high').html(sum_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                    $('#allocated-veryhigh').html(sum_veryhigh.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                        '$&,'));
-                    var total_allocated = sum_verylow + sum_low + sum_medium + sum_high + sum_veryhigh;
-
-                    var allocation_percentage = $('.allocation-percentage').map((_, el) => el.innerHTML)
-                        .get();
-                    var total_allocation_percentage = 0;
-                    $.each(allocation_percentage, function() {
-                        total_allocation_percentage += parseInt(this, 10);
-                    });
-                    $('#total_allocation').html(total_allocation_percentage.toFixed(2) + '%');
-                    if (total_allocation_percentage !== 100) {
-                        $('#total_allocation').css('color', 'red');
-                        $('#total_allocation').css('font-weight', 'bold');
-                    }
-                    //console.log("allocation_percentage " + allocation_percentage[0].replace(/[^0-9]/g,''));
-
-                    var allocated_verylow = Number(allocation_percentage[4].replace(/[^0-9]/g, '')) *
-                        total_allocated / 100;
-                    var allocated_low = Number(allocation_percentage[3].replace(/[^0-9]/g, '')) *
-                        total_allocated / 100;
-                    var allocated_medium = Number(allocation_percentage[2].replace(/[^0-9]/g, '')) *
-                        total_allocated / 100;
-                    var allocated_high = Number(allocation_percentage[1].replace(/[^0-9]/g, '')) *
-                        total_allocated / 100;
-                    var allocated_veryhigh = Number(allocation_percentage[0].replace(/[^0-9]/g, '')) *
-                        total_allocated /
-                        100;
-
-
-                    $('#toallocate-verylow').html(allocated_verylow.toFixed(2).replace(
-                        /\d(?=(\d{3})+\.)/g, '$&,'));
-                    $('#toallocate-low').html(allocated_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                        '$&,'));
-                    $('#toallocate-medium').html(allocated_medium.toFixed(2).replace(
-                        /\d(?=(\d{3})+\.)/g, '$&,'));
-                    $('#toallocate-high').html(allocated_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                        '$&,'));
-                    $('#toallocate-veryhigh').html(allocated_veryhigh.toFixed(2).replace(
-                        /\d(?=(\d{3})+\.)/g, '$&,'));
-
-                    $('#allocated-total').html(total_allocated.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                        '$&,'));
-
-
-                    var not_allocated_verylow = sum_verylow - allocated_verylow;
-                    var not_allocated_low = sum_low - allocated_low;
-                    var not_allocated_medium = sum_medium - allocated_medium;
-                    var not_allocated_high = sum_high - allocated_high;
-                    var not_allocated_veryhigh = sum_veryhigh - allocated_veryhigh;
-
-                    var total_not_allocated = not_allocated_verylow + not_allocated_low +
-                        not_allocated_medium +
-                        not_allocated_high + not_allocated_veryhigh;
-
-
-                    $('#not_allocated-verylow').html(not_allocated_verylow.toFixed(2).replace(
-                        /\d(?=(\d{3})+\.)/g, '$&,'));
-                    $('#not_allocated-low').html(not_allocated_low.toFixed(2).replace(
-                        /\d(?=(\d{3})+\.)/g, '$&,'));
-                    $('#not_allocated-medium').html(not_allocated_medium.toFixed(2).replace(
-                        /\d(?=(\d{3})+\.)/g, '$&,'));
-                    $('#not_allocated-high').html(not_allocated_high.toFixed(2).replace(
-                        /\d(?=(\d{3})+\.)/g, '$&,'));
-                    $('#not_allocated-veryhigh').html(not_allocated_veryhigh.toFixed(2).replace(
-                        /\d(?=(\d{3})+\.)/g,
-                        '$&,'));
-                    $('#not_allocated-total').html(total_not_allocated.toFixed(2).replace(
-                        /\d(?=(\d{3})+\.)/g, '$&,'));
-
-                }
-            });
+            
 
             var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
                 data: {
@@ -483,6 +373,129 @@
             });
 
         });
+        $.ajax({
+            url: "{{ route('portfolio_summary') }}",
+            success: function(result) {
+                $("#portfolio_summary").html(result);
+            }
+        });
+        
+        $.ajax({
+                url: "{{ route('return_calculation') }}",
+                success: function(result) {
+                    $("#coin_worth_all_summary").html(result);
+                    var verylow = $('.tabledata-verylow').map((_, el) => el.innerHTML).get();
+                    var sum_verylow = 0;
+                    verylow.forEach(element => {
+                        var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
+                        sum_verylow = sum_verylow + value;
+                    });
+                    var low = $('.tabledata-low').map((_, el) => el.innerHTML).get();
+                    var sum_low = 0;
+                    low.forEach(element => {
+                        var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
+                        sum_low = sum_low + value;
+                    });
+                    var medium = $('.tabledata-medium').map((_, el) => el.innerHTML).get();
+                    var sum_medium = 0;
+                    medium.forEach(element => {
+                        var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
+                        sum_medium = sum_medium + value;
+                    });
+                    var high = $('.tabledata-high').map((_, el) => el.innerHTML).get();
+                    var sum_high = 0;
+                    high.forEach(element => {
+                        var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
+                        sum_high = sum_high + value;
+                    });
+                    var veryhigh = $('.tabledata-veryhigh').map((_, el) => el.innerHTML).get();
+                    var sum_veryhigh = 0;
+                    veryhigh.forEach(element => {
+                        var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
+                        sum_veryhigh = sum_veryhigh + value;
+                    });
+
+                    $('#allocated-verylow').html(sum_verylow.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+                        '$&,'));
+                    $('#allocated-low').html(sum_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                    $('#allocated-medium').html(sum_medium.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+                        '$&,'));
+                    $('#allocated-high').html(sum_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                    $('#allocated-veryhigh').html(sum_veryhigh.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+                        '$&,'));
+                    var total_allocated = sum_verylow + sum_low + sum_medium + sum_high + sum_veryhigh;
+                    
+                    $('#total_holding_valuation').html("Total : $"+total_allocated.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+                        '$&,'));
+
+                    var allocation_percentage = $('.allocation-percentage').map((_, el) => el.innerHTML)
+                        .get();
+                    var total_allocation_percentage = 0;
+                    $.each(allocation_percentage, function() {
+                        total_allocation_percentage += parseInt(this, 10);
+                    });
+                    $('#total_allocation').html(total_allocation_percentage.toFixed(2) + '%');
+                    if (total_allocation_percentage !== 100) {
+                        $('#total_allocation').css('color', 'red');
+                        $('#total_allocation').css('font-weight', 'bold');
+                    }
+                    //console.log("allocation_percentage " + allocation_percentage[0].replace(/[^0-9]/g,''));
+
+                    var allocated_verylow = Number(allocation_percentage[4].replace(/[^0-9]/g, '')) *
+                        total_allocated / 100;
+                    var allocated_low = Number(allocation_percentage[3].replace(/[^0-9]/g, '')) *
+                        total_allocated / 100;
+                    var allocated_medium = Number(allocation_percentage[2].replace(/[^0-9]/g, '')) *
+                        total_allocated / 100;
+                    var allocated_high = Number(allocation_percentage[1].replace(/[^0-9]/g, '')) *
+                        total_allocated / 100;
+                    var allocated_veryhigh = Number(allocation_percentage[0].replace(/[^0-9]/g, '')) *
+                        total_allocated /
+                        100;
+
+
+                    $('#toallocate-verylow').html(allocated_verylow.toFixed(2).replace(
+                        /\d(?=(\d{3})+\.)/g, '$&,'));
+                    $('#toallocate-low').html(allocated_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+                        '$&,'));
+                    $('#toallocate-medium').html(allocated_medium.toFixed(2).replace(
+                        /\d(?=(\d{3})+\.)/g, '$&,'));
+                    $('#toallocate-high').html(allocated_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+                        '$&,'));
+                    $('#toallocate-veryhigh').html(allocated_veryhigh.toFixed(2).replace(
+                        /\d(?=(\d{3})+\.)/g, '$&,'));
+
+                    $('#allocated-total').html(total_allocated.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+                        '$&,'));
+
+
+                    var not_allocated_verylow = sum_verylow - allocated_verylow;
+                    var not_allocated_low = sum_low - allocated_low;
+                    var not_allocated_medium = sum_medium - allocated_medium;
+                    var not_allocated_high = sum_high - allocated_high;
+                    var not_allocated_veryhigh = sum_veryhigh - allocated_veryhigh;
+
+                    var total_not_allocated = not_allocated_verylow + not_allocated_low +
+                        not_allocated_medium +
+                        not_allocated_high + not_allocated_veryhigh;
+
+
+                    $('#not_allocated-verylow').html(not_allocated_verylow.toFixed(2).replace(
+                        /\d(?=(\d{3})+\.)/g, '$&,'));
+                    $('#not_allocated-low').html(not_allocated_low.toFixed(2).replace(
+                        /\d(?=(\d{3})+\.)/g, '$&,'));
+                    $('#not_allocated-medium').html(not_allocated_medium.toFixed(2).replace(
+                        /\d(?=(\d{3})+\.)/g, '$&,'));
+                    $('#not_allocated-high').html(not_allocated_high.toFixed(2).replace(
+                        /\d(?=(\d{3})+\.)/g, '$&,'));
+                    $('#not_allocated-veryhigh').html(not_allocated_veryhigh.toFixed(2).replace(
+                        /\d(?=(\d{3})+\.)/g,
+                        '$&,'));
+                    $('#not_allocated-total').html(total_not_allocated.toFixed(2).replace(
+                        /\d(?=(\d{3})+\.)/g, '$&,'));
+
+                }
+            });
 
         function selectCoinFromCoinsList(event) {
             var parent = event.target.parentElement;
@@ -700,12 +713,7 @@
             });
         }
 
-        $.ajax({
-            url: "{{ route('portfolio_summary') }}",
-            success: function(result) {
-                $("#portfolio_summary").html(result);
-            }
-        });
+        
 
         $.ajax({
             url: "{{ route('dashboardTransactionPartials') }}",
