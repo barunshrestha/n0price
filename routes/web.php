@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TransactionController;
 
@@ -32,6 +34,17 @@ Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, '__i
     ->middleware(['signed', 'throttle:6,1'])
     ->name('verification.verify');
 
+Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+    ->name('password.request');
+
+Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->name('password.email');
+Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->name('password.reset');
+
+Route::post('reset-password', [NewPasswordController::class, 'store'])
+    ->name('password.update');
+
 
 Route::middleware(['auth', 'verified', 'topLevelApproval', 'adminAuth'])->group(function () {
     Route::get('/user/approve/{id}', [UserController::class, 'approveUser'])->name('user.approve');
@@ -56,7 +69,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::post('/change_allocation', [TransactionController::class, 'change_allocation'])->name('percentage.allocation');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     Route::get('/portfolio_summary', 'DashboardController@portfolio_summary')->name('portfolio_summary');
-    Route::get('/return_calculation', [DashboardController::class,'return_calculation'])->name('return_calculation');
+    Route::get('/return_calculation', [DashboardController::class, 'return_calculation'])->name('return_calculation');
     Route::get('/dashboardTransactionPartials', 'DashboardController@dashboardTransactionPartials')->name('dashboardTransactionPartials');
     Route::get('/get/all/coins', [DashboardController::class, 'getallcoins']);
 });
