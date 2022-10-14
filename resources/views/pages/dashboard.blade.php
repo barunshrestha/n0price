@@ -419,20 +419,25 @@
                     var value = Number(element.replace(/,/g, '').replace(/\$/g, ''));
                     sum_veryhigh = sum_veryhigh + value;
                 });
+                var sign_sum_verylow = sum_verylow.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                var sign_sum_low = sum_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                var sign_sum_medium = sum_medium.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                var sign_sum_high = sum_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                var sign_sum_veryhigh = sum_veryhigh.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 
-                $('#allocated-verylow').html(sum_verylow.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                    '$&,'));
-                $('#allocated-low').html(sum_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#allocated-medium').html(sum_medium.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                    '$&,'));
-                $('#allocated-high').html(sum_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#allocated-veryhigh').html(sum_veryhigh.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                    '$&,'));
+                $('#allocated-verylow').html(sign_sum_verylow >= 0 ? '$' + sign_sum_verylow : '-$' + abs(
+                    sign_sum_verylow));
+                $('#allocated-low').html(sign_sum_low >= 0 ? '$' + sign_sum_low : '-$' + abs(sign_sum_low));
+                $('#allocated-medium').html(sign_sum_medium >= 0 ? '$' + sign_sum_medium : '-$' + abs(
+                    sign_sum_medium));
+                $('#allocated-high').html(sign_sum_high >= 0 ? '$' + sign_sum_high : '-$' + abs(sign_sum_high));
+                $('#allocated-veryhigh').html(sign_sum_veryhigh >= 0 ? '$' + sign_sum_veryhigh : '-$' + abs(
+                    sign_sum_veryhigh));
                 var total_allocated = sum_verylow + sum_low + sum_medium + sum_high + sum_veryhigh;
 
-                $('#total_holding_valuation').html("Total : $" + total_allocated.toFixed(2).replace(
-                    /\d(?=(\d{3})+\.)/g,
-                    '$&,'));
+                var sign_total_allocated = total_allocated.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                $('#total_holding_valuation').html(sign_total_allocated >= 0 ? 'Total : $' +
+                    sign_total_allocated : 'Total : -$' + abs(sign_total_allocated));
 
                 var allocation_percentage = $('.allocation-percentage').map((_, el) => el.innerHTML)
                     .get();
@@ -440,7 +445,7 @@
                 $.each(allocation_percentage, function() {
                     total_allocation_percentage += parseInt(this, 10);
                 });
-                $('#total_allocation').html(total_allocation_percentage.toFixed(2) + '%');
+                $('#total_allocation').html(total_allocation_percentage.toFixed(2));
                 if (total_allocation_percentage !== 100) {
                     $('#total_allocation').css('color', 'red');
                     $('#total_allocation').css('font-weight', 'bold');
@@ -459,20 +464,19 @@
                     total_allocated /
                     100;
 
+                var sign_allocated_verylow = allocated_verylow.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                var sign_allocated_low = allocated_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                var sign_allocated_medium = allocated_medium.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                var sign_allocated_high = allocated_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                var sign_allocated_veryhigh = allocated_veryhigh.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                var sign_total_allocated = total_allocated.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 
-                $('#toallocate-verylow').html(allocated_verylow.toFixed(2).replace(
-                    /\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#toallocate-low').html(allocated_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                    '$&,'));
-                $('#toallocate-medium').html(allocated_medium.toFixed(2).replace(
-                    /\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#toallocate-high').html(allocated_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                    '$&,'));
-                $('#toallocate-veryhigh').html(allocated_veryhigh.toFixed(2).replace(
-                    /\d(?=(\d{3})+\.)/g, '$&,'));
-
-                $('#allocated-total').html(total_allocated.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                    '$&,'));
+                $('#toallocate-verylow').html(sign_allocated_verylow >= 0 ? '$' + sign_allocated_verylow : '-$' + abs(sign_allocated_verylow));
+                $('#toallocate-low').html(sign_allocated_low >= 0 ? '$' + sign_allocated_low : '-$' + abs(sign_allocated_low));
+                $('#toallocate-medium').html(sign_allocated_medium >= 0 ? '$' + sign_allocated_medium : '-$' + abs(sign_allocated_medium));
+                $('#toallocate-high').html(sign_allocated_high >= 0 ? '$' + sign_allocated_high : '-$' + abs(sign_allocated_high));
+                $('#toallocate-veryhigh').html(sign_allocated_veryhigh >= 0 ? '$' + sign_allocated_veryhigh : '-$' + abs(sign_allocated_veryhigh));
+                $('#allocated-total').html(sign_total_allocated >= 0 ? '$' + sign_total_allocated : '-$' + abs(sign_total_allocated));
 
 
                 var not_allocated_verylow = sum_verylow - allocated_verylow;
@@ -485,20 +489,19 @@
                     not_allocated_medium +
                     not_allocated_high + not_allocated_veryhigh;
 
-
-                $('#not_allocated-verylow').html(not_allocated_verylow.toFixed(2).replace(
-                    /\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#not_allocated-low').html(not_allocated_low.toFixed(2).replace(
-                    /\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#not_allocated-medium').html(not_allocated_medium.toFixed(2).replace(
-                    /\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#not_allocated-high').html(not_allocated_high.toFixed(2).replace(
-                    /\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#not_allocated-veryhigh').html(not_allocated_veryhigh.toFixed(2).replace(
-                    /\d(?=(\d{3})+\.)/g,
-                    '$&,'));
-                $('#not_allocated-total').html(total_not_allocated.toFixed(2).replace(
-                    /\d(?=(\d{3})+\.)/g, '$&,'));
+                    var sign_not_allocated_verylow=not_allocated_verylow.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,'$&,');
+                    var sign_not_allocated_low=not_allocated_low.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                    var sign_not_allocated_medium=not_allocated_medium.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,'$&,');
+                    var sign_not_allocated_high=not_allocated_high.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,'$&,');
+                    var sign_not_allocated_veryhigh=not_allocated_veryhigh.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,'$&,');
+                    var sign_total_not_allocated=total_not_allocated.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,'$&,');
+                    
+                $('#not_allocated-verylow').html(sign_not_allocated_verylow >= 0 ? '$' + sign_not_allocated_verylow : '-$' + abs(sign_not_allocated_verylow));
+                $('#not_allocated-low').html(sign_not_allocated_low >= 0 ? '$' + sign_not_allocated_low : '-$' + abs(sign_not_allocated_low));
+                $('#not_allocated-medium').html(sign_not_allocated_medium >= 0 ? '$' + sign_not_allocated_medium : '-$' + abs(sign_not_allocated_medium));
+                $('#not_allocated-high').html(sign_not_allocated_high >= 0 ? '$' + sign_not_allocated_high : '-$' + abs(sign_not_allocated_high));
+                $('#not_allocated-veryhigh').html(sign_not_allocated_veryhigh >= 0 ? '$' + sign_not_allocated_veryhigh : '-$' + abs(sign_not_allocated_veryhigh));
+                $('#not_allocated-total').html(sign_total_not_allocated >= 0 ? '$' + sign_total_not_allocated : '-$' + abs(sign_total_not_allocated));
 
             }
         });

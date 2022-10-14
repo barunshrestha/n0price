@@ -40,14 +40,14 @@
                     @endforeach
                 </tr>
                 <tr>
-                    <td class="d-flex">Allocation <span id="total_allocation" class="ml-auto"></span></td>
+                    <td class="d-flex">Allocation% <span id="total_allocation" class="ml-auto"></span></td>
 
                     <form action="{{ route('percentage.allocation') }}" method="POST">
                         @csrf
                         @foreach ($asset_matrix_constraints as $constraints)
                             <td>
                                 <div class="hideAfteredit allocation-percentage" style="text-align: center;">
-                                    {{ $constraints->percentage_allocation }} %
+                                    {{ $constraints->percentage_allocation }}%
                                 </div>
                                 <input type="text" class="form-control hideBeforeedit hidden"
                                     name="allocation_percentage[]" value="{{ $constraints->percentage_allocation }}">
@@ -72,11 +72,11 @@
                     <td>
                         To Allocate $
                     </td>
-                    <td style="text-align: right;">$<span id="toallocate-veryhigh"></span></td>
-                    <td style="text-align: right;">$<span id="toallocate-high"></span></td>
-                    <td style="text-align: right;">$<span id="toallocate-medium"></span></td>
-                    <td style="text-align: right;">$<span id="toallocate-low"></span></td>
-                    <td style="text-align: right;">$<span id="toallocate-verylow"></span></td>
+                    <td style="text-align: right;"><span id="toallocate-veryhigh"></span></td>
+                    <td style="text-align: right;"><span id="toallocate-high"></span></td>
+                    <td style="text-align: right;"><span id="toallocate-medium"></span></td>
+                    <td style="text-align: right;"><span id="toallocate-low"></span></td>
+                    <td style="text-align: right;"><span id="toallocate-verylow"></span></td>
 
                 </tr>
                 <tr>
@@ -84,11 +84,11 @@
                     <td>
                         Allocated
                     </td>
-                    <td style="text-align: right;">$<span id="allocated-veryhigh"></span></td>
-                    <td style="text-align: right;">$<span id="allocated-high"></span></td>
-                    <td style="text-align: right;">$<span id="allocated-medium"></span></td>
-                    <td style="text-align: right;">$<span id="allocated-low"></span></td>
-                    <td style="text-align: right;">$<span id="allocated-verylow"></span></td>
+                    <td style="text-align: right;"><span id="allocated-veryhigh"></span></td>
+                    <td style="text-align: right;"><span id="allocated-high"></span></td>
+                    <td style="text-align: right;"><span id="allocated-medium"></span></td>
+                    <td style="text-align: right;"><span id="allocated-low"></span></td>
+                    <td style="text-align: right;"><span id="allocated-verylow"></span></td>
                     <td style="text-align: center; font-weight:bold;" colspan="4">Price</td>
                 </tr>
                 <tr>
@@ -96,11 +96,11 @@
                     <td>
                         Not Allocated
                     </td>
-                    <td style="text-align: right;">$<span id="not_allocated-veryhigh"></span></td>
-                    <td style="text-align: right;">$<span id="not_allocated-high"></span></td>
-                    <td style="text-align: right;">$<span id="not_allocated-medium"></span></td>
-                    <td style="text-align: right;">$<span id="not_allocated-low"></span></td>
-                    <td style="text-align: right;">$<span id="not_allocated-verylow"></span></td>
+                    <td style="text-align: right;"><span id="not_allocated-veryhigh"></span></td>
+                    <td style="text-align: right;"><span id="not_allocated-high"></span></td>
+                    <td style="text-align: right;"><span id="not_allocated-medium"></span></td>
+                    <td style="text-align: right;"><span id="not_allocated-low"></span></td>
+                    <td style="text-align: right;"><span id="not_allocated-verylow"></span></td>
                     <td>Return</td>
                     <td>24hr</td>
                     <td>7d</td>
