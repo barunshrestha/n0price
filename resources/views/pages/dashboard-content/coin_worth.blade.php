@@ -112,9 +112,9 @@
                 ${{ number_format($req_unit * $usd, 2) }}
             </td>
         @endif
-        <td>{{ $worth[$curr]['return'] }} %</td>
-        <td>{{ $worth[$curr]['24hr'] }} %</td>
-        <td>{{ $worth[$curr]['7d'] }} %</td>
-        <td>{{ $worth[$curr]['ATH'] }} %</td>
+        <td style="color:<?php echo $worth[$curr]['return'] > 0 ? 'green': 'red';?>">{{ $worth[$curr]['return'] }} %</td>
+        <td style="color:<?php echo $worth[$curr]['24hr'] > 0 ? 'green': 'red';?>">{{ $worth[$curr]['24hr'] }} %</td>
+        <td style="color:<?php echo $worth[$curr]['7d'] > 0 ? 'green': 'red';?>" >{{ $worth[$curr]['7d'] }} %</td>
+        <td style="color:<?php echo $worth[$curr]['ATH'] > 0 ? 'green': 'red';?>" >{{ $worth[$curr]['ATH'] }} %</td>
     </tr>
 @endforeach
