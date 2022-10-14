@@ -124,7 +124,7 @@
                                         Please define your portfolio risk level to continue to your portfolio.
                                         <form action="{{ route('percentage.allocation') }}" method="POST">
                                             @csrf
-                                            <table class="table table-bordered">
+                                            <table class="table mt-5">
                                                 <thead>
                                                     <tr>
                                                         <th scope="col">Market Capital</th>
@@ -134,7 +134,7 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach ($asset_matrix_constraints as $constraints)
-                                                        <tr>
+                                                        <tr style="background:<?php echo $constraints->color ?>;">
                                                             <td style="vertical-align: middle;">
                                                                 {{ $constraints->market_cap }}</td>
                                                             <td style="vertical-align: middle;">{{ $constraints->risk }}

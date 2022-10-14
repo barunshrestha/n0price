@@ -4,9 +4,9 @@
     {{-- Container --}}
     <div class="{{ Metronic::printClasses('footer-container', false) }} d-flex flex-column flex-md-row align-items-center justify-content-between">
         {{-- Copyright --}}
-        <div class="text-dark order-2 order-md-1">
+        <div class="text-dark order-2 order-md-1 d-flex">
             <span class="text-muted font-weight-bold mr-2">{{ date("Y") }} &copy;</span>
-            <p class="text-dark-75 text-hover-primary">NoPrice</p>
+            <p class="text-dark-75 text-hover-primary mx-3">NoPrice</p>
         </div>
     </div>
 </div>
