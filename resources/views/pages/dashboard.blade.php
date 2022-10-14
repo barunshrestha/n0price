@@ -218,18 +218,18 @@
 
             });
 
-            var datatable_assetmatrix = $('#kt_datatable_assetmatrix').KTDatatable({
-                data: {
-                    saveState: {
-                        cookie: false
-                    }
-                },
+            // var datatable_assetmatrix = $('#kt_datatable_assetmatrix').KTDatatable({
+            //     data: {
+            //         saveState: {
+            //             cookie: false
+            //         }
+            //     },
 
-                search: {
-                    input: $('#portfolio_search_assetmatrix'),
-                    key: 'generalSearch'
-                }
-            });
+            //     search: {
+            //         input: $('#portfolio_search_assetmatrix'),
+            //         key: 'generalSearch'
+            //     }
+            // });
 
             // $('#portfolio-btn').click(function() {
             //     portfolio_datatable.reload();
@@ -325,7 +325,7 @@
                 columns: [{
                     field: "title",
                     template: function(row) {
-                        return '<div onclick="selectCoinFromCoinsList(event)"> <div class="coin-table-data"> <div class="align-items-center d-flex" onclick="selectCoinFromCoinsList(event)"> <div class="d-flex align-items-center"><img src="' +
+                        return '<div onclick="selectCoinFromCoinsList(event)"> <div class="coin-table-data"> <div class="align-items-center d-flex"> <div class="d-flex align-items-center"><img src="' +
                             row.image +
                             '" alt="img" class="dropdown-image mx-2 "><div class="mx-2 font-weight-bold">' +
                             row.name + '</div><input type="hidden" value="' + row.coin_id +
@@ -354,7 +354,7 @@
                     let currentDate = new Date().toJSON().slice(0, 10);
                     if (org_date == currentDate) {
                         var selected_coin = $('#selected_coin .coin_org_symbol').val();
-                        var price_today = $('#selected_coin .coin_org_price').val();
+                        // var price_today = $('#selected_coin .coin_org_price').val();
                         var quantity = $('#purchase_quantity').val();
                         var total_price = parseFloat(quantity) * parseFloat(price_today);
                         $('#purchase_price').val(total_price);
@@ -368,6 +368,11 @@
                 let currentDate = new Date().toJSON().slice(0, 10);
                 if (org_date != currentDate) {
                     $('#purchase_price').val(0);
+                }
+                else{
+                    var quantity = $('#purchase_quantity').val();
+                    var total_price = parseFloat(quantity) * parseFloat(price_today);
+                    $('#purchase_price').val(total_price);
                 }
 
             });
@@ -510,7 +515,6 @@
 
 
             var coin_id = $('#selected_coin .coin_org_symbol').val();
-            console.log(coin_id);
             const url = 'https://pro-api.coingecko.com/api/v3/simple/price?ids=' + coin_id +
                 '&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX';
 
@@ -519,7 +523,7 @@
             fetchRes.then(res =>
                 res.json()).then(data => {
                 console.log(data);
-                var price_today = data[Object.keys(data)[0]].usd;
+                price_today = data[Object.keys(data)[0]].usd;
                 var usd_24h_change = data[Object.keys(data)[0]].usd_24h_change ? data[Object.keys(data)[0]]
                     .usd_24h_change : 0;
                 var round_usd = Number((usd_24h_change).toFixed(2));
