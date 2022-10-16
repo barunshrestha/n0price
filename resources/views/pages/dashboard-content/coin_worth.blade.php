@@ -11,11 +11,12 @@
         $req_unit = $total_buy_unit - $total_sell_unit;
         $calculated_worth = $req_unit * $usd;
         ?>
+        <td>${{ round($usd_market_cap/1000000,1) }}</td>
         @if ($usd_market_cap < 25000000)
             <td style="background:#e9fac8;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    <span class="ml-auto">${{ round($usd_market_cap/1000000,1) }}</span>
+                    
                 </div>
             </td>
             <td class="tabledata-veryhigh" style="text-align: right;">
@@ -43,7 +44,7 @@
             <td style="background:#fff3bf;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    <span class="ml-auto">${{round($usd_market_cap/1000000,1)}}</span>
+                    
                 </div>
             </td>
             <td class="tabledata-veryhigh">
@@ -71,7 +72,7 @@
             <td style="background:#d3f9d8;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    <span class="ml-auto">${{round($usd_market_cap/1000000,1)}}</span>
+                    
                 </div>
             </td>
             <td class="tabledata-veryhigh">
@@ -99,7 +100,7 @@
             <td style="background:#ffd8a8;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    <span class="ml-auto">${{round($usd_market_cap/1000000,1)}}</span>
+                    
                 </div>
             </td>
             <td class="tabledata-veryhigh">
@@ -127,7 +128,7 @@
             <td style="background:#ffa8a8;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    <span class="ml-auto">${{round($usd_market_cap/1000000,1)}}</span>
+                    
                 </div>
             </td>
             <td class="tabledata-veryhigh">

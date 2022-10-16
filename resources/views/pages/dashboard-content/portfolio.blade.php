@@ -1,7 +1,7 @@
 <div class="card card-custom">
     <div class="card-header flex-wrap border-0 pt-6 pb-0">
         <div class="card-title">
-           
+
         </div>
         <div class="card-toolbar">
             <button type="button" class="btn btn-primary mx-2 my-3" data-toggle="modal"
@@ -19,7 +19,7 @@
             </tr>
             <thead>
                 <tr>
-                    <th scope="col">Market Cap</th>
+                    <th scope="col" colspan="2">Market Cap</th>
                     @foreach ($asset_matrix_constraints as $constraints)
                         <th scope="col" style="background: {{ $constraints->color }};color:black;text-align:center;">
                             {{ $constraints->market_cap }}
@@ -30,7 +30,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>
+                    <td colspan="2">
                         Risk
                     </td>
                     @foreach ($asset_matrix_constraints as $constraints)
@@ -40,8 +40,8 @@
                     @endforeach
                 </tr>
                 <tr>
-                    <td class="d-flex">Allocation% <span id="total_allocation" class="ml-auto"></span></td>
-
+                    <td colspan="2">Allocation% <span id="total_allocation" class="ml-auto"></span>
+                    </td>
                     <form action="{{ route('percentage.allocation') }}" method="POST">
                         @csrf
                         @foreach ($asset_matrix_constraints as $constraints)
@@ -69,7 +69,7 @@
                 </tr>
                 <tr>
 
-                    <td>
+                    <td colspan="2">
                         To Allocate $
                     </td>
                     <td style="text-align: right;"><span id="toallocate-veryhigh"></span></td>
@@ -81,7 +81,7 @@
                 </tr>
                 <tr>
 
-                    <td>
+                    <td colspan="2">
                         Allocated
                     </td>
                     <td style="text-align: right;"><span id="allocated-veryhigh"></span></td>
@@ -93,7 +93,7 @@
                 </tr>
                 <tr>
 
-                    <td>
+                    <td colspan="2">
                         Not Allocated
                     </td>
                     <td style="text-align: right;"><span id="not_allocated-veryhigh"></span></td>
