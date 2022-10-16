@@ -15,15 +15,15 @@
             <td style="background:#e9fac8;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    <span class="ml-auto">${{ $usd_market_cap }}</span>
+                    <span class="ml-auto">${{ round($usd_market_cap/1000000,1) }}</span>
                 </div>
             </td>
             <td class="tabledata-veryhigh" style="text-align: right;">
 
                 @if ($calculated_worth >= 0)
-                    ${{ number_format($calculated_worth, 2) }}
+                    ${{ number_format($calculated_worth, 1) }}
                 @else
-                    -${{ number_format(abs($calculated_worth), 2) }}
+                    -${{ number_format(abs($calculated_worth), 1) }}
                 @endif
 
             </td>
@@ -43,7 +43,7 @@
             <td style="background:#fff3bf;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    <span class="ml-auto">${{ $usd_market_cap }}</span>
+                    <span class="ml-auto">${{round($usd_market_cap/1000000,1)}}</span>
                 </div>
             </td>
             <td class="tabledata-veryhigh">
@@ -51,9 +51,9 @@
             </td>
             <td class="tabledata-high" style="text-align: right;">
                 @if ($calculated_worth >= 0)
-                    ${{ number_format($calculated_worth, 2) }}
+                    ${{ number_format($calculated_worth, 1) }}
                 @else
-                    -${{ number_format(abs($calculated_worth), 2) }}
+                    -${{ number_format(abs($calculated_worth), 1) }}
                 @endif
 
             </td>
@@ -71,7 +71,7 @@
             <td style="background:#d3f9d8;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    <span class="ml-auto">${{ $usd_market_cap }}</span>
+                    <span class="ml-auto">${{round($usd_market_cap/1000000,1)}}</span>
                 </div>
             </td>
             <td class="tabledata-veryhigh">
@@ -82,9 +82,9 @@
             </td>
             <td class="tabledata-medium" style="text-align: right;">
                 @if ($calculated_worth >= 0)
-                    ${{ number_format($calculated_worth, 2) }}
+                    ${{ number_format($calculated_worth, 1) }}
                 @else
-                    -${{ number_format(abs($calculated_worth), 2) }}
+                    -${{ number_format(abs($calculated_worth), 1) }}
                 @endif
 
             </td>
@@ -99,7 +99,7 @@
             <td style="background:#ffd8a8;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    <span class="ml-auto">${{ $usd_market_cap }}</span>
+                    <span class="ml-auto">${{round($usd_market_cap/1000000,1)}}</span>
                 </div>
             </td>
             <td class="tabledata-veryhigh">
@@ -113,9 +113,9 @@
             </td>
             <td class="tabledata-low" style="text-align: right;">
                 @if ($calculated_worth >= 0)
-                    ${{ number_format($calculated_worth, 2) }}
+                    ${{ number_format($calculated_worth, 1) }}
                 @else
-                    -${{ number_format(abs($calculated_worth), 2) }}
+                    -${{ number_format(abs($calculated_worth), 1) }}
                 @endif
 
             </td>
@@ -127,7 +127,7 @@
             <td style="background:#ffa8a8;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    <span class="ml-auto">${{ $usd_market_cap }}</span>
+                    <span class="ml-auto">${{round($usd_market_cap/1000000,1)}}</span>
                 </div>
             </td>
             <td class="tabledata-veryhigh">
@@ -144,15 +144,15 @@
             </td>
             <td class="tabledata-verylow" style="text-align: right;">
                 @if ($calculated_worth >= 0)
-                    ${{ number_format($calculated_worth, 2) }}
+                    ${{ number_format($calculated_worth, 1) }}
                 @else
-                    -${{ number_format(abs($calculated_worth), 2) }}
+                    -${{ number_format(abs($calculated_worth), 1) }}
                 @endif
             </td>
         @endif
-        <td style="color:<?php echo $worth[$curr]['return'] > 0 ? 'green' : 'red'; ?>">{{ $worth[$curr]['return'] }}%</td>
-        <td style="color:<?php echo $worth[$curr]['24hr'] > 0 ? 'green' : 'red'; ?>">{{ $worth[$curr]['24hr'] }}%</td>
-        <td style="color:<?php echo $worth[$curr]['7d'] > 0 ? 'green' : 'red'; ?>">{{ $worth[$curr]['7d'] }}%</td>
-        <td style="color:<?php echo $worth[$curr]['ATH'] > 0 ? 'green' : 'red'; ?>">{{ $worth[$curr]['ATH'] }}%</td>
+        <td style="color:<?php echo $worth[$curr]['return'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['return'],1) }}%</td>
+        <td style="color:<?php echo $worth[$curr]['24hr'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['24hr'],1) }}%</td>
+        <td style="color:<?php echo $worth[$curr]['7d'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['7d'],1) }}%</td>
+        <td style="color:<?php echo $worth[$curr]['ATH'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['ATH'],1) }}%</td>
     </tr>
 @endforeach
