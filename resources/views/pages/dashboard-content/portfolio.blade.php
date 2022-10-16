@@ -89,7 +89,7 @@
                     <td style="text-align: right;"><span id="allocated-medium"></span></td>
                     <td style="text-align: right;"><span id="allocated-low"></span></td>
                     <td style="text-align: right;"><span id="allocated-verylow"></span></td>
-                    <td style="text-align: center; font-weight:bold;" colspan="4">Price</td>
+                    <td style="text-align: center; font-weight:bold;" colspan="4">Market</td>
                 </tr>
                 <tr>
 
