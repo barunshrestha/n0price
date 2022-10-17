@@ -54,7 +54,10 @@
                         @endforeach
                     </tr>
                     <tr>
-                        <td colspan="2">Allocation% <span id="total_allocation" class="ml-auto"></span>
+                        <td style="border-right: 1px solid #ffffff;">Allocation% 
+                        </td>
+                        <td style="text-align: right">
+                            <span id="total_allocation" class="ml-auto"></span>
                         </td>
                         <form action="{{ route('percentage.allocation') }}" method="POST">
                             @csrf
