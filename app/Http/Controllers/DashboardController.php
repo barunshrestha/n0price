@@ -205,7 +205,8 @@ class DashboardController extends Controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);
             $current_prices_list_details_from_server = json_decode($response);
-            $current_market_capital = $current_prices_list_details_from_server->market_data->market_cap->usd;
+	    
+            $current_market_capital = isset($current_prices_list_details_from_server->market_data->market_cap->usd)?$current_prices_list_details_from_server->market_data->market_cap->usd:0;
             $current_price = $current_prices_list_details_from_server->market_data->current_price->usd;
             $price_change_percentage_24h = $current_prices_list_details_from_server->market_data->price_change_percentage_24h;
             $price_change_percentage_7d = $current_prices_list_details_from_server->market_data->price_change_percentage_7d;
