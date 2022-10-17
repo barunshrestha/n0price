@@ -34,7 +34,7 @@ class DashboardController extends Controller
         $asset_matrix_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
         $this->_data['asset_matrix_constraints'] = $asset_matrix_constraints;
 
-        if ($transaction_count == 0 || $asset_matrix_total[0]->asset_total==0 ) {
+        if ($asset_matrix_total[0]->asset_total==0 ) {
             return view($this->_page . 'no-content-dashboard', $this->_data);
         }
 
