@@ -14,8 +14,7 @@
 @else
     <div class="card card-custom">
         <div class="card-header flex-wrap border-0 pt-6 pb-0">
-
-
+<div></div>
             <div class="card-toolbar">
                 <button type="button" class="btn btn-primary mx-2 my-3" data-toggle="modal"
                     data-target="#new_transaction_modal">
