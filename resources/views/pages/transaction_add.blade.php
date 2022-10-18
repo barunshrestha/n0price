@@ -69,31 +69,32 @@
                             <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
                                 <label>Quantity</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Quantity" required
-                                        id="purchase_quantity" name="units" value="1" />
+                                    <input type=number step=any class="form-control" placeholder="Quantity" required
+                                        id="purchase_quantity" name="units" value="1" oninput="validity.valid||(value='');"/>
                                 </div>
                             </div>
                             <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
                                 <label>Date</label>
                                 <div class="input-group">
                                     <input type="date" class="form-control" placeholder="date" required
-                                        value="<?php echo date('Y-m-d'); ?>" name="purchase_date" id="purchase_date" />
+                                        value="<?php echo date('Y-m-d'); ?>" name="purchase_date" id="purchase_date"/>
                                 </div>
                             </div>
                             <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
                                 <label>Price</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" required
+                                    <input type=number step=any class="form-control" required
                                         placeholder="Purchase Price Amount" name="purchase_price"
-                                        id="purchase_price" />
+                                        id="purchase_price" oninput="validity.valid||(value='');" />
                                 </div>
                             </div>
                         </div>
+                        <div id="selected-coin-error-box" class="my-3"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal"
                         onclick="window.location.reload();">Close</button>
-                    <button type="submit" class="btn btn-primary font-weight-bold">Save</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold" id="coin-save-transaction-btn">Save</button>
                 </div>
                 </form>
             </div>

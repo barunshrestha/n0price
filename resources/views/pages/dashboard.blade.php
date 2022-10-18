@@ -357,13 +357,45 @@
                         var selected_coin = $('#selected_coin .coin_org_symbol').val();
                         // var price_today = $('#selected_coin .coin_org_price').val();
                         var quantity = $('#purchase_quantity').val();
-                        var total_price = parseFloat(quantity) * parseFloat(price_today);
-                        $('#purchase_price').val(total_price);
+                        if (quantity < 0) {
+                            $('#coin-save-transaction-btn').prop('disabled', true);
+                            $('#selected-coin-error-box').html(
+                                '<p class="bg-danger p-2 text-white text-sm">Please enter valid purchase quantity</p>'
+                            );
+                        } else {
+                            $('#coin-save-transaction-btn').prop('disabled', false);
+                            $('#selected-coin-error-box').html('');
+                            var total_price = parseFloat(quantity) * parseFloat(price_today);
+                            $('#purchase_price').val(total_price);
+                        }
                     } else {
                         $('#purchase_price').val(0);
                     }
 
                 });
+            $('#purchase_price').change(function() {
+                var total_price = $('#purchase_price').val();
+                if (total_price < 0) {
+                    $('#coin-save-transaction-btn').prop('disabled', true);
+                    $('#selected-coin-error-box').html(
+                        '<p class="bg-danger p-2 text-white text-sm">Please enter valid purchase amount</p>'
+                    );
+
+                } else {
+                    var quantity = $('#purchase_quantity').val();
+                    if (quantity < 0) {
+                        $('#coin-save-transaction-btn').prop('disabled', true);
+                        $('#selected-coin-error-box').html(
+                                '<p class="bg-danger p-2 text-white text-sm">Please enter valid purchase quantity</p>'
+                            );
+                    }
+                    else{
+                        $('#selected-coin-error-box').html('');
+                        $('#coin-save-transaction-btn').prop('disabled', false);
+                    }
+                }
+            });
+
             $('#purchase_date').change(function() {
                 var org_date = $('#purchase_date').val();
                 let currentDate = new Date().toJSON().slice(0, 10);
@@ -425,15 +457,25 @@
                 var sign_sum_high = sum_high.toFixed(1);
                 var sign_sum_veryhigh = sum_veryhigh.toFixed(1);
 
-                $('#allocated-verylow').html(sign_sum_verylow >= 0 ? '$' + sign_sum_verylow.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_sum_verylow)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#allocated-low').html(sign_sum_low >= 0 ? '$' + sign_sum_low.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_sum_low)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#allocated-medium').html(sign_sum_medium >= 0 ? '$' + sign_sum_medium.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_sum_medium)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#allocated-high').html(sign_sum_high >= 0 ? '$' + sign_sum_high.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_sum_high)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#allocated-veryhigh').html(sign_sum_veryhigh >= 0 ? '$' + sign_sum_veryhigh.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_sum_veryhigh)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#allocated-verylow').html(sign_sum_verylow >= 0 ? '$' + sign_sum_verylow.replace(
+                    /\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_sum_verylow)).replace(
+                    /\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#allocated-low').html(sign_sum_low >= 0 ? '$' + sign_sum_low.replace(/\d(?=(\d{3})+\.)/g,
+                    '$&,') : '-$' + String(Math.abs(sign_sum_low)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#allocated-medium').html(sign_sum_medium >= 0 ? '$' + sign_sum_medium.replace(
+                    /\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_sum_medium)).replace(
+                    /\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#allocated-high').html(sign_sum_high >= 0 ? '$' + sign_sum_high.replace(/\d(?=(\d{3})+\.)/g,
+                    '$&,') : '-$' + String(Math.abs(sign_sum_high)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#allocated-veryhigh').html(sign_sum_veryhigh >= 0 ? '$' + sign_sum_veryhigh.replace(
+                    /\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_sum_veryhigh)).replace(
+                    /\d(?=(\d{3})+\.)/g, '$&,'));
                 var total_allocated = sum_verylow + sum_low + sum_medium + sum_high + sum_veryhigh;
 
                 var sign_total_allocated = total_allocated.toFixed(1);
-                $('#total_holding_valuation').html(sign_total_allocated >= 0 ? 'Total : $' +sign_total_allocated.replace(/\d(?=(\d{3})+\.)/g, '$&,') : 'Total : -$' + String(Math.abs(sign_total_allocated)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#total_holding_valuation').html(sign_total_allocated >= 0 ? 'Total : $' +
+                    sign_total_allocated.replace(/\d(?=(\d{3})+\.)/g, '$&,') : 'Total : -$' + String(Math
+                        .abs(sign_total_allocated)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
                 var allocation_percentage = $('.allocation-percentage').map((_, el) => el.innerHTML)
                     .get();
@@ -467,12 +509,24 @@
                 var sign_allocated_veryhigh = allocated_veryhigh.toFixed(1);
                 var sign_total_allocated = total_allocated.toFixed(1);
 
-                $('#toallocate-verylow').html(sign_allocated_verylow >= 0 ? '$' + sign_allocated_verylow.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_allocated_verylow)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#toallocate-low').html(sign_allocated_low >= 0 ? '$' + sign_allocated_low.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_allocated_low)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#toallocate-medium').html(sign_allocated_medium >= 0 ? '$' + sign_allocated_medium.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_allocated_medium)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#toallocate-high').html(sign_allocated_high >= 0 ? '$' + sign_allocated_high.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_allocated_high)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#toallocate-veryhigh').html(sign_allocated_veryhigh >= 0 ? '$' + sign_allocated_veryhigh.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_allocated_veryhigh)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                $('#allocated-total').html(sign_total_allocated >= 0 ? '$' + sign_total_allocated.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_total_allocated)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#toallocate-verylow').html(sign_allocated_verylow >= 0 ? '$' + sign_allocated_verylow
+                    .replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_allocated_verylow))
+                    .replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#toallocate-low').html(sign_allocated_low >= 0 ? '$' + sign_allocated_low.replace(
+                    /\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_allocated_low)).replace(
+                    /\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#toallocate-medium').html(sign_allocated_medium >= 0 ? '$' + sign_allocated_medium.replace(
+                        /\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_allocated_medium))
+                    .replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#toallocate-high').html(sign_allocated_high >= 0 ? '$' + sign_allocated_high.replace(
+                    /\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_allocated_high)).replace(
+                    /\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#toallocate-veryhigh').html(sign_allocated_veryhigh >= 0 ? '$' + sign_allocated_veryhigh
+                    .replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_allocated_veryhigh))
+                    .replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#allocated-total').html(sign_total_allocated >= 0 ? '$' + sign_total_allocated.replace(
+                    /\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_total_allocated)).replace(
+                    /\d(?=(\d{3})+\.)/g, '$&,'));
 
 
                 var not_allocated_verylow = sum_verylow - allocated_verylow;
@@ -485,19 +539,31 @@
                     not_allocated_medium +
                     not_allocated_high + not_allocated_veryhigh;
 
-                    var sign_not_allocated_verylow=not_allocated_verylow.toFixed(1);
-                    var sign_not_allocated_low=not_allocated_low.toFixed(1);
-                    var sign_not_allocated_medium=not_allocated_medium.toFixed(1);
-                    var sign_not_allocated_high=not_allocated_high.toFixed(1);
-                    var sign_not_allocated_veryhigh=not_allocated_veryhigh.toFixed(1);
-                    var sign_total_not_allocated=total_not_allocated.toFixed(1);
-                    
-                $('#not_allocated-verylow').html(sign_not_allocated_verylow >= 0 ? '$' + sign_not_allocated_verylow.replace(/\d(?=(\d{3})+\.)/g,'$&,') : '-$' + String(Math.abs(sign_not_allocated_verylow)).replace(/\d(?=(\d{3})+\.)/g,'$&,'));
-                $('#not_allocated-low').html(sign_not_allocated_low >= 0 ? '$' + sign_not_allocated_low.replace(/\d(?=(\d{3})+\.)/g,'$&,') : '-$' + String(Math.abs(sign_not_allocated_low)).replace(/\d(?=(\d{3})+\.)/g,'$&,'));
-                $('#not_allocated-medium').html(sign_not_allocated_medium >= 0 ? '$' + sign_not_allocated_medium.replace(/\d(?=(\d{3})+\.)/g,'$&,') : '-$' + String(Math.abs(sign_not_allocated_medium)).replace(/\d(?=(\d{3})+\.)/g,'$&,'));
-                $('#not_allocated-high').html(sign_not_allocated_high >= 0 ? '$' + sign_not_allocated_high.replace(/\d(?=(\d{3})+\.)/g,'$&,') : '-$' + String(Math.abs(sign_not_allocated_high)).replace(/\d(?=(\d{3})+\.)/g,'$&,'));
-                $('#not_allocated-veryhigh').html(sign_not_allocated_veryhigh >= 0 ? '$' + sign_not_allocated_veryhigh.replace(/\d(?=(\d{3})+\.)/g,'$&,') : '-$' + String(Math.abs(sign_not_allocated_veryhigh)).replace(/\d(?=(\d{3})+\.)/g,'$&,'));
-                $('#not_allocated-total').html(sign_total_not_allocated >= 0 ? '$' + sign_total_not_allocated.replace(/\d(?=(\d{3})+\.)/g,'$&,') : '-$' + String(Math.abs(sign_total_not_allocated)).replace(/\d(?=(\d{3})+\.)/g,'$&,'));
+                var sign_not_allocated_verylow = not_allocated_verylow.toFixed(1);
+                var sign_not_allocated_low = not_allocated_low.toFixed(1);
+                var sign_not_allocated_medium = not_allocated_medium.toFixed(1);
+                var sign_not_allocated_high = not_allocated_high.toFixed(1);
+                var sign_not_allocated_veryhigh = not_allocated_veryhigh.toFixed(1);
+                var sign_total_not_allocated = total_not_allocated.toFixed(1);
+
+                $('#not_allocated-verylow').html(sign_not_allocated_verylow >= 0 ? '$' +
+                    sign_not_allocated_verylow.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(
+                        sign_not_allocated_verylow)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#not_allocated-low').html(sign_not_allocated_low >= 0 ? '$' + sign_not_allocated_low.replace(
+                        /\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_not_allocated_low))
+                    .replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#not_allocated-medium').html(sign_not_allocated_medium >= 0 ? '$' + sign_not_allocated_medium
+                    .replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(
+                        sign_not_allocated_medium)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#not_allocated-high').html(sign_not_allocated_high >= 0 ? '$' + sign_not_allocated_high
+                    .replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_not_allocated_high))
+                    .replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#not_allocated-veryhigh').html(sign_not_allocated_veryhigh >= 0 ? '$' +
+                    sign_not_allocated_veryhigh.replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math
+                        .abs(sign_not_allocated_veryhigh)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                $('#not_allocated-total').html(sign_total_not_allocated >= 0 ? '$' + sign_total_not_allocated
+                    .replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_total_not_allocated))
+                    .replace(/\d(?=(\d{3})+\.)/g, '$&,'));
             }
         });
 
