@@ -14,7 +14,7 @@
 @else
     <div class="card card-custom">
         <div class="card-header flex-wrap border-0 pt-6 pb-0">
-<div></div>
+            <div></div>
             <div class="card-toolbar">
                 <button type="button" class="btn btn-primary mx-2 my-3" data-toggle="modal"
                     data-target="#new_transaction_modal">
@@ -53,7 +53,7 @@
                         @endforeach
                     </tr>
                     <tr>
-                        <td style="border-right: 1px solid #ffffff;">Allocation% 
+                        <td style="border-right: 1px solid #ffffff;">Allocation%
                         </td>
                         <td style="text-align: right">
                             <span id="total_allocation" class="ml-auto"></span>
@@ -125,6 +125,13 @@
                     </tr>
                 </tbody>
                 <tbody id="coin_worth_all_summary">
+                    <tr>
+                        <td colspan="11" style="text-align: center;" class="my-5">
+                            <h4>
+                                Loading....
+                            </h4>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

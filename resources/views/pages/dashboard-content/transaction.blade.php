@@ -13,5 +13,8 @@
     </div>
 @else
     <div id="dashboard-transaction-partials">
+        <h5 style="text-align: center;">
+            Loading....
+        </h5>
     </div>
 @endif
