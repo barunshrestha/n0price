@@ -11,7 +11,7 @@
         $req_unit = $total_buy_unit - $total_sell_unit;
         $calculated_worth = $req_unit * $usd;
         ?>
-        <td>${{ round($usd_market_cap/1000000,1) }}</td>
+        <td style="text-align: right;">${{ number_format($usd_market_cap/1000000,0) }}</td>
         @if ($usd_market_cap < 25000000)
             <td style="background:#e9fac8;color:black;">
                 <div class="d-flex">
@@ -151,9 +151,9 @@
                 @endif
             </td>
         @endif
-        <td style="color:<?php echo $worth[$curr]['return'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['return'],1) }}%</td>
-        <td style="color:<?php echo $worth[$curr]['24hr'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['24hr'],1) }}%</td>
-        <td style="color:<?php echo $worth[$curr]['7d'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['7d'],1) }}%</td>
-        <td style="color:<?php echo $worth[$curr]['ATH'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['ATH'],1) }}%</td>
+        <td style="text-align: center; color:<?php echo $worth[$curr]['return'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['return'],1) }}%</td>
+        <td style="text-align: center; color:<?php echo $worth[$curr]['24hr'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['24hr'],1) }}%</td>
+        <td style="text-align: center; color:<?php echo $worth[$curr]['7d'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['7d'],1) }}%</td>
+        <td style="text-align: center; color:<?php echo $worth[$curr]['ATH'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['ATH'],1) }}%</td>
     </tr>
 @endforeach

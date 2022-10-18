@@ -121,10 +121,10 @@
                         <td style="text-align: right;"><span id="not_allocated-medium"></span></td>
                         <td style="text-align: right;"><span id="not_allocated-low"></span></td>
                         <td style="text-align: right;"><span id="not_allocated-verylow"></span></td>
-                        <td>Return</td>
-                        <td>24hr</td>
-                        <td>7d</td>
-                        <td>ATH</td>
+                        <td style="text-align: center;">Return</td>
+                        <td style="text-align: center;">24hr</td>
+                        <td style="text-align: center;">7d</td>
+                        <td style="text-align: center;">ATH</td>
                     </tr>
                 </tbody>
                 <tbody id="coin_worth_all_summary">
