@@ -14,7 +14,10 @@
 @else
     <div class="card card-custom">
         <div class="card-header flex-wrap border-0 pt-6 pb-0">
-            <div></div>
+            <div style="border: 1px solid #d6d6d6; padding:2em;">
+                <h5 class="card-title">Your Portfolio</h5>
+                <h6 class="card-text" id="total_holding_valuation"></h6>
+            </div>
             <div class="card-toolbar">
                 <button type="button" class="btn btn-primary mx-2 my-3" data-toggle="modal"
                     data-target="#new_transaction_modal">
@@ -27,7 +30,7 @@
 
             <table class="table table-responsive-sm table-bordered" style="width: 100%">
                 <tr>
-                    <div id='portfolio_summary'></div>
+                    {{-- <div id='portfolio_summary'></div> --}}
                 </tr>
                 <thead>
                     <tr>

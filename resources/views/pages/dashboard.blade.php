@@ -378,12 +378,12 @@
             });
 
         });
-        $.ajax({
-            url: "{{ route('portfolio_summary') }}",
-            success: function(result) {
-                $("#portfolio_summary").html(result);
-            }
-        });
+        // $.ajax({
+        //     url: "{{ route('portfolio_summary') }}",
+        //     success: function(result) {
+        //         $("#portfolio_summary").html(result);
+        //     }
+        // });
 
         $.ajax({
             url: "{{ route('return_calculation') }}",
