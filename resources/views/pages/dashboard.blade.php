@@ -355,7 +355,6 @@
                     let currentDate = new Date().toJSON().slice(0, 10);
                     if (org_date == currentDate) {
                         var selected_coin = $('#selected_coin .coin_org_symbol').val();
-                        // var price_today = $('#selected_coin .coin_org_price').val();
                         var quantity = $('#purchase_quantity').val();
                         if (quantity < 0) {
                             $('#coin-save-transaction-btn').prop('disabled', true);
@@ -366,7 +365,7 @@
                             $('#coin-save-transaction-btn').prop('disabled', false);
                             $('#selected-coin-error-box').html('');
                             var total_price = parseFloat(quantity) * parseFloat(price_today);
-                            $('#purchase_price').val(total_price);
+                            $('#purchase_price').val(total_price.toFixed(2));
                         }
                     } else {
                         $('#purchase_price').val(0);
@@ -404,7 +403,7 @@
                 } else {
                     var quantity = $('#purchase_quantity').val();
                     var total_price = parseFloat(quantity) * parseFloat(price_today);
-                    $('#purchase_price').val(total_price);
+                    $('#purchase_price').val(total_price.toFixed(2));
                 }
 
             });
