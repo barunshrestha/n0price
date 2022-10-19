@@ -122,7 +122,7 @@ class DashboardController extends Controller
             ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
             ->orderBy('purchase_date', 'desc')
             ->get();
-        $this->_data['transactions'] = $transactions;
+	$this->_data['transactions'] = $transactions;
         return view($this->_page . 'dashboard-content.' . 'dashboard-transactions-partials', $this->_data);
     }
     public function return_calculation(Request $request)

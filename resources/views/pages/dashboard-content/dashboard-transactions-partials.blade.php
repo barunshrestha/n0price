@@ -96,11 +96,18 @@
                         <td class="text-center align-middle">
                             <div id="purchase_price-{{ $transaction->id }}">
                                 <div class="hide_after_edit ">
-                                    ${{ number_format($transaction->purchase_price / $transaction->units, 2) }}
+				<?php
+					if(is_numeric($transaction->purchase_price) && is_numeric($transaction->units)){
+					$avg_price = "$".number_format($transaction->purchase_price / $transaction->units, 2);
+					} else {
+					$avg_price = 'NA';
+					}
+				    	echo $avg_price;
+				?>   
                                 </div>
                                 <input type="text" name="price_per_unit"
                                     class="form-control hidden  hide_before_edit" style="width: 85%;"
-                                    value="{{ round($transaction->purchase_price / $transaction->units, 2) }}">
+                                    value="{{ $avg_price }}">
                             </div>
                         </td>
                         <td>
