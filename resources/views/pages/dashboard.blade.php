@@ -178,8 +178,7 @@
                                         cookie: false
                                     }
                                 },
-                                columns: [
-                                    {
+                                columns: [{
                                         field: "SYMBOL",
                                         width: 60,
                                         sortable: false,
@@ -216,6 +215,7 @@
                                 },
 
                             });
+                        datatable_transactions.sort('SYMBOL', 'asc');
                     }
                 });
             });
@@ -310,10 +310,9 @@
                     if (quantity < 0) {
                         $('#coin-save-transaction-btn').prop('disabled', true);
                         $('#selected-coin-error-box').html(
-                                '<p class="bg-danger p-2 text-white text-sm">Please enter valid purchase quantity</p>'
-                            );
-                    }
-                    else{
+                            '<p class="bg-danger p-2 text-white text-sm">Please enter valid purchase quantity</p>'
+                        );
+                    } else {
                         $('#selected-coin-error-box').html('');
                         $('#coin-save-transaction-btn').prop('disabled', false);
                     }
@@ -718,8 +717,7 @@
                             cookie: false
                         }
                     },
-                    columns: [
-                        {
+                    columns: [{
                             field: "SYMBOL",
                             width: 60,
                             sortable: false,
@@ -757,6 +755,7 @@
 
 
                 });
+                datatable_transactions.sort('SYMBOL', 'asc');
             }
         });
     </script>
