@@ -26,7 +26,6 @@
             id="kt_datatable_transactions">
             <thead class="card card-custom" style="background: #f6f6f6;">
                 <tr>
-                    <th class="text-center">SN</th>
                     <th class="text-center">SYMBOL</th>
                     <th class="text-center">TICKER</th>
                     <th class="text-center">TYPE</th>
@@ -39,8 +38,6 @@
             <tbody>
                 @foreach ($transactions as $key => $transaction)
                     <tr style="border-bottom: #f6f6f6 solid 0.75px;">
-
-                        <td class="text-center align-middle">{{ $key + 1 }}</td>
                         <td class="text-center align-middle">
                             <img src="{{ $transaction->image }}" alt="img" class="icon-image mx-2 ">
                         </td>
