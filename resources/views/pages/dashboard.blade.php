@@ -173,14 +173,10 @@
                         cookie: false
                     }
                 },
-                columns: [{
-                        field: "SN",
-                        width: 50,
-                        textAlign: 'center'
-                    },
+                columns: [
                     {
                         field: "SYMBOL",
-                        width: 52,
+                        width: 60,
                         sortable: false,
                     },
                     {
@@ -249,14 +245,10 @@
                                         cookie: false
                                     }
                                 },
-                                columns: [{
-                                        field: "SN",
-                                        width: 50,
-                                        textAlign: 'center'
-                                    },
+                                columns: [
                                     {
                                         field: "SYMBOL",
-                                        width: 52,
+                                        width: 60,
                                         sortable: false,
                                     },
                                     {

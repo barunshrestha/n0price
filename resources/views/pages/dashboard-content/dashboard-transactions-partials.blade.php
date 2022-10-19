@@ -7,14 +7,15 @@
             </h3>
         </div>
         <div class="card-toolbar">
-        <button type="button" class="btn btn-primary mx-2 my-3" data-toggle="modal"
+            <button type="button" class="btn btn-primary mx-2 my-3" data-toggle="modal"
                 data-target="#new_transaction_modal">
                 <i class="flaticon2-plus"></i>
                 Transaction</button>
-        
-        
+
+
             <div class="input-icon">
-                <input type="text" class="form-control" placeholder="Search by ticker..." id="_portfolio_search_transaction" />
+                <input type="text" class="form-control" placeholder="Search by ticker..."
+                    id="_portfolio_search_transaction" />
                 <span>
                     <i class="flaticon2-search-1 text-muted"></i>
                 </span>
@@ -74,7 +75,7 @@
                         <td class="text-center align-middle">
                             <div id="purchase_date-{{ $transaction->id }}">
                                 <div class="hide_after_edit justify-content-center">
-                                    {{date("m/d/Y", strtotime($transaction->purchase_date))}}
+                                    {{ date('m/d/Y', strtotime($transaction->purchase_date)) }}
                                     {{-- {{ $transaction->purchase_date }} --}}
                                 </div>
                                 <input type="date" name="purchase_date" class="form-control hidden hide_before_edit"
@@ -93,18 +94,19 @@
                         <td class="text-center align-middle">
                             <div id="purchase_price-{{ $transaction->id }}">
                                 <div class="hide_after_edit ">
-				<?php
-					if(is_numeric($transaction->purchase_price) && is_numeric($transaction->units)){
-					$avg_price = "$".number_format($transaction->purchase_price / $transaction->units, 2);
-					} else {
-					$avg_price = 'NA';
-					}
-				    	echo $avg_price;
-				?>   
+                                    <?php
+                                    if (is_numeric($transaction->purchase_price) && is_numeric($transaction->units)) {
+                                        $my_avg_price = number_format($transaction->purchase_price / $transaction->units, 2);
+                                        $avg_price = "$" . $my_avg_price;
+                                    } else {
+                                        $avg_price = 'NA';
+                                    }
+                                    echo $avg_price;
+                                    ?>
                                 </div>
                                 <input type="text" name="price_per_unit"
                                     class="form-control hidden  hide_before_edit" style="width: 85%;"
-                                    value="{{ $avg_price }}">
+                                    value={{ round($transaction->purchase_price / $transaction->units, 2) }}>
                             </div>
                         </td>
                         <td>
@@ -116,11 +118,12 @@
                                         onclick="transactionEditBtn(event)">
                                         <i class="fa fa-pen"></i>
                                     </button>
-                                    <button type="button" value="Delete"
-                                    class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip" onclick="deleteTransaction({{$transaction->id}})"
-                                    title="Delete"><i class="fa fa-trash"></i></button>
-                                    <form action="{{ route('transactions.destroy', $transaction->id) }}" id="deleteMyTransaction-{{$transaction->id}}"
-                                        style="display: inline-block;" method="post">
+                                    <button type="button" value="Delete" class="btn btn-icon btn-danger btn-xs mr-2"
+                                        data-toggle="tooltip" onclick="deleteTransaction({{ $transaction->id }})"
+                                        title="Delete"><i class="fa fa-trash"></i></button>
+                                    <form action="{{ route('transactions.destroy', $transaction->id) }}"
+                                        id="deleteMyTransaction-{{ $transaction->id }}" style="display: inline-block;"
+                                        method="post">
                                         {{ method_field('DELETE') }}
                                         {{ csrf_field() }}
                                         {{-- <button type="submit" value="Delete"
@@ -131,11 +134,12 @@
                                 <div class="hide_before_edit hidden d-flex justify-content-center">
                                     <button type="button" value="Save" class="btn btn-icon btn-success btn-xs mr-2"
                                         data-toggle="tooltip" title="Save"
-                                        id="transaction_save_btn-{{ $transaction->id }}" onclick="transactionsaveBtn(event)"><i
+                                        id="transaction_save_btn-{{ $transaction->id }}"
+                                        onclick="transactionsaveBtn(event)"><i
                                             class="flaticon2-check-mark"></i></button>
 
                                     <button type="button" value="Discard" onclick="transactionDiscardBtn(event)"
-                                    id="transactionDiscard-{{ $transaction->id }}"
+                                        id="transactionDiscard-{{ $transaction->id }}"
                                         class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip"
                                         title="Discard"><i class="flaticon2-cross"></i></button>
                                 </div>
