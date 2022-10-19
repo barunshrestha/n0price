@@ -167,50 +167,50 @@
 
 
 
-            var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
-                data: {
-                    saveState: {
-                        cookie: false
-                    }
-                },
-                columns: [
-                    {
-                        field: "SYMBOL",
-                        width: 60,
-                        sortable: false,
-                    },
-                    {
-                        field: "TICKER",
-                        width: 65,
-                        overflow: 'visible'
-                    },
-                    {
-                        field: "TYPE",
-                        width: 90,
-                    },
-                    {
-                        field: "DATE",
-                        width: 180,
-                    },
-                    {
-                        field: "UNITS",
-                        width: 180,
-                    },
-                    {
-                        field: "PRICE(PER UNIT)",
-                        width: 147,
-                    },
-                    {
-                        field: "ACTIONS",
-                        width: 147,
-                    },
-                ],
-                search: {
-                    input: $('#_portfolio_search_transaction'),
-                    key: 'generalSearch'
-                },
+            // var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
+            //     data: {
+            //         saveState: {
+            //             cookie: false
+            //         }
+            //     },
+            //     columns: [
+            //         {
+            //             field: "SYMBOL",
+            //             width: 60,
+            //             sortable: false,
+            //         },
+            //         {
+            //             field: "TICKER",
+            //             width: 65,
+            //             overflow: 'visible'
+            //         },
+            //         {
+            //             field: "TYPE",
+            //             width: 90,
+            //         },
+            //         {
+            //             field: "DATE",
+            //             width: 180,
+            //         },
+            //         {
+            //             field: "UNITS",
+            //             width: 180,
+            //         },
+            //         {
+            //             field: "PRICE(PER UNIT)",
+            //             width: 147,
+            //         },
+            //         {
+            //             field: "ACTIONS",
+            //             width: 147,
+            //         },
+            //     ],
+            //     search: {
+            //         input: $('#_portfolio_search_transaction'),
+            //         key: 'generalSearch'
+            //     },
 
-            });
+            // });
 
             // var datatable_assetmatrix = $('#kt_datatable_assetmatrix').KTDatatable({
             //     data: {
@@ -785,14 +785,10 @@
                             cookie: false
                         }
                     },
-                    columns: [{
-                            field: "SN",
-                            width: 20,
-                            textAlign: 'center'
-                        },
+                    columns: [
                         {
                             field: "SYMBOL",
-                            width: 52,
+                            width: 60,
                             sortable: false,
                         },
                         {
