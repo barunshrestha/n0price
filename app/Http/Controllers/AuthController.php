@@ -44,11 +44,11 @@ class AuthController extends Controller
         ]);
         $date = Carbon::now();
         $data = [
-            ['user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#ffe599', 'created_at' => $date, 'updated_at' => $date],
-            ['user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#ffff00', 'created_at' => $date, 'updated_at' => $date],
-            ['user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#00ff00', 'created_at' => $date, 'updated_at' => $date],
-            ['user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ff9900', 'created_at' => $date, 'updated_at' => $date],
-            ['user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ff0000', 'created_at' => $date, 'updated_at' => $date],
+            ['user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
+            ['user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
+            ['user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
+            ['user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
+            ['user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
         ];
         AssetMatrixConstraints::insert($data);
 
