@@ -1,17 +1,5 @@
-<!--
-Template Name: Metronic - Bootstrap 4 HTML, React, Angular 9 & VueJS Admin Dashboard Theme
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: https://1.envato.market/EA4JP
-Renew Support: https://1.envato.market/EA4JP
-License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
--->
+
 <html lang="en">
-<!--begin::Head-->
 
 <head>
     <base href="../../../">
@@ -37,6 +25,11 @@ License: You must have a valid license purchased only from themeforest(the above
     <link href="{{ asset('css/themes/layout/aside/dark.css') }}" rel="stylesheet" type="text/css" />
     <!--end::Layout Themes-->
     <link rel="shortcut icon" href="{{ asset('media/logos/favicon.ico') }}" />
+    <style>
+        .alert-dismissible {
+    padding-right: none !important;
+}
+    </style>
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -67,9 +60,9 @@ License: You must have a valid license purchased only from themeforest(the above
                         <form class="kt-form" action="{{ route('login') }}" method="post" novalidate="novalidate">
                             {{ csrf_field() }}
                             @if (session('fail'))
-                                <div class="alert alert-danger alert-dismissible" role="alert">
+                                <div class="alert alert-danger alert-dismissible d-flex" role="alert">
                                     <div class="alert-text">{!! session('fail') !!}</div>
-                                    <div class="alert-close">
+                                    <div class="alert-close ml-auto">
                                         <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
                                     </div>
                                 </div>

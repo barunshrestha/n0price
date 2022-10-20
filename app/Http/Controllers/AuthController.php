@@ -62,22 +62,22 @@ class AuthController extends Controller
         return view('layout.login');
     }
 
-    public function loginAction(LoginRequest $request)
+    public function loginAction(Request $request)
     {
-        $request->authenticate();
-        $request->session()->regenerate();
-        return redirect()->intended(RouteServiceProvider::HOME);
+        // $request->authenticate();
+        // $request->session()->regenerate();
+        // return redirect()->intended(RouteServiceProvider::HOME);
 
-        // $this->validate($request, [
-        //     'email' => 'required',
-        //     'password' => 'required'
-        // ]);
+        $this->validate($request, [
+            'email' => 'required',
+            'password' => 'required'
+        ]);
 
-        // if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-        //     return redirect()->route('dashboard');
-        // }
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            return redirect()->route('dashboard');
+        }
 
-        // return redirect()->back()->withInput($request->only('username'))->with(['fail' => 'Credentials did not match our record']);
+        return redirect()->back()->withInput($request->only('username'))->with(['fail' => 'Credentials did not match our record']);
     }
 
     public function logout(Request $request)
