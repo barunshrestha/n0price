@@ -145,7 +145,7 @@ class DashboardController extends Controller
         foreach ($buy_transactions as $b_t) {
             array_push($current_transactions, array($b_t->coin_id, $b_t->units, $b_t->purchase_price, 0, 0));
         }
-
+        
         $total_sell_units = array();
         foreach ($sell_transactions as $s_t) {
             array_push($total_sell_units, array($s_t->coin_id, $s_t->units, $s_t->purchase_price));

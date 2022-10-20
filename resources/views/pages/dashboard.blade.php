@@ -336,6 +336,7 @@
                 }
 
             });
+            populateReturn();
 
         });
         // $.ajax({
@@ -344,8 +345,8 @@
         //         $("#portfolio_summary").html(result);
         //     }
         // });
-
-        $.ajax({
+        function populateReturn(){
+            $.ajax({
             url: "{{ route('return_calculation') }}",
             success: function(result) {
                 $("#coin_worth_all_summary").html(result);
@@ -493,7 +494,9 @@
                     .replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(sign_total_not_allocated))
                     .replace(/\d(?=(\d{3})+\.)/g, '$&,'));
             }
-        });
+            });
+        }
+        
 
         function selectCoinFromCoinsList(event) {
             var parent = event.target.parentElement;
@@ -629,7 +632,7 @@
                         $('.errorbox').html("")
                     }
                 }
-
+                populateReturn();
             }).fail(function(xhr, ajaxOps, error) {
                 console.log('Failed: ' + error);
             });
