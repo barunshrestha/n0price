@@ -69,9 +69,10 @@ class TransactionController extends Controller
         $transaction->user_id = $user->id;
         $transaction->coin_id = $data['coin_id'];
         $transaction->units = $data['units'];
-        $transaction->purchase_price = $data['purchase_price'];
+        $transaction->purchase_price_per_unit = $data['purchase_price'];
         $transaction->purchase_date = $data['purchase_date'];
         $transaction->investment_type = $data['coin_investment_type'];
+        $transaction->purchase_price = $data['purchase_price'] * $data['units'];
 
 
         // logic for partial subtranction
@@ -189,6 +190,7 @@ class TransactionController extends Controller
         $transaction->units = $request->units;
         $total_price = $request->units * $request->purchase_price;
         $transaction->purchase_price = $total_price;
+        $transaction->purchase_price_per_unit = $request->purchase_price;
         $transaction->save();
         return response()->json(["success" => true, "response" => "Information updated successfully"]);
     }

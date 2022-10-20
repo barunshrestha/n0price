@@ -216,11 +216,12 @@ class DashboardController extends Controller
             if ($total_current_invested == 0) {
                 $return = 0;
             } else {
-                $return = round(($todaysWorth - $total_current_invested) / $total_current_invested, 2);
+                $return = round(($todaysWorth - $total_current_invested) / $total_current_invested, 2) * 100;
             }
             $worth = array_merge($worth, array($coin_id => array("usd_market_cap" => $current_market_capital, "current_usd" => $current_price, "return" => $return, "24hr" => round($price_change_percentage_24h, 2), "7d" => round($price_change_percentage_7d, 2), "ATH" => round($all_time_high_price_percentage, 2))));
         }
         $this->_data['worth'] = $worth;
+        //dd($this->_data);
         return view($this->_page . 'dashboard-content.' . 'coin_worth', $this->_data);
     }
 }
