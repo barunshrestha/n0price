@@ -695,7 +695,7 @@
                                 "<div class='p-4 bg-success text-white'>Transaction has been deleted.</div>"
                             );
                             $('#transaction-btn').click();
-
+                            populateReturn();
                             setTimeout(removeerrbox, 3000);
 
                             function removeerrbox() {
