@@ -28,7 +28,7 @@
 
         <div class="card-body">
 
-            <table class="table table-responsive-sm table-bordered" style="width: 100%">
+            <table class="table table-responsive w-100 d-block d-md-table table-bordered" style="width: 100%">
                 <tr>
                     {{-- <div id='portfolio_summary'></div> --}}
                 </tr>
