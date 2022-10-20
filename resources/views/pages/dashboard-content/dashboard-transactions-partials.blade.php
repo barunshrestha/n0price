@@ -33,6 +33,7 @@
                     <th class="text-center">DATE</th>
                     <th class="text-center">UNITS</th>
                     <th class="text-center">PRICE(PER UNIT)</th>
+                    <th class="text-center">TOTAL AMOUNT</th>
                     <th class="text-center">ACTIONS</th>
                 </tr>
             </thead>
@@ -107,6 +108,24 @@
                                 <input type="text" name="price_per_unit"
                                     class="form-control hidden  hide_before_edit" style="width: 85%;"
                                     value={{ round($transaction->purchase_price / $transaction->units, 2) }}>
+                            </div>
+                        </td>
+                        <td class="text-center align-middle">
+                            <div id="purchase_price_total-{{ $transaction->id }}">
+                                <div class="hide_after_edit ">
+                                    <?php
+                                    if (is_numeric($transaction->purchase_price) && is_numeric($transaction->units)) {
+                                        $total_price = number_format($transaction->purchase_price , 2);
+                                        $total_price = "$" . $total_price;
+                                    } else {
+                                        $total_price = 'NA';
+                                    }
+                                    echo $total_price;
+                                    ?>
+                                </div>
+                                <input type="text" name="price_total"
+                                    class="form-control hidden  hide_before_edit" style="width: 85%;"
+                                    value={{ round($transaction->purchase_price , 2) }}>
                             </div>
                         </td>
                         <td>

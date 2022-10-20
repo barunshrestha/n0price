@@ -11,7 +11,7 @@
         $req_unit = $total_buy_unit - $total_sell_unit;
         $calculated_worth = $req_unit * $usd;
         ?>
-        <td style="text-align: right;">${{ number_format($usd_market_cap/1000000,0) }}</td>
+        <td style="text-align: right;">${{ number_format($usd_market_cap/1000000,0) }} M</td>
         @if ($usd_market_cap < 25000000)
             <td style="background:#e9fac8;color:black;">
                 <div class="d-flex">

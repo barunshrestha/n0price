@@ -57,7 +57,7 @@
 
                         <div class="row hidden mt-5" id="investment-description">
                             <div class="form-group mt-2 col-sm-12 col-md-3 col-lg-3">
-                                <label>Status</label>
+                                <label>Type</label>
                                 <div class="input-group">
                                     <select name="coin_investment_type" id="coin_investment_type"
                                         class="form-control">
@@ -87,6 +87,7 @@
                                         placeholder="Purchase Price Amount" name="purchase_price"
                                         id="purchase_price" oninput="validity.valid||(value='');" />
                                 </div>
+                                <!-- <label>Total Price: </label><span id="total_price_label"></span> -->
                             </div>
                         </div>
                         <div id="selected-coin-error-box" class="my-3"></div>

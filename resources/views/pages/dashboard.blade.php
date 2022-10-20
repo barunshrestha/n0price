@@ -190,15 +190,15 @@
                                     },
                                     {
                                         field: "TYPE",
-                                        width: 90,
+                                        width: 60,
                                     },
                                     {
                                         field: "DATE",
-                                        width: 180,
+                                        width: 90,
                                     },
                                     {
                                         field: "UNITS",
-                                        width: 180,
+                                        width: 60,
                                     },
                                     {
                                         field: "PRICE(PER UNIT)",
@@ -290,7 +290,12 @@
                             $('#coin-save-transaction-btn').prop('disabled', false);
                             $('#selected-coin-error-box').html('');
                             var total_price = parseFloat(quantity) * parseFloat(price_today);
-                            $('#purchase_price').val(total_price.toFixed(2));
+                            //$('#purchase_price').val(total_price.toFixed(2));
+                            //$("#total_price_label").html(' $'+total_price.toFixed(2));
+                            // $("#total_price_label").html(total_price.toLocaleString('en-US', {
+                            // style: 'currency',
+                            // currency: 'USD',
+                            // })); 
                         }
                     } else {
                         $('#purchase_price').val(0);
@@ -529,6 +534,7 @@
                         round_usd + '% <i class="text-dark flaticon2-hexagonal"></i></span></div></div>');
                 }
                 $('#purchase_price').val(price_today);
+                //$('#purchase_quantity').trigger('change');
 
             })
         }
@@ -717,37 +723,38 @@
                             cookie: false
                         }
                     },
+                    
                     columns: [{
-                            field: "SYMBOL",
-                            width: 60,
-                            sortable: false,
-                        },
-                        {
-                            field: "TICKER",
-                            width: 65,
-                            overflow: 'visible'
-                        },
-                        {
-                            field: "TYPE",
-                            width: 90,
-                        },
-                        {
-                            field: "DATE",
-                            width: 180,
-                        },
-                        {
-                            field: "UNITS",
-                            width: 180,
-                        },
-                        {
-                            field: "PRICE(PER UNIT)",
-                            width: 147,
-                        },
-                        {
-                            field: "ACTIONS",
-                            width: 147,
-                        },
-                    ],
+                                        field: "SYMBOL",
+                                        width: 60,
+                                        sortable: false,
+                                    },
+                                    {
+                                        field: "TICKER",
+                                        width: 65,
+                                        overflow: 'visible'
+                                    },
+                                    {
+                                        field: "TYPE",
+                                        width: 60,
+                                    },
+                                    {
+                                        field: "DATE",
+                                        width: 90,
+                                    },
+                                    {
+                                        field: "UNITS",
+                                        width: 60,
+                                    },
+                                    {
+                                        field: "PRICE(PER UNIT)",
+                                        width: 147,
+                                    },
+                                    {
+                                        field: "ACTIONS",
+                                        width: 147,
+                                    },
+                                ],
                     search: {
                         input: $('#_portfolio_search_transaction'),
                         key: 'generalSearch'
