@@ -190,11 +190,11 @@
                                     },
                                     {
                                         field: "TYPE",
-                                        width: 60,
+                                        width: 80,
                                     },
                                     {
                                         field: "DATE",
-                                        width: 90,
+                                        width: 160,
                                     },
                                     {
                                         field: "UNITS",
@@ -736,11 +736,11 @@
                                     },
                                     {
                                         field: "TYPE",
-                                        width: 60,
+                                        width: 80,
                                     },
                                     {
                                         field: "DATE",
-                                        width: 90,
+                                        width: 160,
                                     },
                                     {
                                         field: "UNITS",
