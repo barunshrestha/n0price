@@ -143,12 +143,12 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         if (!in_array($user->role_id, [1])) {
             $user->delete();
-            return redirect()->route('users.index')->with('delete-success', "Deleted");
+            return redirect()->route('users.index')->with('success', "Deleted");
         } else {
-            return redirect()->route('users.index')->with('delete-fail', "This role user cannot be deleted .");
+            return redirect()->route('users.index')->with('fail', "This role user cannot be deleted .");
         }
 
-        return redirect()->route('users.index')->with('delete-fail', "User could not be deleted.");
+        return redirect()->route('users.index')->with('fail', "User could not be deleted.");
     }
 
     public function checkOldPassword(Request $request)

@@ -22,6 +22,7 @@ use App\Http\Controllers\TransactionController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('/signup', [AuthController::class, 'signup'])->name('signup');
 Route::post('/signup', [AuthController::class, 'signupAction'])->name('register');
 
@@ -49,11 +50,11 @@ Route::middleware(['auth', 'verified', 'topLevelApproval', 'adminAuth'])->group(
     Route::get('/user/unnapprove/{id}', [UserController::class, 'unapproveUser'])->name('user.unapprove');
     Route::post('/user/status', [UserController::class, 'approvalFilter'])->name('user.approvalFilter');
     Route::resource('users', 'UserController');
+    Route::post('/users/destroy/{id}', [UserController::class, 'destroy'])->name('users.delete');
     Route::resource('coins', 'CoinController');
     Route::post('/coin/active', [CoinController::class, 'activeCoin'])->name('coins.active');
     Route::post('/coin/inactive', [CoinController::class, 'inactiveCoin'])->name('coins.inactive');
     Route::get('/sync/coin', [CoinController::class, 'sync_coin'])->name('coins.sync');
-    Route::resource('users', 'UserController');
     Route::get('/all/transactions', [TransactionController::class, 'all_transaction'])->name('all.transactions');
     Route::get('/get/all/transactions', [TransactionController::class, 'getall_transactions'])->name('get.all.transactions');
     Route::get('/admin/get/all/coins', [CoinController::class, 'adminGetAllCoins'])->name('adminGetAllCoins');
@@ -82,7 +83,7 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('approvalpage');
     Route::get('verify-email', [EmailVerificationController::class, 'verify_email_invoke'])
         ->name('verification.notice');
-    
+
     Route::get('/get/specific/user/transaction', [DashboardController::class, 'get_transaction_of_specific_user'])->name('get_transaction_of_specific_user');
 
 

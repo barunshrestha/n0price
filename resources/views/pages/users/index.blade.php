@@ -139,9 +139,9 @@
                                     data-toggle="tooltip" title="Edit">
                                     <i class="fa fa-pen"></i>
                                 </a>
-                                <form action="{{ route('users.destroy', $user->id) }}" style="display: inline-block;"
+                                <form action="{{ route('users.delete', $user->id) }}" style="display: inline-block;"
                                     method="post">
-                                    {{ method_field('DELETE') }}
+                                    {{ method_field('POST') }}
                                     {{ csrf_field() }}
                                     <button type="submit" value="Delete"
                                         class="btn btn-icon btn-danger btn-xs mr-2 deleteBtn" data-toggle="tooltip"
