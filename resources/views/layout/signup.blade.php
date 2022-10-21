@@ -65,28 +65,44 @@ License: You must have a valid license purchased only from themeforest(the above
 
                         </div>
                         <form class="form" action="{{ route('register') }}" method="POST">
-                            @csrf
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
-                                    placeholder="Fullname" name="name" />
-                            </div>
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
-                                    placeholder="Email" name="email" autocomplete="off" />
-                            </div>
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="password"
-                                    placeholder="Password" name="password" />
-                            </div>
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="password"
-                                    placeholder="Confirm Password" name="rpassword" />
-                            </div>
+                            @if (session('fail'))
+                                <div class="alert alert-danger alert-dismissible d-flex" role="alert">
+                                    <div class="alert-text">{!! session('fail') !!}</div>
+                                    <div class="alert-close ml-auto">
+                                        <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                                    </div>
+                                </div>
+                            @endif
+                            @if (session('success'))
+                                <div class="alert alert-success alert-dismissible d-flex" role="alert">
+                                    <div class="alert-text">{!! session('fail') !!}</div>
+                                    <div class="alert-close ml-auto">
+                                        <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                                    </div>
+                                </div>
+                            @endif
+                                @csrf
+                                <div class="form-group mb-5">
+                                    <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
+                                        placeholder="Fullname" name="name" />
+                                </div>
+                                <div class="form-group mb-5">
+                                    <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
+                                        placeholder="Email" name="email" autocomplete="off" />
+                                </div>
+                                <div class="form-group mb-5">
+                                    <input class="form-control h-auto form-control-solid py-4 px-8" type="password"
+                                        placeholder="Password" name="password" />
+                                </div>
+                                <div class="form-group mb-5">
+                                    <input class="form-control h-auto form-control-solid py-4 px-8" type="password"
+                                        placeholder="Confirm Password" name="rpassword" />
+                                </div>
 
-                            <div class="form-group d-flex flex-wrap flex-center mt-10">
-                                <button id="kt_login_signup_submit"
-                                    class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2">Sign Up</button>
-                            </div>
+                                <div class="form-group d-flex flex-wrap flex-center mt-10">
+                                    <button id="kt_login_signup_submit"
+                                        class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2">Sign Up</button>
+                                </div>
                         </form>
                         <div class="mt-10">
                             <span class="text-muted font-weight-bold">Already have an account ?</span>

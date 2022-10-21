@@ -11,6 +11,7 @@ use App\Models\AssetMatrixConstraints;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -29,13 +30,14 @@ class AuthController extends Controller
 
     public function signupAction(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required'],
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required',
         ]);
-        // dd($request->all());
-
+        if ($validator->fails()) {
+        return redirect()->back()->with(['fail' =>"User Creation Failed" ]);
+        }
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -54,7 +56,7 @@ class AuthController extends Controller
 
         event(new Registered($user));
 
-        return redirect(route('login'));
+        return redirect(route('login'))->with(['success' =>"User Registration Successful" ]);
     }
 
     public function login(Request $request)

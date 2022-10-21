@@ -21,7 +21,7 @@
                     </button>
                 </div>
             @elseif (\Session::has('fail'))
-                <div class="alert alert-primary" role="alert">
+                <div class="alert alert-danger" role="alert">
                     {{ session('fail') }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true"><i class="ki ki-close"></i></span>
