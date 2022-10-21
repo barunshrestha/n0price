@@ -1,4 +1,3 @@
-
 <html lang="en">
 
 <head>
@@ -26,9 +25,7 @@
     <!--end::Layout Themes-->
     <link rel="shortcut icon" href="{{ asset('media/logos/favicon.ico') }}" />
     <style>
-        .alert-dismissible {
-    padding-right: none !important;
-}
+        
     </style>
 </head>
 <!--end::Head-->
@@ -37,7 +34,7 @@
 <body id="kt_body"
     class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading">
     <!--begin::Main-->
-    
+
     <div class="d-flex flex-column flex-root">
         <!--begin::Login-->
         <div class="login login-signin-on login-3 d-flex flex-row-fluid" id="kt_login">
@@ -60,15 +57,15 @@
                         <form class="kt-form" action="{{ route('login') }}" method="post" novalidate="novalidate">
                             {{ csrf_field() }}
                             @if (session('fail'))
-                                <div class="alert alert-danger alert-dismissible d-flex" role="alert">
+                                <div class="alert alert-danger d-flex" role="alert">
                                     <div class="alert-text">{!! session('fail') !!}</div>
                                     <div class="alert-close ml-auto">
-                                        <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                                        <i class="flaticon2-cross kt-icon-sm text-white" data-dismiss="alert"></i>
                                     </div>
                                 </div>
                             @endif
                             @if (session('success'))
-                                <div class="alert alert-success alert-dismissible d-flex" role="alert">
+                                <div class="alert alert-success d-flex" role="alert">
                                     <div class="alert-text">{!! session('success') !!}</div>
                                     <div class="alert-close ml-auto">
                                         <i class="flaticon2-cross kt-icon-sm text-white" data-dismiss="alert"></i>

@@ -66,18 +66,18 @@ License: You must have a valid license purchased only from themeforest(the above
                         </div>
                         <form class="form" action="{{ route('register') }}" method="POST">
                             @if (session('fail'))
-                                <div class="alert alert-danger alert-dismissible d-flex" role="alert">
+                                <div class="alert alert-danger d-flex" role="alert">
                                     <div class="alert-text">{!! session('fail') !!}</div>
                                     <div class="alert-close ml-auto">
-                                        <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                                        <i class="flaticon2-cross kt-icon-sm text-white" data-dismiss="alert"></i>
                                     </div>
                                 </div>
                             @endif
                             @if (session('success'))
-                                <div class="alert alert-success alert-dismissible d-flex" role="alert">
+                                <div class="alert alert-success d-flex" role="alert">
                                     <div class="alert-text">{!! session('success') !!}</div>
                                     <div class="alert-close ml-auto">
-                                        <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+                                        <i class="flaticon2-cross kt-icon-sm text-white" data-dismiss="alert"></i>
                                     </div>
                                 </div>
                             @endif
