@@ -84,7 +84,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required',
             'role_id' => 'required',
-            'password' => 'required',
+            'password' => 'required|min:8',
         ]);
 
         $data = $request->except('_token');

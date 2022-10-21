@@ -33,7 +33,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required',
+            'password' => 'required|min:8',
         ]);
         if ($validator->fails()) {
         return redirect()->back()->with(['fail' =>"User Creation Failed" ]);
