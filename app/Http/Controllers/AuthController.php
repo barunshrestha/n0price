@@ -56,7 +56,7 @@ class AuthController extends Controller
 
         event(new Registered($user));
 
-        return redirect(route('login'))->with(['success' =>"User Registration Successful" ]);
+        return redirect(route('login'))->with(['success' =>"User Registration Successful. Check email for Verfication." ]);
     }
 
     public function login(Request $request)
