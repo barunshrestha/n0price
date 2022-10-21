@@ -27,13 +27,12 @@ class DashboardController extends Controller
         $user = Auth::user();
         $this->_data['user'] = $user;
         $transaction_count = Transaction::where('user_id', $user->id)->count();
-        $asset_matrix_total = DB::select('select sum(percentage_allocation) as asset_total from asset_matrix_constraints where user_id =1 group by user_id');
+        $asset_matrix_total = DB::select('select sum(percentage_allocation) as asset_total from asset_matrix_constraints where user_id =? group by user_id',[$user->id]);
         $this->_data['asset_total'] = $asset_matrix_total[0]->asset_total;
         $this->_data['transaction_count'] = $transaction_count;
 
         $asset_matrix_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
         $this->_data['asset_matrix_constraints'] = $asset_matrix_constraints;
-
         if ($asset_matrix_total[0]->asset_total==0 ) {
             return view($this->_page . 'no-content-dashboard', $this->_data);
         }
