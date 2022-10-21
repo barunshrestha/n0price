@@ -30,7 +30,7 @@ class EmailVerificationController extends Controller
         }
         $user->markEmailAsVerified();
         event(new Verified($user));
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect(route('login'))->with(['success' =>"Email Verified. Please proceed to login." ]);
     }
     public function store(Request $request)
     {
