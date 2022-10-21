@@ -17,26 +17,24 @@ class EmailVerificationController extends Controller
             ? redirect()->intended(RouteServiceProvider::HOME)
             : view('auth.verify-email');
     }
-    public function __invoke(Request $request,$id,$hash)
+    public function __invoke(Request $request, $id, $hash)
     {
-        $user=User::find($id);
+        $user = User::find($id);
         if ($request->user()) {
             if ($user->hasVerifiedEmail()) {
                 // return redirect()->intended(RouteServiceProvider::VERIFIED.'?verified=1');
                 return redirect()->intended(RouteServiceProvider::HOME . '?verified=1');
             }
-            if ($user->markEmailAsVerified()) {
-                event(new Verified($user));
-            }
-
             // return redirect()->intended(RouteServiceProvider::VERIFIED.'?verified=1');
             return redirect()->intended(RouteServiceProvider::HOME . '?verified=1');
         }
+        $user->markEmailAsVerified();
+        event(new Verified($user));
         return redirect()->intended(RouteServiceProvider::HOME);
     }
     public function store(Request $request)
     {
-        
+
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->intended(RouteServiceProvider::HOME);
         }

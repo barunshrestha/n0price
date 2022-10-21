@@ -67,6 +67,14 @@
                                     </div>
                                 </div>
                             @endif
+                            @if (session('success'))
+                                <div class="alert alert-success alert-dismissible d-flex" role="alert">
+                                    <div class="alert-text">{!! session('success') !!}</div>
+                                    <div class="alert-close ml-auto">
+                                        <i class="flaticon2-cross kt-icon-sm text-white" data-dismiss="alert"></i>
+                                    </div>
+                                </div>
+                            @endif
                             <div class="form-group mb-5">
                                 <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
                                     placeholder="Email" name="email" autocomplete="off" />

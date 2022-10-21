@@ -75,7 +75,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             @endif
                             @if (session('success'))
                                 <div class="alert alert-success alert-dismissible d-flex" role="alert">
-                                    <div class="alert-text">{!! session('fail') !!}</div>
+                                    <div class="alert-text">{!! session('success') !!}</div>
                                     <div class="alert-close ml-auto">
                                         <i class="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
                                     </div>
