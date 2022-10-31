@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Portfolio extends Model
+class SelectedPortfolio extends Model
 {
     use HasFactory;
-    protected $table = 'portfolios';
+    protected $table = 'selected_portfolios';
 
     protected $fillable = [
         'user_id',
-        'portfolio_name',
+        'portfolio_id',
     ];
 }
