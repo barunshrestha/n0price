@@ -36,7 +36,7 @@ class AuthController extends Controller
             'password' => 'required|min:8',
         ]);
         if ($validator->fails()) {
-        return redirect()->back()->with(['fail' =>"User Creation Failed" ]);
+        return redirect()->back()->withInput($request->input())->withErrors($validator);
         }
         $user = User::create([
             'name' => $request->name,
@@ -79,7 +79,7 @@ class AuthController extends Controller
             return redirect()->route('dashboard');
         }
 
-        return redirect()->back()->withInput($request->only('username'))->with(['fail' => 'Credentials did not match our record']);
+        return redirect()->back()->withInput($request->only('email'))->with(['fail' => 'Credentials did not match our record']);
     }
 
     public function logout(Request $request)

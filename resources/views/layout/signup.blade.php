@@ -80,29 +80,47 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <i class="flaticon2-cross kt-icon-sm text-white" data-dismiss="alert"></i>
                                     </div>
                                 </div>
-                            @endif
+                                @endif
                                 @csrf
                                 <div class="form-group mb-5">
-                                    <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
-                                        placeholder="Fullname" name="name" />
+                                    <input class="form-control h-auto form-control-solid py-4 px-8 @error('name')is-invalid @enderror" type="text"
+                                    placeholder="Fullname" name="name" />                                
+                                @error('name')
+                                <div class="d-flex mt-2 invalid-feedback">
+                                    <i class="text-danger flaticon2-information" data-dismiss="alert"></i>
+                                    <div class="text-danger mx-3"> {{ $message }}</div>
                                 </div>
-                                <div class="form-group mb-5">
-                                    <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
-                                        placeholder="Email" name="email" autocomplete="off" />
+                                @enderror
+                            </div>
+                            <div class="form-group mb-5">
+                                <input class="form-control h-auto form-control-solid py-4 px-8 @error('email')is-invalid @enderror" type="text"
+                                    placeholder="Email" name="email" autocomplete="off" />
+                                    @error('email')
+                                <div class="d-flex mt-2 invalid-feedback">
+                                    <i class="text-danger flaticon2-information" data-dismiss="alert"></i>
+                                    <div class="text-danger mx-3"> {{ $message }}</div>
                                 </div>
-                                <div class="form-group mb-5">
-                                    <input class="form-control h-auto form-control-solid py-4 px-8" type="password"
-                                        placeholder="Password" name="password" />
-                                </div>
-                                <div class="form-group mb-5">
-                                    <input class="form-control h-auto form-control-solid py-4 px-8" type="password"
-                                        placeholder="Confirm Password" name="rpassword" />
-                                </div>
+                                @enderror
+                            </div>
+                            <div class="form-group mb-5">
+                                <input class="form-control h-auto form-control-solid py-4 px-8 @error('password')is-invalid @enderror" type="password"
+                                    placeholder="Password" name="password" />
+                                    @error('password')
+                                    <div class="d-flex mt-2 invalid-feedback">
+                                        <i class="text-danger flaticon2-information" data-dismiss="alert"></i>
+                                        <div class="text-danger mx-3"> {{ $message }}</div>
+                                    </div>
+                                    @enderror
+                            </div>
+                            <div class="form-group mb-5">
+                                <input class="form-control h-auto form-control-solid py-4 px-8" type="password"
+                                    placeholder="Confirm Password" name="rpassword" />
+                            </div>
 
-                                <div class="form-group d-flex flex-wrap flex-center mt-10">
-                                    <button id="kt_login_signup_submit"
-                                        class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2">Sign Up</button>
-                                </div>
+                            <div class="form-group d-flex flex-wrap flex-center mt-10">
+                                <button id="kt_login_signup_submit"
+                                    class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2">Sign Up</button>
+                            </div>
                         </form>
                         <div class="mt-10">
                             <span class="text-muted font-weight-bold">Already have an account ?</span>
