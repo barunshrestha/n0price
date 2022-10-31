@@ -22,5 +22,21 @@ class UserSeeder extends Seeder
             'approval_status' => 1,
             'email_verified_at' => '2022-09-19',
         ]);
+        DB::table('users')->insert([
+            'name' => 'Bimal Adhikari 2',
+            'email' => 'bimaladhikari81582@gmail.com',
+            'password' => Hash::make('00000000'),
+            'role_id' => 1,
+            'approval_status' => 1,
+            'email_verified_at' => '2022-09-19',
+        ]);
+        DB::table('users')->insert([
+            'name' => 'Bimal Adhikari 3',
+            'email' => 'bimaladhikari81583@gmail.com',
+            'password' => Hash::make('00000000'),
+            'role_id' => 1,
+            'approval_status' => 1,
+            'email_verified_at' => '2022-09-19',
+        ]);
     }
 }

@@ -16,7 +16,7 @@ class VwAllSellTransactions extends Migration
     {
         DB::statement("drop view if exists vw_sell_transactions");
         DB::statement("create view vw_sell_transactions as 
-        select transactions.id, transactions.user_id,transactions.units,
+        select transactions.id, transactions.user_id,transactions.units,transactions.portfolio_id,
         transactions.purchase_price,transactions.purchase_date,
         coins.symbol,coins.name,coins.image,coins.coin_id
         from transactions join coins on transactions.coin_id=coins.id
