@@ -108,7 +108,8 @@
                                 <div class="login-signin">
 
                                     <div class="mt-10">
-                                        Please define your portfolio risk level to continue to your portfolio.
+                                        Please define your portfolio risk level to continue to your portfolio.<b> You can change
+                                        this later.</b>
                                         <form action="{{ route('percentage.allocation') }}" method="POST">
                                             @csrf
                                             <table class="table mt-5">
