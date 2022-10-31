@@ -99,19 +99,38 @@
                         </ul>
                     @endif
                 </div>
-                <div class="d-flex flex-column flex-root">
-                    <!--begin::Login-->
-                    <div class="login login-signin-on login-3 d-flex flex-row-fluid" id="kt_login">
-                        <div class="d-flex flex-center flex-row-fluid bgi-size-cover bgi-position-top bgi-no-repeat">
-                            <div class="login-form text-center p-7 position-relative overflow-hidden">
+                <form action="{{ route('percentage.allocation') }}" method="POST">
 
-                                <div class="login-signin">
+                    <div class="d-flex flex-column flex-root">
+                        <div class="login login-signin-on login-3 d-flex flex-row-fluid" id="kt_login">
 
-                                    <div class="mt-10">
-                                        Please define your portfolio risk level to continue to your portfolio.<b> You can change
-                                        this later.</b>
-                                        <form action="{{ route('percentage.allocation') }}" method="POST">
+                            <div class="d-flex flex-center flex-row-fluid bgi-size-cover bgi-position-top bgi-no-repeat">
+
+                                <div class="login-form text-center p-7 position-relative overflow-hidden">
+
+                                    <div class="login-signin">
+                                        <div class="form-group mb-5 text-left">
+                                            <input type="hidden" value={{$portfolio_details->portfolio_id}} name="portfolio_id">
+                                           <span>
+                                                Please define your portfolio name.
+                                            </span>
+                                            <input
+                                                class="form-control h-auto form-control-solid py-4 px-8 @error('portfolio_name')is-invalid @enderror"
+                                                type="text" value="{{ $portfolio_details->portfolio_name}}" placeholder="Portfolio Name" required
+                                                name="portfolio_name" />
+                                            @error('portfolio_name')
+                                                <div class="d-flex mt-2 invalid-feedback">
+                                                    <i class="text-danger flaticon2-information" data-dismiss="alert"></i>
+                                                    <div class="text-danger mx-3"> {{ $message }}</div>
+                                                </div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="mt-10">
                                             @csrf
+                                            Please define your portfolio risk level to continue to your portfolio.<b> You
+                                                can change
+                                                this later.</b>
                                             <table class="table mt-5">
                                                 <thead>
                                                     <tr>
@@ -140,13 +159,14 @@
                                                     <h6 class="fa fa-save"></h6>
                                                 </button>
                                             </div>
-                                        </form>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
