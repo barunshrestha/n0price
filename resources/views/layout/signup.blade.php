@@ -80,41 +80,46 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <i class="flaticon2-cross kt-icon-sm text-white" data-dismiss="alert"></i>
                                     </div>
                                 </div>
-                                @endif
-                                @csrf
-                                <div class="form-group mb-5">
-                                    <input class="form-control h-auto form-control-solid py-4 px-8 @error('name')is-invalid @enderror" type="text"
-                                    placeholder="Fullname" name="name" />                                
+                            @endif
+                            @csrf
+                            <div class="form-group mb-5">
+                                <input
+                                    class="form-control h-auto form-control-solid py-4 px-8 @error('name')is-invalid @enderror"
+                                    type="text" value="{{ old('name') }}" placeholder="Fullname" name="name" />
                                 @error('name')
-                                <div class="d-flex mt-2 invalid-feedback">
-                                    <i class="text-danger flaticon2-information" data-dismiss="alert"></i>
-                                    <div class="text-danger mx-3"> {{ $message }}</div>
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8 @error('email')is-invalid @enderror" type="text"
-                                    placeholder="Email" name="email" autocomplete="off" />
-                                    @error('email')
-                                <div class="d-flex mt-2 invalid-feedback">
-                                    <i class="text-danger flaticon2-information" data-dismiss="alert"></i>
-                                    <div class="text-danger mx-3"> {{ $message }}</div>
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8 @error('password')is-invalid @enderror" type="password"
-                                    placeholder="Password" name="password" />
-                                    @error('password')
                                     <div class="d-flex mt-2 invalid-feedback">
                                         <i class="text-danger flaticon2-information" data-dismiss="alert"></i>
                                         <div class="text-danger mx-3"> {{ $message }}</div>
                                     </div>
-                                    @enderror
+                                @enderror
+                            </div>
+                            <div class="form-group mb-5">
+                                <input
+                                    class="form-control h-auto form-control-solid py-4 px-8 @error('email')is-invalid @enderror"
+                                    type="text" value="{{ old('email') }}" placeholder="Email" name="email"
+                                    autocomplete="off" />
+                                @error('email')
+                                    <div class="d-flex mt-2 invalid-feedback">
+                                        <i class="text-danger flaticon2-information" data-dismiss="alert"></i>
+                                        <div class="text-danger mx-3"> {{ $message }}</div>
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="form-group mb-5">
+                                <input
+                                    class="form-control h-auto form-control-solid py-4 px-8 @error('password')is-invalid @enderror"
+                                    type="password" value="{{ old('password') }}" placeholder="Password"
+                                    name="password" />
+                                @error('password')
+                                    <div class="d-flex mt-2 invalid-feedback">
+                                        <i class="text-danger flaticon2-information" data-dismiss="alert"></i>
+                                        <div class="text-danger mx-3"> {{ $message }}</div>
+                                    </div>
+                                @enderror
                             </div>
                             <div class="form-group mb-5">
                                 <input class="form-control h-auto form-control-solid py-4 px-8" type="password"
-                                    placeholder="Confirm Password" name="rpassword" />
+                                    value="{{ old('rpassword') }}" placeholder="Confirm Password" name="rpassword" />
                             </div>
 
                             <div class="form-group d-flex flex-wrap flex-center mt-10">

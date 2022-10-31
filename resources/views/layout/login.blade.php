@@ -73,11 +73,11 @@
                                 </div>
                             @endif
                             <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
+                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text" value="{{ old('email') }}"
                                     placeholder="Email" name="email" autocomplete="off" />
                             </div>
                             <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8 password" type="password"
+                                <input class="form-control h-auto form-control-solid py-4 px-8 password" type="password" value="{{ old('password') }}"
                                     placeholder="Password" name="password" />
                             </div>
                             {{-- <div class="form-group row">
