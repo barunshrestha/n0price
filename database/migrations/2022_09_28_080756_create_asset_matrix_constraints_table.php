@@ -16,6 +16,7 @@ class CreateAssetMatrixConstraintsTable extends Migration
         Schema::create('asset_matrix_constraints', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('portfolio_id');
             $table->string('market_cap');
             $table->string('risk');
             $table->string('percentage_allocation')->default('0');
