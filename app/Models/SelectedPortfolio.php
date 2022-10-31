@@ -14,4 +14,5 @@ class SelectedPortfolio extends Model
         'user_id',
         'portfolio_id',
     ];
+    
 }

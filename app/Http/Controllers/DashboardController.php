@@ -8,8 +8,6 @@ use App\Models\Portfolio;
 use App\Models\SelectedPortfolio;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use DateTime;
-use DateTimeZone;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -28,15 +26,13 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $this->_data['user'] = $user;
-        $selectedPortfolio=SelectedPortfolio::where('user_id',$user->id)->first();
-        $portfolio_id=$selectedPortfolio->portfolio_id;
-        $this->_data['portfolio_details'] = $selectedPortfolio;
-
+        $selectedPortfolio=SelectedPortfolio::select('portfolios.*')->where('selected_portfolios.user_id',$user->id)->join('portfolios','selected_portfolios.portfolio_id','=','portfolios.id')->get();
+        $portfolio_id=$selectedPortfolio[0]->id;
+        $this->_data['portfolio_details'] = $selectedPortfolio[0];
         $transaction_count = Transaction::where('user_id', $user->id)->where('portfolio_id',$portfolio_id)->count();
+        $this->_data['transaction_count'] = $transaction_count;
         $asset_matrix_total = DB::select('select sum(percentage_allocation) as asset_total from asset_matrix_constraints where user_id =? and portfolio_id=? group by user_id',[$user->id,$portfolio_id]);
         $this->_data['asset_total'] = $asset_matrix_total[0]->asset_total;
-        $this->_data['transaction_count'] = $transaction_count;
-
         $asset_matrix_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
         $this->_data['asset_matrix_constraints'] = $asset_matrix_constraints;
         if ($asset_matrix_total[0]->asset_total==0 ) {
@@ -51,7 +47,6 @@ class DashboardController extends Controller
             ->where('transactions.user_id', $user->id)
             ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
             ->get();
-        // $this->_data['transactions'] = $transactions;
         return response()->json(["data" => $transactions]);
     }
 
@@ -75,7 +70,6 @@ class DashboardController extends Controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);
             $current_price = json_decode($response);
-            //dd($current_price->$coin_id);
             curl_close($ch);
             $stock->current_price = $current_price->$coin_id->usd;
             $stock->current_value_total = $stock->current_holdings * $stock->current_price;
@@ -100,7 +94,6 @@ class DashboardController extends Controller
         $this->_data['total_holdings_valuation'] = round($total_holdings_valuation, 2);
         $this->_data['total_holdings_valuation_yesterday'] = $total_holdings_valuation_yesterday;
         $this->_data['total_investment'] = $total_investment;
-        //dd($total_holdings_valuation);
         return view($this->_page . 'portfolio_summary', $this->_data);
     }
 
@@ -131,9 +124,9 @@ class DashboardController extends Controller
     }
     public function return_calculation(Request $request)
     {
-
         $user = Auth::user();
-        $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ')');
+        $selected_portfolio=SelectedPortfolio::where('user_id',$user->id)->first();
+        $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id .','. $selected_portfolio->portfolio_id. ')');
         $this->_data['portfolio'] = $portfolio;
 
         $coins_available = DB::select('select coin_name,coin_id,buy_amount,buy_unit,sell_unit from vw_final_transaction where user_id = ?', [$user->id]);
@@ -176,8 +169,6 @@ class DashboardController extends Controller
                                     // $current_transactions[$i][4] = $profit_earned + $profit_loss_rate * $total_sell_unit;
 
                                     $total_worth[$current_transactions[$i][0]] = $total_worth[$current_transactions[$i][0]] - $total_sell_unit * $purchase_unit_price;
-
-
                                     $total_sell_unit = $total_sell_unit - $total_debited_units;
                                     break;
                                 }
@@ -225,7 +216,6 @@ class DashboardController extends Controller
             $worth = array_merge($worth, array($coin_id => array("usd_market_cap" => $current_market_capital, "current_usd" => $current_price, "return" => $return, "24hr" => round($price_change_percentage_24h, 2), "7d" => round($price_change_percentage_7d, 2), "ATH" => round($all_time_high_price_percentage, 2))));
         }
         $this->_data['worth'] = $worth;
-        //dd($this->_data);
         return view($this->_page . 'dashboard-content.' . 'coin_worth', $this->_data);
     }
 }

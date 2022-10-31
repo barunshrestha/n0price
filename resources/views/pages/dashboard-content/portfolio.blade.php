@@ -15,7 +15,7 @@
     <div class="card card-custom">
         <div class="card-header flex-wrap border-0 pt-6 pb-0">
             <div style="border: 1px solid #d6d6d6; padding:2em;">
-                <h5 class="card-title">Your Portfolio</h5>
+                <h5 class="card-title">Your Portfolio : {{$portfolio_details->portfolio_name}}</h5>
                 <h6 class="card-text" id="total_holding_valuation"></h6>
             </div>
             <div class="card-toolbar">
