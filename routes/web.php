@@ -104,4 +104,4 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 
-// Route::get('/asset',[TransactionController::class,'assign_asset_matrix_constraints']);
+Route::get('/add/asset/to/all/user',[TransactionController::class,'assign_asset_matrix_constraints']);
