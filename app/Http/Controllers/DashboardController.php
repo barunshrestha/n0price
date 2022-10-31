@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\AssetMatrixConstraints;
 use App\Models\Coin;
+use App\Models\Portfolio;
+use App\Models\SelectedPortfolio;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use DateTime;
@@ -26,8 +28,12 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $this->_data['user'] = $user;
-        $transaction_count = Transaction::where('user_id', $user->id)->count();
-        $asset_matrix_total = DB::select('select sum(percentage_allocation) as asset_total from asset_matrix_constraints where user_id =? group by user_id',[$user->id]);
+        $selectedPortfolio=SelectedPortfolio::where('user_id',$user->id)->first();
+        $portfolio_id=$selectedPortfolio->portfolio_id;
+        $this->_data['portfolio_details'] = $selectedPortfolio;
+
+        $transaction_count = Transaction::where('user_id', $user->id)->where('portfolio_id',$portfolio_id)->count();
+        $asset_matrix_total = DB::select('select sum(percentage_allocation) as asset_total from asset_matrix_constraints where user_id =? and portfolio_id=? group by user_id',[$user->id,$portfolio_id]);
         $this->_data['asset_total'] = $asset_matrix_total[0]->asset_total;
         $this->_data['transaction_count'] = $transaction_count;
 
@@ -36,7 +42,6 @@ class DashboardController extends Controller
         if ($asset_matrix_total[0]->asset_total==0 ) {
             return view($this->_page . 'no-content-dashboard', $this->_data);
         }
-
         return view($this->_page . 'dashboard', $this->_data);
     }
     public function get_transaction_of_specific_user()
