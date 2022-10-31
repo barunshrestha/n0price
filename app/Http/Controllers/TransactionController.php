@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AssetMatrixConstraints;
 use App\Models\Coin;
 use App\Models\Portfolio;
+use App\Models\SelectedPortfolio;
 use App\Models\Sell_log;
 use App\Models\Transaction;
 use App\Models\User;
@@ -74,6 +75,7 @@ class TransactionController extends Controller
         $transaction->purchase_date = $data['purchase_date'];
         $transaction->investment_type = $data['coin_investment_type'];
         $transaction->purchase_price = $data['purchase_price'] * $data['units'];
+        $transaction->portfolio_id=$data['portfolio_id'];
 
 
         // logic for partial subtranction
@@ -294,6 +296,10 @@ class TransactionController extends Controller
             $portfolio=new Portfolio();
             $portfolio->user_id=$user->id;
             $portfolio->save();
+            $selected_portfolio=new SelectedPortfolio();
+            $selected_portfolio->user_id=$user->id;
+            $selected_portfolio->portfolio_id=$portfolio->id;
+            $selected_portfolio->save();
             $data = [
                 ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
                 ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
@@ -306,11 +312,20 @@ class TransactionController extends Controller
     }
     public function change_allocation(Request $request)
     {
-        $data = $request->except('_token')['allocation_percentage'];
+        $this->validate($request, [
+            'portfolio_name'=>'required'
+        ]);
+        $data = $request->except('_token');
+        $asset_matrix_data=$data['allocation_percentage'];
+        $portfolio_name=$data['portfolio_name'];
+        $portfolio_id=$data['portfolio_id'];
+        $portfolio_to_update=Portfolio::find($portfolio_id);
+        $portfolio_to_update->portfolio_name=$portfolio_name;
+        $portfolio_to_update->save();
         $to_change_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
         for ($i = 0; $i < count($to_change_constraints); $i++) {
             $to_change_constraints[$i]->update([
-                "percentage_allocation" => $data[$i]
+                "percentage_allocation" => $asset_matrix_data[$i]
             ]);
         }
         return redirect()->back();

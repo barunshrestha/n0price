@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\AssetMatrixConstraints;
 use App\Models\Portfolio;
+use App\Models\SelectedPortfolio;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Carbon\Carbon;
@@ -49,6 +50,10 @@ class AuthController extends Controller
         $portfolio=new Portfolio();
         $portfolio->user_id=$user->id;
         $portfolio->save();
+        $selected_portfolio=new SelectedPortfolio();
+            $selected_portfolio->user_id=$user->id;
+            $selected_portfolio->portfolio_id=$portfolio->id;
+            $selected_portfolio->save();
         $data = [
             ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
             ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],

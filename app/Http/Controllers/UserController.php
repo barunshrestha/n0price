@@ -10,6 +10,7 @@ use App\Models\Portfolio;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\SelectedPortfolio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -104,6 +105,11 @@ class UserController extends Controller
             $portfolio=new Portfolio();
             $portfolio->user_id=$user->id;
             $portfolio->save();
+            $selected_portfolio=new SelectedPortfolio();
+            $selected_portfolio->user_id=$user->id;
+            $selected_portfolio->portfolio_id=$portfolio->id;
+            $selected_portfolio->save();
+
             $data = [
                 ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
                 ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
