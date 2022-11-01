@@ -77,6 +77,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/portfolio/edit/{id}', [PortfolioController::class, 'edit'])->name('portfolio.edit');
     Route::post('/portfolio/update/{id}', [PortfolioController::class, 'update'])->name('portfolio.update');
     Route::post('/portfolio/delete/{id}', [PortfolioController::class, 'destroy'])->name('portfolio.destroy');
+    Route::post('/portfolio/store', [PortfolioController::class, 'store'])->name('portfolio.store');
 
 });
 
