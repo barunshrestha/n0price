@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Mail\AccountVerification;
-use App\Mail\CustomEmail;
 use App\Models\AssetMatrixConstraints;
 use App\Models\Portfolio;
 use Illuminate\Http\Request;
@@ -32,7 +30,6 @@ class UserController extends Controller
     public function index()
     {
         $this->_data['users'] = User::all();
-        // return ([$this->_data]);
         $this->_data['roles'] = Role::pluck('name', 'id')->prepend('Select Role', '');
         $this->_data['approval_status'] = User::select('approval_status')->distinct()->get();
 
