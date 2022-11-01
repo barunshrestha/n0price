@@ -12,6 +12,17 @@ return [
             'new-tab' => false,
         ],
 
+        [
+            'section' => 'Portfolio',
+        ],
+
+        [
+            'title' => 'Manage Portfolio',
+            'root' => true,
+            'page'=>'/portfolio',
+            'icon' => 'media/svg/icons/Design/Layers.svg', // or can be 'flaticon-home' or any flaticon-*
+            'new-tab' => false,
+        ],
 
         // Custom
         [
