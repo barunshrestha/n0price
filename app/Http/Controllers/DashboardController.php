@@ -43,8 +43,11 @@ class DashboardController extends Controller
     public function get_transaction_of_specific_user()
     {
         $user = Auth::user();
+        $selected_portfolio = SelectedPortfolio::where('user_id', Auth::id())->get(['portfolio_id']);
+        $portfolio_id=$selected_portfolio[0]->portfolio_id;
         $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
             ->where('transactions.user_id', $user->id)
+            ->where('transactions.portfolio_id',$portfolio_id)
             ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
             ->get();
         return response()->json(["data" => $transactions]);
@@ -54,8 +57,9 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $this->_data['user'] = $user;
-
-        $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ')');
+        $selected_portfolio = SelectedPortfolio::where('user_id', Auth::id())->get(['portfolio_id']);
+        $portfolio_id=$selected_portfolio[0]->portfolio_id;
+        $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ','.$portfolio_id.')');
         $this->_data['portfolio'] = $portfolio;
 
         $total_holdings_valuation = 0;
@@ -113,9 +117,12 @@ class DashboardController extends Controller
     public function dashboardTransactionPartials(Request $request)
     {
         $user = Auth::user();
+        $selected_portfolio = SelectedPortfolio::where('user_id', Auth::id())->get(['portfolio_id']);
+        $portfolio_id=$selected_portfolio[0]->portfolio_id;
         $this->_data['user'] = $user;
         $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
             ->where('transactions.user_id', $user->id)
+            ->where('transactions.portfolio_id', $portfolio_id)
             ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
             ->orderBy('purchase_date', 'desc')
             ->get();
@@ -131,8 +138,8 @@ class DashboardController extends Controller
 
         $coins_available = DB::select('select coin_name,coin_id,buy_amount,buy_unit,sell_unit from vw_final_transaction where user_id = ?', [$user->id]);
 
-        $buy_transactions = DB::select('select units,name,purchase_price,coin_id from vw_buy_transactions where user_id = ? order by name asc', [$user->id]);
-        $sell_transactions = DB::select('select units,name,purchase_price,coin_id from vw_sell_transactions where user_id = ? order by name asc', [$user->id]);
+        $buy_transactions = DB::select('select units,name,purchase_price,coin_id from vw_buy_transactions where user_id = ? and portfolio_id = ? order by name asc', [$user->id,$selected_portfolio->portfolio_id]);
+        $sell_transactions = DB::select('select units,name,purchase_price,coin_id from vw_sell_transactions where user_id = ? and portfolio_id = ? order by name asc', [$user->id,$selected_portfolio->portfolio_id]);
         $total_worth = array();
         $current_transactions = array();
 

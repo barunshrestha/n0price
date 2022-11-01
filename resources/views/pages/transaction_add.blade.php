@@ -47,7 +47,8 @@
                     <form class="form" id="kt_form" action="{{ route('transactions.store') }}" method="POST"
                         enctype="multipart/form-data">
                         {{ csrf_field() }}
-                        <input type="hidden" value="{{$portfolio_details->portfolio_id}}" name="portfolio_id">
+                        <input type="hidden" value="{{$portfolio_details->id}}" name="portfolio_id">
+                        
                         <div class="row align-items-center">
                             <div class="col-md-12">
                                 <div id="selected_coin" class="card ">
