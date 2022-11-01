@@ -8,13 +8,13 @@
     <div class="d-flex flex-column flex-root">
         <div class="d-flex flex-row flex-column-fluid page">
 
-            @if (Auth::user()->role_id == '1')
+           
 
                 @if (config('layout.aside.self.display'))
                     @include('layout.base._aside')
                 @endif
                 <div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
-            @endif
+            
 
             {{-- @include('layout.base._header') --}}
             @if (Auth::user()->role_id == '2')

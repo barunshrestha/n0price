@@ -9,9 +9,10 @@
 @endif
 
 @php
-$kt_logo_image = 'hero-logo.png';
+    $kt_logo_image = 'hero-logo.png';
 @endphp
-<div class="aside aside-left {{ Metronic::printClasses('aside', false) }} d-flex flex-column flex-row-auto" id="kt_aside">
+<div class="aside aside-left {{ Metronic::printClasses('aside', false) }} d-flex flex-column flex-row-auto"
+    id="kt_aside">
 
     {{-- Brand --}}
     <div class="brand flex-column-auto {{ Metronic::printClasses('brand', false) }}" id="kt_brand">
@@ -26,7 +27,7 @@ $kt_logo_image = 'hero-logo.png';
 
         @if (config('layout.aside.self.minimize.toggle'))
             <button class="brand-toggle btn btn-sm px-0" id="kt_aside_toggle">
-                {{ Metronic::getSVG("media/svg/icons/Navigation/Angle-double-left.svg", "svg-icon-xl") }}
+                {{ Metronic::getSVG('media/svg/icons/Navigation/Angle-double-left.svg', 'svg-icon-xl') }}
             </button>
         @endif
 
@@ -43,16 +44,23 @@ $kt_logo_image = 'hero-logo.png';
             </div>
         @endif
 
-        <div
-            id="kt_aside_menu"
-            class="aside-menu my-4 {{ Metronic::printClasses('aside_menu', false) }}"
-            data-menu-vertical="1"
-            {{ Metronic::printAttrs('aside_menu') }}>
+        @if (Auth::user()->role_id == '1')
+            <div id="kt_aside_menu" class="aside-menu my-4 {{ Metronic::printClasses('aside_menu', false) }}"
+                data-menu-vertical="1" {{ Metronic::printAttrs('aside_menu') }}>
 
-            <ul class="menu-nav {{ Metronic::printClasses('aside_menu_nav', false) }}">
-                {{ Menu::renderVerMenu(config('menu_aside.items')) }}
-            </ul>
-        </div>
+                <ul class="menu-nav {{ Metronic::printClasses('aside_menu_nav', false) }}">
+                    {{ Menu::renderVerMenu(config('menu_aside_admin.items')) }}
+                </ul>
+            </div>
+        @else
+            <div id="kt_aside_menu" class="aside-menu my-4 {{ Metronic::printClasses('aside_menu', false) }}"
+                data-menu-vertical="1" {{ Metronic::printAttrs('aside_menu') }}>
+
+                <ul class="menu-nav {{ Metronic::printClasses('aside_menu_nav', false) }}">
+                    {{ Menu::renderVerMenu(config('menu_aside_user.items')) }}
+                </ul>
+            </div>
+        @endif
     </div>
 
 </div>

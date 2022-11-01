@@ -111,23 +111,6 @@
                             </li> --}}
                         </ul>
                     </div>
-                    @if (Auth::user()->role_id == '2')
-                        <ul class="nav nav-tabs nav-bold nav-tabs-line pe-5 row">
-                            <li class="nav-item dropdown col-sm-12">
-                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
-                                    aria-haspopup="true" aria-expanded="false" style="margin-right:5em;">
-                                    {{ $user->name }}
-                                </a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item">Profiles</a>
-                                    <form action="{{ route('logout') }}" method="POST">
-                                        @csrf
-                                        <button class="dropdown-item" type="submit">Logout</button>
-                                    </form>
-                                </div>
-                            </li>
-                        </ul>
-                    @endif
                 </div>
                 <div class="card-body">
                     <div class="tab-content">
