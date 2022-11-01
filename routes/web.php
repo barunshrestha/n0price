@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\TransactionController;
 
 /*
@@ -71,6 +72,12 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/return_calculation', [DashboardController::class, 'return_calculation'])->name('return_calculation');
     Route::get('/dashboardTransactionPartials', 'DashboardController@dashboardTransactionPartials')->name('dashboardTransactionPartials');
     Route::get('/get/all/coins', [DashboardController::class, 'getallcoins']);
+    Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
+    Route::get('/portfolio/active/{id}', [PortfolioController::class, 'active'])->name('portfolio.active');
+    Route::get('/portfolio/edit/{id}', [PortfolioController::class, 'edit'])->name('portfolio.edit');
+    Route::post('/portfolio/update/{id}', [PortfolioController::class, 'update'])->name('portfolio.update');
+    Route::post('/portfolio/delete/{id}', [PortfolioController::class, 'destroy'])->name('portfolio.destroy');
+
 });
 
 Route::group(['middleware' => 'auth'], function () {

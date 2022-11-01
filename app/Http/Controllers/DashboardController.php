@@ -108,7 +108,7 @@ class DashboardController extends Controller
             }
         }
         $available_coins = $query->get();
-        return response()->json(["data" => $available_coins, "request" => $data]);
+        return response()->json(["data" => $available_coins]);
     }
     public function dashboardTransactionPartials(Request $request)
     {
