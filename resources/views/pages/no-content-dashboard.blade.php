@@ -81,23 +81,7 @@
         <div class="col-md-12">
             <div class="card card-custom gutter-b">
                 <div class="card-header card-header-tabs-line d-flex justify-content-end">
-                    @if (Auth::user()->role_id == '2')
-                        <ul class="nav nav-tabs nav-bold nav-tabs-line pe-5 row">
-                            <li class="nav-item dropdown col-sm-12">
-                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
-                                    aria-haspopup="true" aria-expanded="false" style="margin-right:5em;">
-                                    {{ $user->name }}
-                                </a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item">Profiles</a>
-                                    <form action="{{ route('logout') }}" method="POST">
-                                        @csrf
-                                        <button class="dropdown-item" type="submit">Logout</button>
-                                    </form>
-                                </div>
-                            </li>
-                        </ul>
-                    @endif
+                   
                 </div>
                 <form action="{{ route('percentage.allocation') }}" method="POST">
 
@@ -110,7 +94,7 @@
 
                                     <div class="login-signin">
                                         <div class="form-group mb-5 text-left">
-                                            <input type="hidden" value={{$portfolio_details->portfolio_id}} name="portfolio_id">
+                                            <input type="hidden" value={{$portfolio_details->id}} name="portfolio_id">
                                            <span>
                                                 Please define your portfolio name.
                                             </span>
