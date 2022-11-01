@@ -73,8 +73,8 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/dashboardTransactionPartials', 'DashboardController@dashboardTransactionPartials')->name('dashboardTransactionPartials');
     Route::get('/get/all/coins', [DashboardController::class, 'getallcoins']);
     Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
+    Route::get('/portfolio/content', [PortfolioController::class, 'portfolioContent'])->name('portfolio.content');
     Route::get('/portfolio/active/{id}', [PortfolioController::class, 'active'])->name('portfolio.active');
-    Route::get('/portfolio/edit/{id}', [PortfolioController::class, 'edit'])->name('portfolio.edit');
     Route::post('/portfolio/update/{id}', [PortfolioController::class, 'update'])->name('portfolio.update');
     Route::post('/portfolio/delete/{id}', [PortfolioController::class, 'destroy'])->name('portfolio.destroy');
     Route::post('/portfolio/store', [PortfolioController::class, 'store'])->name('portfolio.store');

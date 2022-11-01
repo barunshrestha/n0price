@@ -20,22 +20,25 @@ class PortfolioController extends Controller
 
     public function index()
     {
+        return view($this->_page . 'index', $this->_data);
+    }
+    public function portfolioContent(){
         $portfolio = Portfolio::where('user_id', Auth::id())->get(['id', 'portfolio_name']);
         $this->_data['portfolios'] = $portfolio;
         $selected_portfolio = SelectedPortfolio::where('user_id', Auth::id())->get(['portfolio_id']);
         $this->_data['selected_portfolio'] = $selected_portfolio[0];
-        return view($this->_page . 'index', $this->_data);
+        return view($this->_page . 'index-content', $this->_data);
     }
     public function active($id){
         $user=Auth::user();
         SelectedPortfolio::where('user_id', $user->id)->update(['portfolio_id'=>$id]);
         return redirect()->back()->with(['success' =>"Active Portfolio Changed" ]);
     }
-    public function edit(Request $request,$id){
-        // 
-    }
-    public function update(Request $request){
-        // 
+    
+    public function update(Request $request,$id){  
+        $portfolio_name=$request->myportfolio_name;      
+        Portfolio::where('id', $id)->update(['portfolio_name'=>$portfolio_name]);
+        return response()->json(["success" => true, "response" => "Portfolio updated successfully"]);
     }
     public function destroy($id){
         $portfolio = Portfolio::where('user_id', Auth::id())->where('id',$id)->get();
@@ -44,7 +47,6 @@ class PortfolioController extends Controller
             return redirect()->back()->with(['fail' =>"Cannot Delete Active Portfolio" ]);
         }
         Portfolio::where('user_id', Auth::user()->id)->where('id',$id)->delete();
-        // $portfolio->delete();
         return redirect()->back()->with(['success' =>"Portfolio has been removed" ]);
     }
 
