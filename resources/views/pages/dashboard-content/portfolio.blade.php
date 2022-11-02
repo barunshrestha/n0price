@@ -63,6 +63,8 @@
                         </td>
                         <form action="{{ route('percentage.allocation') }}" method="POST">
                             @csrf
+                            <input type="hidden" value="{{$portfolio_details->id}}" name="portfolio_id">
+                            <input type="hidden" value="{{$portfolio_details->portfolio_name}}" name="portfolio_name">
                             @foreach ($asset_matrix_constraints as $constraints)
                                 <td>
                                     <div class="hideAfteredit allocation-percentage" style="text-align: center;">
