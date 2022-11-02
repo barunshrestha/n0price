@@ -103,19 +103,8 @@ class UserController extends Controller
             $portfolio->user_id=$user->id;
             $portfolio->status=1;
             $portfolio->save();
-            // $selected_portfolio=new SelectedPortfolio();
-            // $selected_portfolio->user_id=$user->id;
-            // $selected_portfolio->portfolio_id=$portfolio->id;
-            // $selected_portfolio->save();
-
-            $data = [
-                ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
-                ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
-                ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
-                ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
-                ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
-            ];
-            AssetMatrixConstraints::insert($data);
+            (new AuthController)->create_asset_matrix($user, $portfolio);
+            
             event(new Registered($user));
             return redirect()->route('users.index')->with('success', 'Your Information has been Added .');
         }

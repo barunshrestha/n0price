@@ -47,19 +47,11 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'approval_status' => '1'
         ]);
-        $date = Carbon::now();
         $portfolio = new Portfolio();
         $portfolio->user_id = $user->id;
         $portfolio->status = 1;
         $portfolio->save();
-        $data = [
-            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
-            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
-            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
-            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
-            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
-        ];
-        AssetMatrixConstraints::insert($data);
+        $this->create_asset_matrix($user, $portfolio);
 
         event(new Registered($user));
 
@@ -83,34 +75,6 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $user = Auth::user();
-
-            if (AssetMatrixConstraints::where('user_id', $user->id)->count() == 0) {
-                $portfolio = new Portfolio();
-                $portfolio->user_id = $user->id;
-                $portfolio->status = 1;
-                $portfolio->save();
-
-                $date = Carbon::now();
-                $data = [
-                    ['portfolio_id' => $portfolio->id,'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
-                    ['portfolio_id' => $portfolio->id,'user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
-                    ['portfolio_id' => $portfolio->id,'user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
-                    ['portfolio_id' => $portfolio->id,'user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
-                    ['portfolio_id' => $portfolio->id,'user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
-                ];
-                AssetMatrixConstraints::insert($data);
-                Transaction::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
-            }
-
-            if (Portfolio::where('user_id', $user->id)->count() == 0) {
-                $portfolio = new Portfolio();
-                $portfolio->user_id = $user->id;
-                $portfolio->status = 1;
-                $portfolio->save();
-                AssetMatrixConstraints::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
-                Transaction::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
-            }            
             return redirect()->route('dashboard');
         }
         return redirect()->back()->withInput($request->only('email'))->with(['fail' => 'Credentials did not match our record']);
@@ -131,4 +95,67 @@ class AuthController extends Controller
         }
         return view('auth.approval_page');
     }
+    public function create_asset_matrix($user, $portfolio)
+    {
+        $date = Carbon::now();
+        $data = [
+            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
+            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
+            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
+            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
+            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
+        ];
+        AssetMatrixConstraints::insert($data);
+    }
+    public function checkForAssetMatrix_Portfolio($user)
+    {
+        if (Portfolio::where('user_id', $user->id)->count() == 0) {
+            $portfolio = new Portfolio();
+            $portfolio->user_id = $user->id;
+            $portfolio->status = 1;
+            $portfolio->save();
+            AssetMatrixConstraints::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
+            Transaction::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
+        }
+
+        if ($active_portfolio = Portfolio::where('user_id', $user->id)->where('status', 1)->first()) {
+            if (AssetMatrixConstraints::where('user_id', $user->id)->where("portfolio_id", $active_portfolio->id)->count() == 0) {
+                (new AuthController)->create_asset_matrix($user, $active_portfolio);
+                Transaction::where('user_id', $user->id)->update(['portfolio_id' => $active_portfolio->id]);
+            }
+        }
+    }
 }
+
+
+
+
+
+// if (AssetMatrixConstraints::where('user_id', $user->id)->count() == 0) {
+//     if (Portfolio::where('user_id', $user->id)->count() == 0) {
+//         $portfolio = new Portfolio();
+//         $portfolio->user_id = $user->id;
+//         $portfolio->status = 1;
+//         $portfolio->save();
+//         $this->create_asset_matrix($user, $portfolio);
+//         Transaction::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
+//     } {
+//         $portfolio = Portfolio::where('user_id', $user->id)->first();
+//         $this->create_asset_matrix($user, $portfolio);
+//         Transaction::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
+//     }
+// }
+
+// if (Portfolio::where('user_id', $user->id)->count() == 0) {
+//     $portfolio = new Portfolio();
+//     $portfolio->user_id = $user->id;
+//     $portfolio->status = 1;
+//     $portfolio->save();
+//     if (AssetMatrixConstraints::where('user_id', $user->id)->count() == 0) {
+//         $this->create_asset_matrix($user, $portfolio);
+//         Transaction::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
+//     }
+//     else{
+//         AssetMatrixConstraints::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
+//     }
+// }
