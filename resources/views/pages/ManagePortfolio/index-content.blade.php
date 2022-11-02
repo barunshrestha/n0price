@@ -54,16 +54,19 @@
                                     value="{{ $portfolio->portfolio_name }}">
                             </div>
                         </td>
-                        <td><?php
-                        if ($portfolio->id == $selected_portfolio->portfolio_id) {
+                        <td>
+                           
+                            <?php
+                        if ($portfolio->status == 1) {
                             echo "<i class='flaticon2-correct text-success'></i>";
                         }
-                        ?></td>
+                        ?>
+                        </td>
                         <td>
 
                             <div id="myportfolio_action_buttons-{{ $portfolio->id }}">
                                 <div class="hide_after_edit">
-                                    @if ($portfolio->id == $selected_portfolio->portfolio_id)
+                                    @if ($portfolio->status == 1)
                                     @else
                                         <a href="{{ route('portfolio.active', $portfolio->id) }}"
                                             class="btn btn-icon btn-info btn-xs mr-2" data-toggle="tooltip"

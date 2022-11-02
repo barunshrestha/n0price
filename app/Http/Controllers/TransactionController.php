@@ -57,8 +57,9 @@ class TransactionController extends Controller
 
         $data = $request->except('_token');
         $user = Auth::user();
+        $selected_portfolio = Portfolio::where("user_id", $user->id)->where('status', 1)->get('id');
         if ($data['coin_investment_type'] == 'sell') {
-            $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $data['coin_id'] . ')');
+            $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $data['coin_id'] . ',' . $selected_portfolio[0]->id . ')');
             $to_check_buy_total = $to_check_transaction[0]->buy_unit;
             $to_check_sell_total = $to_check_transaction[0]->sell_unit;
             $to_check_amt = $to_check_buy_total - $to_check_sell_total - $data['units'];
@@ -75,7 +76,7 @@ class TransactionController extends Controller
         $transaction->purchase_date = $data['purchase_date'];
         $transaction->investment_type = $data['coin_investment_type'];
         $transaction->purchase_price = $data['purchase_price'] * $data['units'];
-        $transaction->portfolio_id=$data['portfolio_id'];
+        $transaction->portfolio_id = $data['portfolio_id'];
 
 
         // logic for partial subtranction
@@ -178,9 +179,9 @@ class TransactionController extends Controller
         $user = User::find($transaction->user_id);
         $investment_type = $request->investment_type;
         $given_coin_id = $transaction->coin_id;
-
+        $selected_portfolio = Portfolio::where("user_id", $user->id)->where('status', 1)->get('id');
         if ($investment_type == 'sell') {
-            $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $given_coin_id . ')');
+            $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $given_coin_id .','. $selected_portfolio[0]->id .  ')');
             $to_check_buy_total = $to_check_transaction[0]->buy_unit;
             $to_check_sell_total = $to_check_transaction[0]->sell_unit ? $to_check_transaction[0]->sell_unit : 0;
             $to_check_amt = $to_check_buy_total - $to_check_sell_total - $request->units;
@@ -211,7 +212,7 @@ class TransactionController extends Controller
         return response()->json(["msg" => "Your response has been deleted"]);
     }
 
-   
+
 
     // backup
     public function profit_calculation()
@@ -293,19 +294,16 @@ class TransactionController extends Controller
         foreach ($users as $user) {
 
             $date = Carbon::now();
-            $portfolio=new Portfolio();
-            $portfolio->user_id=$user->id;
+            $portfolio = new Portfolio();
+            $portfolio->user_id = $user->id;
+            $portfolio->status = 1;
             $portfolio->save();
-            $selected_portfolio=new SelectedPortfolio();
-            $selected_portfolio->user_id=$user->id;
-            $selected_portfolio->portfolio_id=$portfolio->id;
-            $selected_portfolio->save();
             $data = [
-                ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
-                ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
-                ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
-                ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
-                ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
+                ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
+                ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
+                ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
+                ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
+                ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
             ];
             AssetMatrixConstraints::insert($data);
         }
@@ -313,14 +311,14 @@ class TransactionController extends Controller
     public function change_allocation(Request $request)
     {
         $this->validate($request, [
-            'portfolio_name'=>'required'
+            'portfolio_name' => 'required'
         ]);
         $data = $request->except('_token');
-        $asset_matrix_data=$data['allocation_percentage'];
-        $portfolio_name=$data['portfolio_name'];
-        $portfolio_id=$data['portfolio_id'];
-        $portfolio_to_update=Portfolio::find($portfolio_id);
-        $portfolio_to_update->portfolio_name=$portfolio_name;
+        $asset_matrix_data = $data['allocation_percentage'];
+        $portfolio_name = $data['portfolio_name'];
+        $portfolio_id = $data['portfolio_id'];
+        $portfolio_to_update = Portfolio::find($portfolio_id);
+        $portfolio_to_update->portfolio_name = $portfolio_name;
         $portfolio_to_update->save();
         $to_change_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
         for ($i = 0; $i < count($to_change_constraints); $i++) {

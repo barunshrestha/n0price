@@ -17,6 +17,7 @@ class CreatePortfoliosTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('portfolio_name')->nullable();
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

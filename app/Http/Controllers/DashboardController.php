@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AssetMatrixConstraints;
 use App\Models\Coin;
+use App\Models\Portfolio;
 use App\Models\SelectedPortfolio;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $this->_data['user'] = $user;
-        $selectedPortfolio = SelectedPortfolio::select('portfolios.*')->where('selected_portfolios.user_id', $user->id)->join('portfolios', 'selected_portfolios.portfolio_id', '=', 'portfolios.id')->get();
+        $selectedPortfolio = Portfolio::where('status', 1)->where('user_id', $user->id)->get();
         $portfolio_id = $selectedPortfolio[0]->id;
         $this->_data['portfolio_details'] = $selectedPortfolio[0];
         $transaction_count = Transaction::where('user_id', $user->id)->where('portfolio_id', $portfolio_id)->count();
@@ -45,8 +46,8 @@ class DashboardController extends Controller
     public function get_transaction_of_specific_user()
     {
         $user = Auth::user();
-        $selected_portfolio = SelectedPortfolio::where('user_id', Auth::id())->get(['portfolio_id']);
-        $portfolio_id = $selected_portfolio[0]->portfolio_id;
+        $selected_portfolio = Portfolio::where('status', 1)->where('user_id', $user->id)->get('id');
+        $portfolio_id = $selected_portfolio[0]->id;
         $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
             ->where('transactions.user_id', $user->id)
             ->where('transactions.portfolio_id', $portfolio_id)
@@ -59,8 +60,8 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $this->_data['user'] = $user;
-        $selected_portfolio = SelectedPortfolio::where('user_id', Auth::id())->get(['portfolio_id']);
-        $portfolio_id = $selected_portfolio[0]->portfolio_id;
+        $selected_portfolio = Portfolio::where('status', 1)->where('user_id', $user->id)->get('id');
+        $portfolio_id = $selected_portfolio[0]->id;
         $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ',' . $portfolio_id . ')');
         $this->_data['portfolio'] = $portfolio;
 
@@ -70,7 +71,7 @@ class DashboardController extends Controller
         foreach ($portfolio as $stock) {
             $stock->current_holdings = $stock->buy_unit - $stock->sell_unit;
             $coin_id = $stock->coin_id;
-            $url = $this->_baseurl."simple/price?ids=" . $coin_id . $this->_currency.$this->_key;
+            $url = $this->_baseurl . "simple/price?ids=" . $coin_id . $this->_currency . $this->_key;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -82,7 +83,7 @@ class DashboardController extends Controller
             $total_holdings_valuation += $stock->current_value_total;
             $yesterday = Carbon::now()->subDays(1)->format('d-m-Y');
 
-            $url = $this->_baseurl."coins/" . $coin_id . "/history?date=" . $yesterday . "&localization=false".$this->_currency.$this->_key;
+            $url = $this->_baseurl . "coins/" . $coin_id . "/history?date=" . $yesterday . "&localization=false" . $this->_currency . $this->_key;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -119,8 +120,8 @@ class DashboardController extends Controller
     public function dashboardTransactionPartials(Request $request)
     {
         $user = Auth::user();
-        $selected_portfolio = SelectedPortfolio::where('user_id', Auth::id())->get(['portfolio_id']);
-        $portfolio_id = $selected_portfolio[0]->portfolio_id;
+        $selected_portfolio = Portfolio::where('status', 1)->where('user_id', $user->id)->get('id');
+        $portfolio_id = $selected_portfolio[0]->id;
         $this->_data['user'] = $user;
         $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
             ->where('transactions.user_id', $user->id)
@@ -134,14 +135,15 @@ class DashboardController extends Controller
     public function return_calculation(Request $request)
     {
         $user = Auth::user();
-        $selected_portfolio = SelectedPortfolio::where('user_id', $user->id)->first();
-        $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ',' . $selected_portfolio->portfolio_id . ')');
+        $selected_portfolio = Portfolio::where('status', 1)->where('user_id', $user->id)->get('id');
+        $portfolio_id = $selected_portfolio[0]->id;
+        $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ',' . $portfolio_id . ')');
         $this->_data['portfolio'] = $portfolio;
 
         $coins_available = DB::select('select coin_name,coin_id,buy_amount,buy_unit,sell_unit from vw_final_transaction where user_id = ?', [$user->id]);
 
-        $buy_transactions = DB::select('select units,name,purchase_price,coin_id from vw_buy_transactions where user_id = ? and portfolio_id = ? order by name asc', [$user->id, $selected_portfolio->portfolio_id]);
-        $sell_transactions = DB::select('select units,name,purchase_price,coin_id from vw_sell_transactions where user_id = ? and portfolio_id = ? order by name asc', [$user->id, $selected_portfolio->portfolio_id]);
+        $buy_transactions = DB::select('select units,name,purchase_price,coin_id from vw_buy_transactions where user_id = ? and portfolio_id = ? order by name asc', [$user->id, $portfolio_id]);
+        $sell_transactions = DB::select('select units,name,purchase_price,coin_id from vw_sell_transactions where user_id = ? and portfolio_id = ? order by name asc', [$user->id, $portfolio_id]);
         $total_worth = array();
         $current_transactions = array();
 
@@ -203,7 +205,7 @@ class DashboardController extends Controller
             $total_sell = $coins->sell_unit ? $coins->sell_unit : 0;
             $remaining_coins = $total_buy - $total_sell;
             $coin_id = "$coins->coin_id";
-            $url =  $this->_baseurl."coins/" . $coin_id . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false".$this->_key;
+            $url =  $this->_baseurl . "coins/" . $coin_id . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false" . $this->_key;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

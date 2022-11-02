@@ -101,11 +101,12 @@ class UserController extends Controller
             $date = Carbon::now();
             $portfolio=new Portfolio();
             $portfolio->user_id=$user->id;
+            $portfolio->status=1;
             $portfolio->save();
-            $selected_portfolio=new SelectedPortfolio();
-            $selected_portfolio->user_id=$user->id;
-            $selected_portfolio->portfolio_id=$portfolio->id;
-            $selected_portfolio->save();
+            // $selected_portfolio=new SelectedPortfolio();
+            // $selected_portfolio->user_id=$user->id;
+            // $selected_portfolio->portfolio_id=$portfolio->id;
+            // $selected_portfolio->save();
 
             $data = [
                 ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
