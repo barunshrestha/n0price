@@ -84,17 +84,6 @@ class AuthController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-            if (AssetMatrixConstraints::where('user_id', $user->id)->count() == 0) {
-                $date = Carbon::now();
-                $data = [
-                    ['user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
-                    ['user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
-                    ['user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
-                    ['user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
-                    ['user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
-                ];
-                AssetMatrixConstraints::insert($data);
-            }
             if (Portfolio::where('user_id', $user->id)->count() == 0) {
                 $portfolio = new Portfolio();
                 $portfolio->user_id = $user->id;
@@ -102,7 +91,7 @@ class AuthController extends Controller
                 $portfolio->save();
                 AssetMatrixConstraints::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
                 Transaction::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
-            }
+            }            
             return redirect()->route('dashboard');
         }
         return redirect()->back()->withInput($request->only('email'))->with(['fail' => 'Credentials did not match our record']);
