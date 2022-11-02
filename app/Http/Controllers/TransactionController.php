@@ -335,7 +335,7 @@ class TransactionController extends Controller
         $portfolio_to_update = Portfolio::find($portfolio_id);
         $portfolio_to_update->portfolio_name = $portfolio_name;
         $portfolio_to_update->save();
-        $to_change_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->get();
+        $to_change_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->where('portfolio_id',$portfolio_id)->get();
         for ($i = 0; $i < count($to_change_constraints); $i++) {
             $to_change_constraints[$i]->update([
                 "percentage_allocation" => $asset_matrix_data[$i]

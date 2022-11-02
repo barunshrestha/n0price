@@ -29,6 +29,7 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         (new AuthController)->checkForAssetMatrix_Portfolio($user);
+        
         $this->_data['user'] = $user;
         $selectedPortfolio = Portfolio::where('status', 1)->where('user_id', $user->id)->get();
         $portfolio_id = $selectedPortfolio[0]->id;
