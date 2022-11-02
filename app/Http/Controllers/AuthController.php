@@ -10,6 +10,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Models\AssetMatrixConstraints;
 use App\Models\Portfolio;
 use App\Models\SelectedPortfolio;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Carbon\Carbon;
@@ -38,35 +39,31 @@ class AuthController extends Controller
             'password' => 'required|min:8',
         ]);
         if ($validator->fails()) {
-        return redirect()->back()->withInput($request->input())->withErrors($validator);
+            return redirect()->back()->withInput($request->input())->withErrors($validator);
         }
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'approval_status'=>'1'
+            'approval_status' => '1'
         ]);
         $date = Carbon::now();
-        $portfolio=new Portfolio();
-        $portfolio->user_id=$user->id;
-        $portfolio->status=1;
+        $portfolio = new Portfolio();
+        $portfolio->user_id = $user->id;
+        $portfolio->status = 1;
         $portfolio->save();
-        // $selected_portfolio=new SelectedPortfolio();
-        //     $selected_portfolio->user_id=$user->id;
-        //     $selected_portfolio->portfolio_id=$portfolio->id;
-        //     $selected_portfolio->save();
         $data = [
-            ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
-            ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
-            ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
-            ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
-            ['portfolio_id'=>$portfolio->id,'user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
+            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
+            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
+            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
+            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
+            ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
         ];
         AssetMatrixConstraints::insert($data);
 
         event(new Registered($user));
 
-        return redirect(route('login'))->with(['success' =>"User Registration Successful. Check email for Verfication." ]);
+        return redirect(route('login'))->with(['success' => "User Registration Successful. Check email for Verfication."]);
     }
 
     public function login(Request $request)
@@ -86,9 +83,28 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = Auth::user();
+            if (AssetMatrixConstraints::where('user_id', $user->id)->count() == 0) {
+                $date = Carbon::now();
+                $data = [
+                    ['user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
+                    ['user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
+                    ['user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
+                    ['user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
+                    ['user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
+                ];
+                AssetMatrixConstraints::insert($data);
+            }
+            if (Portfolio::where('user_id', $user->id)->count() == 0) {
+                $portfolio = new Portfolio();
+                $portfolio->user_id = $user->id;
+                $portfolio->status = 1;
+                $portfolio->save();
+                AssetMatrixConstraints::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
+                Transaction::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
+            }
             return redirect()->route('dashboard');
         }
-
         return redirect()->back()->withInput($request->only('email'))->with(['fail' => 'Credentials did not match our record']);
     }
 

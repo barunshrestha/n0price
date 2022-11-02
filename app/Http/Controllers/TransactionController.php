@@ -181,7 +181,7 @@ class TransactionController extends Controller
         $given_coin_id = $transaction->coin_id;
         $selected_portfolio = Portfolio::where("user_id", $user->id)->where('status', 1)->get('id');
         if ($investment_type == 'sell') {
-            $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $given_coin_id .','. $selected_portfolio[0]->id .  ')');
+            $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $given_coin_id . ',' . $selected_portfolio[0]->id .  ')');
             $to_check_buy_total = $to_check_transaction[0]->buy_unit;
             $to_check_sell_total = $to_check_transaction[0]->sell_unit ? $to_check_transaction[0]->sell_unit : 0;
             $to_check_amt = $to_check_buy_total - $to_check_sell_total - $request->units;
@@ -292,22 +292,37 @@ class TransactionController extends Controller
     {
         $users = User::all('id');
         foreach ($users as $user) {
-
-            $date = Carbon::now();
-            $portfolio = new Portfolio();
-            $portfolio->user_id = $user->id;
-            $portfolio->status = 1;
-            $portfolio->save();
-            $data = [
-                ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
-                ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
-                ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
-                ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
-                ['portfolio_id' => $portfolio->id, 'user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
-            ];
-            AssetMatrixConstraints::insert($data);
+            if (AssetMatrixConstraints::where('user_id', $user->id)->count() == 0) {
+                $date = Carbon::now();
+                $data = [
+                    ['user_id' => $user->id, 'risk' => 'Very High', 'market_cap' => '<25M', 'color' => '#e9fac8', 'created_at' => $date, 'updated_at' => $date],
+                    ['user_id' => $user->id, 'risk' => 'High', 'market_cap' => '25M - 250M', 'color' => '#fff3bf', 'created_at' => $date, 'updated_at' => $date],
+                    ['user_id' => $user->id, 'risk' => 'Medium', 'market_cap' => '250M - 1B', 'color' => '#d3f9d8', 'created_at' => $date, 'updated_at' => $date],
+                    ['user_id' => $user->id, 'risk' => 'Low', 'market_cap' => '1B - 25B', 'color' => '#ffd8a8', 'created_at' => $date, 'updated_at' => $date],
+                    ['user_id' => $user->id, 'risk' => 'Very Low', 'market_cap' => '>25B', 'color' => '#ffa8a8', 'created_at' => $date, 'updated_at' => $date],
+                ];
+                AssetMatrixConstraints::insert($data);
+            }
         }
+        return redirect()->back();
     }
+    public function assign_portfolio_default()
+    {
+        $users = User::all('id');
+        foreach ($users as $user) {
+            if (Portfolio::where('user_id', $user->id)->count() == 0) {
+                $portfolio = new Portfolio();
+                $portfolio->user_id = $user->id;
+                $portfolio->status = 1;
+                $portfolio->save();
+                AssetMatrixConstraints::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
+                Transaction::where('user_id', $user->id)->update(['portfolio_id' => $portfolio->id]);
+            }
+        }
+        return redirect()->back();
+    }
+
+
     public function change_allocation(Request $request)
     {
         $this->validate($request, [
