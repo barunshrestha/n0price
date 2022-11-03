@@ -348,12 +348,7 @@ class TransactionController extends Controller
     }
     public function getall_transactions()
     {
-        $query = " Select t.units as units,t.purchase_price as purchase_price, t.investment_type as status, t.purchase_date as date,
-        c.name as coin_name,u.name as username
-        from transactions as t
-        join coins as c on t.coin_id=c.id
-        join users as u on t.user_id=u.id order by t.id desc";
-        $transactions = DB::select($query);
+        $transactions = DB::table('vw_all_transactions')->get();
         return response()->json(["data" => $transactions]);
     }
 }
