@@ -603,7 +603,7 @@
                 purchase_date: $(purchase_date + ' .hide_before_edit').val(),
                 units: $(units + ' .hide_before_edit').val(),
                 purchase_price: $(purchase_price + ' .hide_before_edit').val(),
-                portfolio_id: $('#myportfolio_id').val(),
+                portfolio_id: dashboard_portfolio_id
             };
             $.ajax({
                 headers: {
