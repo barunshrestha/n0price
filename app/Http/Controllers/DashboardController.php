@@ -38,10 +38,6 @@ class DashboardController extends Controller
             ],
 
             [
-                'section' => 'Portfolio',
-            ],
-
-            [
                 'title' => 'Manage Portfolio',
                 'root' => true,
                 'page' => '/portfolio',
@@ -49,7 +45,7 @@ class DashboardController extends Controller
                 'new-tab' => false,
             ],
             [
-                'section' => 'My Portfolio',
+                'section' => 'My Portfolios',
             ]
         );
         $user = Auth::user();
@@ -58,10 +54,10 @@ class DashboardController extends Controller
             array_push(
                 $menus[0],
                 [
-                    'title' => $menu_items->portfolio_name,
+                    'title' => $menu_items->portfolio_name?$menu_items->portfolio_name:'Unnamed',
                     'root' => true,
                     'page' => '/select/portfolio/' . $menu_items->id,
-                    'icon' => 'media/svg/icons/Media/Rec.svg', // or can be 'flaticon-home' or any flaticon-*
+                    'icon' => 'media/svg/icons/Clothes/Briefcase.svg', // or can be 'flaticon-home' or any flaticon-*
                     'new-tab' => true,
                 ]
             );
@@ -107,7 +103,7 @@ class DashboardController extends Controller
             $menus[0],
             [
                 'section' => 'Settings',
-            ],
+            ],            
             [
                 'title' => 'Logout',
                 'root' => true,
