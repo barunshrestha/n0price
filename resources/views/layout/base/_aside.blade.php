@@ -44,20 +44,14 @@
             </div>
         @endif
 
-        {{-- @if (Auth::user()->role_id == '1')
-            <div id="kt_aside_menu" class="aside-menu my-4 {{ Metronic::printClasses('aside_menu', false) }}"
-                data-menu-vertical="1" {{ Metronic::printAttrs('aside_menu') }}>
-
-                <ul class="menu-nav {{ Metronic::printClasses('aside_menu_nav', false) }}">
-                    {{ Menu::renderVerMenu(config('menu_aside_admin.items')) }}
-                </ul>
-            </div>
-        @else --}}
         <div id="kt_aside_menu" class="aside-menu my-4 {{ Metronic::printClasses('aside_menu', false) }}"
             data-menu-vertical="1" {{ Metronic::printAttrs('aside_menu') }}>
 
             <ul class="menu-nav {{ Metronic::printClasses('aside_menu_nav', false) }}">
-                {{ Menu::renderVerMenu($menus) }}
+                <?php
+                $menu = (new App\Http\Controllers\DashboardController())->menu_list();
+                ?>
+                {{ Menu::renderVerMenu($menu) }}
             </ul>
         </div>
         {{-- @endif --}}

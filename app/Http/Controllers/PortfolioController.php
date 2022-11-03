@@ -21,7 +21,6 @@ class PortfolioController extends Controller
 
     public function index()
     {
-        $this->_data['menus']=(new DashboardController())->menu_list();
         return view($this->_page . 'index', $this->_data);
     }
     public function portfolioContent()

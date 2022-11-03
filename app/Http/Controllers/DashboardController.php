@@ -54,7 +54,7 @@ class DashboardController extends Controller
             array_push(
                 $menus[0],
                 [
-                    'title' => $menu_items->portfolio_name?$menu_items->portfolio_name:'Unnamed',
+                    'title' => $menu_items->portfolio_name ? $menu_items->portfolio_name : 'Unnamed',
                     'root' => true,
                     'page' => '/select/portfolio/' . $menu_items->id,
                     'icon' => 'media/svg/icons/Clothes/Briefcase.svg', // or can be 'flaticon-home' or any flaticon-*
@@ -97,13 +97,12 @@ class DashboardController extends Controller
                 ]
             );
         } else {
-            
         }
         array_push(
             $menus[0],
             [
                 'section' => 'Settings',
-            ],            
+            ],
             [
                 'title' => 'Logout',
                 'root' => true,
@@ -116,7 +115,6 @@ class DashboardController extends Controller
     }
     public function index(Request $request)
     {
-        $this->_data['menus'] = $this->menu_list();
         $user = Auth::user();
 
         (new AuthController)->checkForAssetMatrix_Portfolio($user);
