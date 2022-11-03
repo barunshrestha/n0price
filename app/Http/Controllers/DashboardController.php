@@ -322,7 +322,6 @@ class DashboardController extends Controller
     public function renderSpecificPortfolio($portfolio_id)
     {
 
-        $this->_data['menus'] = $this->menu_list();
         $user = Auth::user();
         (new AuthController)->checkForAssetMatrix_Portfolio($user);
         $this->_data['user'] = $user;
