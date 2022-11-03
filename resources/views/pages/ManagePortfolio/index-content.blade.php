@@ -70,7 +70,7 @@
                                     @else
                                         <a href="{{ route('portfolio.active', $portfolio->id) }}"
                                             class="btn btn-icon btn-info btn-xs mr-2" data-toggle="tooltip"
-                                            title="Approve">
+                                            title="Make default">
                                             <i class="fa fa-check"></i>
                                         </a>
                                     @endif
@@ -79,12 +79,13 @@
                                         onclick="myportfolioEditBtn(event)">
                                         <i class="fa fa-pen"></i>
                                     </button>
-                                    <form action="{{ route('portfolio.destroy', $portfolio->id) }}"
+                                    <form action="{{ route('portfolio.destroy', $portfolio->id) }}" id="portfolio-delete-{{$portfolio->id}}"
                                         style="display: inline-block;" method="post">
                                         {{ method_field('POST') }}
                                         {{ csrf_field() }}
                                         <button type="submit" value="Delete"
-                                            class="btn btn-icon btn-danger btn-xs mr-2 deleteBtn" data-toggle="tooltip"
+                                            class="btn btn-icon btn-danger btn-xs mr-2 " data-toggle="tooltip"  
+                                            onclick="PortfolioDeleteClicked(event,'portfolio-delete-{{$portfolio->id}}')"
                                             title="Delete"><i class="fa fa-trash"></i></button>
                                     </form>
                                 </div>

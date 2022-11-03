@@ -152,5 +152,28 @@
                 console.log('Failed: ' + error);
             });
         }
+
+        function PortfolioDeleteClicked(event, id) {
+            event.preventDefault();
+            var $this = $(this);
+            swal.fire({
+                title: "Delete!",
+                text: "Are you sure you want to delete this portfolio?",
+                icon: "question",
+                buttonsStyling: false,
+                confirmButtonText: "Yes I'm sure",
+                showCancelButton: true,
+                cancelButtonText: "No",
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: "btn btn-default"
+                }
+            }).then(function(result) {
+                if (result.hasOwnProperty('value')) {
+                    $('#' + id).submit();
+                    $this.parents('form').submit();
+                }
+            });
+        }
     </script>
 @endsection
