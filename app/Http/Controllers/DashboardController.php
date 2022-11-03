@@ -32,7 +32,7 @@ class DashboardController extends Controller
             [
                 'title' => 'Dashboard',
                 'root' => true,
-                'icon' => 'media/svg/icons/Design/Layers.svg', // or can be 'flaticon-home' or any flaticon-*
+                'icon' => 'media/svg/icons/Home/Home.svg', // or can be 'flaticon-home' or any flaticon-*
                 'page' => '/',
                 'new-tab' => false,
             ],
@@ -45,7 +45,7 @@ class DashboardController extends Controller
                 'title' => 'Manage Portfolio',
                 'root' => true,
                 'page' => '/portfolio',
-                'icon' => 'media/svg/icons/Design/Layers.svg', // or can be 'flaticon-home' or any flaticon-*
+                'icon' => 'media/svg/icons/General/Settings-2.svg', // or can be 'flaticon-home' or any flaticon-*
                 'new-tab' => false,
             ],
             [
@@ -60,8 +60,8 @@ class DashboardController extends Controller
                 [
                     'title' => $menu_items->portfolio_name,
                     'root' => true,
-                    'page' => '/select/portfolio/'.$menu_items->id,
-                    'icon' => 'media/svg/icons/Media/Play.svg', // or can be 'flaticon-home' or any flaticon-*
+                    'page' => '/select/portfolio/' . $menu_items->id,
+                    'icon' => 'media/svg/icons/Media/Rec.svg', // or can be 'flaticon-home' or any flaticon-*
                     'new-tab' => true,
                 ]
             );
@@ -101,6 +101,7 @@ class DashboardController extends Controller
                 ]
             );
         } else {
+            
         }
         array_push(
             $menus[0],
@@ -110,7 +111,7 @@ class DashboardController extends Controller
             [
                 'title' => 'Logout',
                 'root' => true,
-                'icon' => 'media/svg/icons/Design/Layers.svg', // or can be 'flaticon-home' or any flaticon-*
+                'icon' => 'media/svg/icons/Electric/Shutdown.svg', // or can be 'flaticon-home' or any flaticon-*
                 'page' => '/logout',
                 'new-tab' => false,
             ]
@@ -119,7 +120,7 @@ class DashboardController extends Controller
     }
     public function index(Request $request)
     {
-        $this->_data['menus']=$this->menu_list();
+        $this->_data['menus'] = $this->menu_list();
         $user = Auth::user();
 
         (new AuthController)->checkForAssetMatrix_Portfolio($user);
@@ -213,7 +214,7 @@ class DashboardController extends Controller
         $available_coins = $query->get();
         return response()->json(["data" => $available_coins]);
     }
-    public function dashboardTransactionPartials(Request $request,$portfolio_id)
+    public function dashboardTransactionPartials(Request $request, $portfolio_id)
     {
         $user = Auth::user();
         $selected_portfolio = Portfolio::where('user_id', $user->id)->where('id', $portfolio_id)->get('id');
@@ -228,7 +229,7 @@ class DashboardController extends Controller
         $this->_data['transactions'] = $transactions;
         return view($this->_page . 'dashboard-content.' . 'dashboard-transactions-partials', $this->_data);
     }
-    public function return_calculation(Request $request,$portfolio_id)
+    public function return_calculation(Request $request, $portfolio_id)
     {
         $user = Auth::user();
         $selected_portfolio = Portfolio::where('user_id', $user->id)->where('id', $portfolio_id)->get('id');
@@ -325,9 +326,10 @@ class DashboardController extends Controller
         $this->_data['worth'] = $worth;
         return view($this->_page . 'dashboard-content.' . 'coin_worth', $this->_data);
     }
-    public function renderSpecificPortfolio($portfolio_id){
+    public function renderSpecificPortfolio($portfolio_id)
+    {
 
-        $this->_data['menus']=$this->menu_list();
+        $this->_data['menus'] = $this->menu_list();
         $user = Auth::user();
         (new AuthController)->checkForAssetMatrix_Portfolio($user);
         $this->_data['user'] = $user;
