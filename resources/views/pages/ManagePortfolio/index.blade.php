@@ -57,7 +57,7 @@
                                     textAlign: 'center'
                                 },
                                 {
-                                    field: "ACTIVE",
+                                    field: "DEFAULT",
                                     width: 60,
                                     sortable: false,
                                     textAlign: 'center'

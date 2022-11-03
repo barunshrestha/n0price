@@ -68,9 +68,13 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/profit_calc', [TransactionController::class, 'profit_calculation']);
     Route::post('/change_allocation', [TransactionController::class, 'change_allocation'])->name('percentage.allocation');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+
     Route::get('/portfolio_summary', 'DashboardController@portfolio_summary')->name('portfolio_summary');
-    Route::get('/return_calculation', [DashboardController::class, 'return_calculation'])->name('return_calculation');
-    Route::get('/dashboardTransactionPartials', 'DashboardController@dashboardTransactionPartials')->name('dashboardTransactionPartials');
+    Route::get('/return_calculation/{portfolio_id}', [DashboardController::class, 'return_calculation'])->name('return_calculation');
+    Route::get('/dashboardTransactionPartials/{portfolio_id}', 'DashboardController@dashboardTransactionPartials')->name('dashboardTransactionPartials');
+    Route::get('/get/specific/user/transaction/{portfolio_id}', [DashboardController::class, 'get_transaction_of_specific_user'])->name('get_transaction_of_specific_user');
+    Route::get('/select/portfolio/{portfolio_id}',[DashboardController::class,'renderSpecificPortfolio'])->name('portfolio.specific');
+
     Route::get('/get/all/coins', [DashboardController::class, 'getallcoins']);
     Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
     Route::get('/portfolio/content', [PortfolioController::class, 'portfolioContent'])->name('portfolio.content');
@@ -92,7 +96,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('verify-email', [EmailVerificationController::class, 'verify_email_invoke'])
         ->name('verification.notice');
 
-    Route::get('/get/specific/user/transaction', [DashboardController::class, 'get_transaction_of_specific_user'])->name('get_transaction_of_specific_user');
 
 
     Route::post('email/verification-notification', [EmailVerificationController::class, 'store'])

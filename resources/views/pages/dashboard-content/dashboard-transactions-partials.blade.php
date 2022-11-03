@@ -70,6 +70,7 @@
                                         echo 'selected';
                                     } ?>>Sell</option>
                                 </select>
+
                             </div>
 
                         </td>
@@ -81,6 +82,7 @@
                                 </div>
                                 <input type="date" name="purchase_date" class="form-control hidden hide_before_edit"
                                     style="width: 85%;" value="{{ $transaction->purchase_date }}">
+
                             </div>
                         </td>
                         <td class="text-center align-middle">
@@ -115,7 +117,7 @@
                                 <div class="hide_after_edit ">
                                     <?php
                                     if (is_numeric($transaction->purchase_price) && is_numeric($transaction->units)) {
-                                        $total_price = number_format($transaction->purchase_price , 2);
+                                        $total_price = number_format($transaction->purchase_price, 2);
                                         $total_price = "$" . $total_price;
                                     } else {
                                         $total_price = 'NA';
@@ -123,9 +125,8 @@
                                     echo $total_price;
                                     ?>
                                 </div>
-                                <input type="text" name="price_total"
-                                    class="form-control hidden  hide_before_edit" style="width: 85%;"
-                                    value={{ round($transaction->purchase_price , 2) }}>
+                                <input type="text" name="price_total" class="form-control hidden  hide_before_edit"
+                                    style="width: 85%;" value={{ round($transaction->purchase_price, 2) }}>
                             </div>
                         </td>
                         <td>
@@ -151,9 +152,9 @@
                                     </form>
                                 </div>
                                 <div class="hide_before_edit hidden d-flex justify-content-center">
-                                    <button type="button" value="Save" class="btn btn-icon btn-success btn-xs mr-2"
-                                        data-toggle="tooltip" title="Save"
-                                        id="transaction_save_btn-{{ $transaction->id }}"
+                                    <button type="button" value="Save"
+                                        class="btn btn-icon btn-success btn-xs mr-2" data-toggle="tooltip"
+                                        title="Save" id="transaction_save_btn-{{ $transaction->id }}"
                                         onclick="transactionsaveBtn(event)"><i
                                             class="flaticon2-check-mark"></i></button>
 

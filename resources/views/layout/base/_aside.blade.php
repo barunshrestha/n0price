@@ -44,7 +44,7 @@
             </div>
         @endif
 
-        @if (Auth::user()->role_id == '1')
+        {{-- @if (Auth::user()->role_id == '1')
             <div id="kt_aside_menu" class="aside-menu my-4 {{ Metronic::printClasses('aside_menu', false) }}"
                 data-menu-vertical="1" {{ Metronic::printAttrs('aside_menu') }}>
 
@@ -52,15 +52,15 @@
                     {{ Menu::renderVerMenu(config('menu_aside_admin.items')) }}
                 </ul>
             </div>
-        @else
-            <div id="kt_aside_menu" class="aside-menu my-4 {{ Metronic::printClasses('aside_menu', false) }}"
-                data-menu-vertical="1" {{ Metronic::printAttrs('aside_menu') }}>
+        @else --}}
+        <div id="kt_aside_menu" class="aside-menu my-4 {{ Metronic::printClasses('aside_menu', false) }}"
+            data-menu-vertical="1" {{ Metronic::printAttrs('aside_menu') }}>
 
-                <ul class="menu-nav {{ Metronic::printClasses('aside_menu_nav', false) }}">
-                    {{ Menu::renderVerMenu(config('menu_aside_user.items')) }}
-                </ul>
-            </div>
-        @endif
+            <ul class="menu-nav {{ Metronic::printClasses('aside_menu_nav', false) }}">
+                {{ Menu::renderVerMenu($menus) }}
+            </ul>
+        </div>
+        {{-- @endif --}}
     </div>
 
 </div>

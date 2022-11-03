@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AssetMatrixConstraints;
-use App\Models\Coin;
 use App\Models\Portfolio;
-use App\Models\SelectedPortfolio;
-use App\Models\Sell_log;
 use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
@@ -53,11 +50,12 @@ class TransactionController extends Controller
             'purchase_price' => 'required',
             'purchase_date' => 'required',
             'coin_investment_type' => 'required',
+            'portfolio_id'=>'required',
         ]);
 
         $data = $request->except('_token');
         $user = Auth::user();
-        $selected_portfolio = Portfolio::where("user_id", $user->id)->where('status', 1)->get('id');
+        $selected_portfolio = Portfolio::where("user_id", $user->id)->where('id', $request->portfolio_id)->get('id');
         if ($data['coin_investment_type'] == 'sell') {
             $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $data['coin_id'] . ',' . $selected_portfolio[0]->id . ')');
             $to_check_buy_total = $to_check_transaction[0]->buy_unit;
@@ -179,7 +177,8 @@ class TransactionController extends Controller
         $user = User::find($transaction->user_id);
         $investment_type = $request->investment_type;
         $given_coin_id = $transaction->coin_id;
-        $selected_portfolio = Portfolio::where("user_id", $user->id)->where('status', 1)->get('id');
+        $portfolio_id=$request->portfolio_id;
+        $selected_portfolio = Portfolio::where("user_id", $user->id)->where('id', $portfolio_id)->get('id');
         if ($investment_type == 'sell') {
             $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $given_coin_id . ',' . $selected_portfolio[0]->id .  ')');
             $to_check_buy_total = $to_check_transaction[0]->buy_unit;

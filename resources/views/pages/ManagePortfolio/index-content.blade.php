@@ -37,7 +37,7 @@
         <table class="datatable datatable-bordered table-responsive" id="kt_datatable_my_portfolio">
             <thead>
                 <th>PORTFOLIO</th>
-                <th>ACTIVE</th>
+                <th>DEFAULT</th>
                 <th>ACTIONS</th>
             </thead>
             <tbody>

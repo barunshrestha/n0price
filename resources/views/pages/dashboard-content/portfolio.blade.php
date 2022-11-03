@@ -29,9 +29,7 @@
         <div class="card-body">
 
             <table class="table table-responsive w-100 d-block d-md-table table-bordered" style="width: 100%">
-                <tr>
-                    {{-- <div id='portfolio_summary'></div> --}}
-                </tr>
+              
                 <thead>
                     <tr>
                         <th scope="col" colspan="2">Market Cap</th>

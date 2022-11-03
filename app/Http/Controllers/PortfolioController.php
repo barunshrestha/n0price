@@ -13,6 +13,7 @@ class PortfolioController extends Controller
 {
     private $_page = "pages.ManagePortfolio.";
     private $_data = [];
+
     public function __construct()
     {
         $this->_data['page_title'] = 'Portfolio';
@@ -20,6 +21,7 @@ class PortfolioController extends Controller
 
     public function index()
     {
+        $this->_data['menus']=(new DashboardController())->menu_list();
         return view($this->_page . 'index', $this->_data);
     }
     public function portfolioContent()
@@ -74,4 +76,5 @@ class PortfolioController extends Controller
         AssetMatrixConstraints::insert($data);
         return redirect()->back()->with(['success' => "Portfolio has been added."]);
     }
+   
 }
