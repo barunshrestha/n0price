@@ -26,7 +26,7 @@ class CoinController extends Controller
     }
     public function adminGetAllCoins(Request $request)
     {
-        $query = Coin::all();
+        $query = Coin::limit(40);
         $data = $request->all();
         if (isset($data['query'])) {
             $searchkeyword = $data['query']['generalSearch'];
@@ -34,8 +34,8 @@ class CoinController extends Controller
                 $query->where('name', 'LIKE', '%' . $searchkeyword . '%');
             }
         }
-        $available_coins = $query;
-        return response()->json(["data" => $available_coins, "request" => $data]);
+        $available_coins = $query->get();
+        return response()->json(["data" => $available_coins]);
     }
     /**
      * Show the form for creating a new resource.
