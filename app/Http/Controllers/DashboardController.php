@@ -205,7 +205,7 @@ class DashboardController extends Controller
                 $query->where('name', 'LIKE', '%' . $searchkeyword . '%');
             }
         }
-        $available_coins = $query->get();
+        $available_coins = $query->limit(100)->get();
         return response()->json(["data" => $available_coins]);
     }
     public function dashboardTransactionPartials(Request $request, $portfolio_id)
