@@ -227,12 +227,12 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $selected_portfolio = Portfolio::where('user_id', $user->id)->where('id', $portfolio_id)->get('id');
+        
         $portfolio_id = $selected_portfolio[0]->id;
         $portfolio = DB::select('CALL usp_get_current_transaction(' . $user->id . ',' . $portfolio_id . ')');
         $this->_data['portfolio'] = $portfolio;
 
-        $coins_available = DB::select('select coin_name,coin_id,buy_amount,buy_unit,sell_unit from vw_final_transaction where user_id = ?', [$user->id]);
-
+        $coins_available = DB::select('select coin_name,coin_id,buy_amount,buy_unit,sell_unit from vw_final_transaction where user_id = ? and portfolio_id = ?', [$user->id,$portfolio_id]);
         $buy_transactions = DB::select('select units,name,purchase_price,coin_id from vw_buy_transactions where user_id = ? and portfolio_id = ? order by name asc', [$user->id, $portfolio_id]);
         $sell_transactions = DB::select('select units,name,purchase_price,coin_id from vw_sell_transactions where user_id = ? and portfolio_id = ? order by name asc', [$user->id, $portfolio_id]);
         $total_worth = array();
@@ -309,7 +309,6 @@ class DashboardController extends Controller
             $price_change_percentage_7d =isset($current_prices_list_details_from_server->market_data->price_change_percentage_7d)?$current_prices_list_details_from_server->market_data->price_change_percentage_7d:0;
             $all_time_high_price_percentage =isset($current_prices_list_details_from_server->market_data->ath_change_percentage->usd)?$current_prices_list_details_from_server->market_data->ath_change_percentage->usd:0;
             $todaysWorth = $remaining_coins * $current_price;
-
             if ($total_current_invested == 0) {
                 $return = 0;
             } else {
