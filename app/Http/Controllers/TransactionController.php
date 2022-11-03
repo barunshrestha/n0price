@@ -346,8 +346,9 @@ class TransactionController extends Controller
     {
         return view($this->_page . 'index', $this->_data);
     }
-    public function getall_transactions()
+    public function getall_transactions(Request $request)
     {
+
         $transactions = DB::table('vw_all_transactions')->get();
         return response()->json(["data" => $transactions]);
     }

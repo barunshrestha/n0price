@@ -26,7 +26,7 @@
                             <div class="col-md-4 my-2 my-md-0">
                                 <div class="input-icon">
                                     <input type="text" class="form-control" placeholder="Search..."
-                                        id="kt_all_transaction_search_query_user" />
+                                        id="kt_all_transactions_all_user" />
                                     <span>
                                         <i class="flaticon2-search-1 text-muted"></i>
                                     </span>
@@ -64,7 +64,6 @@
                             generalSearch: '',
                         },
                         map: function(data){
-                            console.log(data);
                             var my_data=data.data;
                            return data.data;
                         }
@@ -72,7 +71,6 @@
                 },
                 pageSize: 10,
                 serverPaging: true,
-                serverFiltering: true,
                 serverSorting: true,
                 saveState: {
                     cookie: false
@@ -112,17 +110,9 @@
 
             ],
             search: {
-                input: $('#kt_all_transaction_search_query_user'),
+                input: $('#kt_all_transactions_all_user'),
                 key: 'generalSearch'
             }
         });
-        $('#kt_all_transaction_search_role').on('change', function() {
-            datatable.search($(this).val(), 'Role');
-        });
-        // $('#kt_all_transaction_search_status').on('change', function() {
-        //     datatable.search($(this).val(), 'Approval Status');
-        // });
-
-        $('#kt_all_transaction_search_status, #kt_all_transaction_search_type').selectpicker();
     </script>
 @endsection
