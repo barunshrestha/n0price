@@ -304,10 +304,10 @@ class DashboardController extends Controller
             $current_prices_list_details_from_server = json_decode($response);
 
             $current_market_capital = isset($current_prices_list_details_from_server->market_data->market_cap->usd) ? $current_prices_list_details_from_server->market_data->market_cap->usd : 0;
-            $current_price = $current_prices_list_details_from_server->market_data->current_price->usd;
-            $price_change_percentage_24h = $current_prices_list_details_from_server->market_data->price_change_percentage_24h;
-            $price_change_percentage_7d = $current_prices_list_details_from_server->market_data->price_change_percentage_7d;
-            $all_time_high_price_percentage = $current_prices_list_details_from_server->market_data->ath_change_percentage->usd;
+            $current_price =isset($current_prices_list_details_from_server->market_data->current_price->usd)?$current_prices_list_details_from_server->market_data->current_price->usd:0;
+            $price_change_percentage_24h =isset($current_prices_list_details_from_server->market_data->price_change_percentage_24h)?$current_prices_list_details_from_server->market_data->price_change_percentage_24h:0;
+            $price_change_percentage_7d =isset($current_prices_list_details_from_server->market_data->price_change_percentage_7d)?$current_prices_list_details_from_server->market_data->price_change_percentage_7d:0;
+            $all_time_high_price_percentage =isset($current_prices_list_details_from_server->market_data->ath_change_percentage->usd)?$current_prices_list_details_from_server->market_data->ath_change_percentage->usd:0;
             $todaysWorth = $remaining_coins * $current_price;
 
             if ($total_current_invested == 0) {
