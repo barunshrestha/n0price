@@ -50,7 +50,7 @@ class TransactionController extends Controller
             'purchase_price' => 'required',
             'purchase_date' => 'required',
             'coin_investment_type' => 'required',
-            'portfolio_id'=>'required',
+            'portfolio_id' => 'required',
         ]);
 
         $data = $request->except('_token');
@@ -58,10 +58,15 @@ class TransactionController extends Controller
         $selected_portfolio = Portfolio::where("user_id", $user->id)->where('id', $request->portfolio_id)->get('id');
         if ($data['coin_investment_type'] == 'sell') {
             $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $data['coin_id'] . ',' . $selected_portfolio[0]->id . ')');
-            $to_check_buy_total = $to_check_transaction[0]->buy_unit;
-            $to_check_sell_total = $to_check_transaction[0]->sell_unit;
-            $to_check_amt = $to_check_buy_total - $to_check_sell_total - $data['units'];
-            if ($to_check_amt < 0) {
+            
+            if (!empty($to_check_transaction)) {
+                $to_check_buy_total = isset($to_check_transaction[0]->buy_unit) ? $to_check_transaction[0]->buy_unit : 0;
+                $to_check_sell_total = isset($to_check_transaction[0]->sell_unit) ? $to_check_transaction[0]->sell_unit : 0;
+                $to_check_amt = $to_check_buy_total - $to_check_sell_total - $data['units'];
+                if ($to_check_amt < 0) {
+                    return redirect()->back()->with('fail', 'Information could not be added.');
+                }
+            } else {
                 return redirect()->back()->with('fail', 'Information could not be added.');
             }
         }
@@ -177,10 +182,11 @@ class TransactionController extends Controller
         $user = User::find($transaction->user_id);
         $investment_type = $request->investment_type;
         $given_coin_id = $transaction->coin_id;
-        $portfolio_id=$request->portfolio_id;
+        $portfolio_id = $request->portfolio_id;
         $selected_portfolio = Portfolio::where("user_id", $user->id)->where('id', $portfolio_id)->get('id');
         if ($investment_type == 'sell') {
             $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $given_coin_id . ',' . $selected_portfolio[0]->id .  ')');
+            
             $to_check_buy_total = $to_check_transaction[0]->buy_unit;
             $to_check_sell_total = $to_check_transaction[0]->sell_unit ? $to_check_transaction[0]->sell_unit : 0;
             $to_check_amt = $to_check_buy_total - $to_check_sell_total - $request->units;
@@ -334,7 +340,7 @@ class TransactionController extends Controller
         $portfolio_to_update = Portfolio::find($portfolio_id);
         $portfolio_to_update->portfolio_name = $portfolio_name;
         $portfolio_to_update->save();
-        $to_change_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->where('portfolio_id',$portfolio_id)->get();
+        $to_change_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->where('portfolio_id', $portfolio_id)->get();
         for ($i = 0; $i < count($to_change_constraints); $i++) {
             $to_change_constraints[$i]->update([
                 "percentage_allocation" => $asset_matrix_data[$i]
