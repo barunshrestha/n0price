@@ -330,12 +330,10 @@ class TransactionController extends Controller
 
     public function change_allocation(Request $request)
     {
-        $this->validate($request, [
-            'portfolio_name' => 'required'
-        ]);
+        
         $data = $request->except('_token');
         $asset_matrix_data = $data['allocation_percentage'];
-        $portfolio_name = $data['portfolio_name'];
+        $portfolio_name = isset($data['portfolio_name'])?$data['portfolio_name']:'';
         $portfolio_id = $data['portfolio_id'];
         $portfolio_to_update = Portfolio::find($portfolio_id);
         $portfolio_to_update->portfolio_name = $portfolio_name;
