@@ -211,7 +211,11 @@ class DashboardController extends Controller
     public function dashboardTransactionPartials(Request $request, $portfolio_id)
     {
         $user = Auth::user();
-        $selected_portfolio = Portfolio::where('user_id', $user->id)->where('id', $portfolio_id)->get('id');
+        if ($portfolio_id != 0) {
+            $selected_portfolio = Portfolio::where('user_id', $user->id)->where('id', $portfolio_id)->get('id');
+        } else {
+            $selected_portfolio = Portfolio::where('user_id', $user->id)->where('status', 1)->get('id');
+        }
         $portfolio_id = $selected_portfolio[0]->id;
         $this->_data['user'] = $user;
         $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')

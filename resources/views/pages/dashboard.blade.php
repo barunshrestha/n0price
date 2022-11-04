@@ -153,58 +153,7 @@
             dashboard_portfolio_id = $('#dashboard-portfolio-id').val();
 
             $('#transaction-btn').click(function() {
-                $.ajax({
-                    'url': '/dashboardTransactionPartials/' + dashboard_portfolio_id,
-                    'type': 'GET',
-                    success: function(result) {
-                        $("#dashboard-transaction-partials").html(result);
-                        var datatable_transactions = $('#kt_datatable_transactions')
-                            .KTDatatable({
-                                data: {
-                                    saveState: {
-                                        cookie: false
-                                    }
-                                },
-                                columns: [{
-                                        field: "SYMBOL",
-                                        width: 60,
-                                        sortable: false,
-                                    },
-                                    {
-                                        field: "TICKER",
-                                        width: 65,
-                                        overflow: 'visible'
-                                    },
-                                    {
-                                        field: "TYPE",
-                                        width: 80,
-                                    },
-                                    {
-                                        field: "DATE",
-                                        width: 160,
-                                    },
-                                    {
-                                        field: "UNITS",
-                                        width: 60,
-                                    },
-                                    {
-                                        field: "PRICE(PER UNIT)",
-                                        width: 147,
-                                    },
-                                    {
-                                        field: "ACTIONS",
-                                        width: 147,
-                                    },
-                                ],
-                                search: {
-                                    input: $('#_portfolio_search_transaction'),
-                                    key: 'generalSearch'
-                                },
-
-                            });
-                        datatable_transactions.sort('SYMBOL', 'asc');
-                    }
-                });
+                load_portfolio_transactions();
             });
 
             var coin_datatable = $('#kt_datatable_coin_select').KTDatatable({
@@ -323,7 +272,6 @@
 
             });
             populateReturn();
-
         });
         // $.ajax({
         //     url: "{{ route('portfolio_summary') }}",
@@ -331,6 +279,68 @@
         //         $("#portfolio_summary").html(result);
         //     }
         // });
+
+        load_portfolio_transactions();
+
+        function load_portfolio_transactions() {
+            if (typeof dashboard_portfolio_id !== 'undefined') {} else {
+                dashboard_portfolio_id = 0;
+            }
+            $.ajax({
+                'url': '/dashboardTransactionPartials/' + dashboard_portfolio_id,
+                'type': 'GET',
+                success: function(result) {
+                    $("#dashboard-transaction-partials").html(result);
+                    var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
+                        data: {
+                            saveState: {
+                                cookie: false
+                            }
+                        },
+
+                        columns: [{
+                                field: "SYMBOL",
+                                width: 60,
+                                sortable: false,
+                            },
+                            {
+                                field: "TICKER",
+                                width: 65,
+                                overflow: 'visible'
+                            },
+                            {
+                                field: "TYPE",
+                                width: 80,
+                            },
+                            {
+                                field: "DATE",
+                                width: 160,
+                            },
+                            {
+                                field: "UNITS",
+                                width: 60,
+                            },
+                            {
+                                field: "PRICE(PER UNIT)",
+                                width: 147,
+                            },
+                            {
+                                field: "ACTIONS",
+                                width: 147,
+                            },
+                        ],
+                        search: {
+                            input: $('#_portfolio_search_transaction'),
+                            key: 'generalSearch'
+                        },
+
+
+                    });
+                    datatable_transactions.sort('SYMBOL', 'asc');
+                }
+            });
+        }
+
         function populateReturn() {
             $.ajax({
                 'url': '/return_calculation/' + dashboard_portfolio_id,
@@ -718,61 +728,5 @@
                 }
             });
         }
-
-
-
-        $.ajax({
-            'url': '/dashboardTransactionPartials/' + dashboard_portfolio_id,
-            'type': 'GET',
-            success: function(result) {
-                $("#dashboard-transaction-partials").html(result);
-                var datatable_transactions = $('#kt_datatable_transactions').KTDatatable({
-                    data: {
-                        saveState: {
-                            cookie: false
-                        }
-                    },
-
-                    columns: [{
-                            field: "SYMBOL",
-                            width: 60,
-                            sortable: false,
-                        },
-                        {
-                            field: "TICKER",
-                            width: 65,
-                            overflow: 'visible'
-                        },
-                        {
-                            field: "TYPE",
-                            width: 80,
-                        },
-                        {
-                            field: "DATE",
-                            width: 160,
-                        },
-                        {
-                            field: "UNITS",
-                            width: 60,
-                        },
-                        {
-                            field: "PRICE(PER UNIT)",
-                            width: 147,
-                        },
-                        {
-                            field: "ACTIONS",
-                            width: 147,
-                        },
-                    ],
-                    search: {
-                        input: $('#_portfolio_search_transaction'),
-                        key: 'generalSearch'
-                    },
-
-
-                });
-                datatable_transactions.sort('SYMBOL', 'asc');
-            }
-        });
     </script>
 @endsection
