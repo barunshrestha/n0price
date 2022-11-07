@@ -13,13 +13,13 @@ class SellLog extends Migration
      */
     public function up()
     {
-        Schema::create('sell_log', function (Blueprint $table) {
-            $table->id();
-            $table->string('transaction_id');
-            $table->string('units_debited');
-            $table->string('profit_loss');
-            $table->timestamps();
-        });
+        // Schema::create('sell_log', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('transaction_id');
+        //     $table->string('units_debited');
+        //     $table->string('profit_loss');
+        //     $table->timestamps();
+        // });
     }
 
     /**

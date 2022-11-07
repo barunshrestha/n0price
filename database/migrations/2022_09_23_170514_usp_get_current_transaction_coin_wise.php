@@ -27,7 +27,10 @@ class UspGetCurrentTransactionCoinWise extends Migration
         vw_total_sell.total as sell_unit,
         tb.total_investment as buy_amount,
         vw_total_sell.total_investment as sell_amount
-        from vw_total_buy as tb LEFT JOIN vw_total_sell ON tb.coin_id = vw_total_sell.coin_id AND tb.user_id=vw_total_sell.user_id where tb.user_id= current_user_id
+        from vw_total_buy as tb 
+        LEFT JOIN vw_total_sell ON tb.coin_id = vw_total_sell.coin_id 
+        AND tb.user_id=vw_total_sell.user_id 
+        where tb.user_id= current_user_id
         and tb.id_of_coin=current_coin_id;
         END";
   
