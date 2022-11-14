@@ -58,7 +58,7 @@ class DashboardController extends Controller
                     'root' => true,
                     'page' => '/select/portfolio/' . $menu_items->id,
                     'icon' => 'media/svg/icons/Clothes/Briefcase.svg', // or can be 'flaticon-home' or any flaticon-*
-                    'new-tab' => true,
+                    'new-tab' => false,
                 ]
             );
         }
