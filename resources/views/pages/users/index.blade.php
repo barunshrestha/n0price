@@ -58,7 +58,7 @@
                                         @csrf
                                         <select class="form-control" id="kt_datatable_search_status" name="approval_status">
                                             <option selected value="">
-                                               All Available Status
+                                                All Available Status
                                             </option>
                                             @foreach ($approval_status as $key => $status)
                                                 <?php
@@ -74,7 +74,7 @@
                                             @endforeach
 
                                         </select>
-                                        <button type="submit" class="mx-5 btn btn-primary" >
+                                        <button type="submit" class="mx-5 btn btn-primary">
                                             Search
                                         </button>
                                     </form>
@@ -103,27 +103,31 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>
-                                @if (isset($user->role))
-                                    <a href="{{ route('roles.edit', $user->role->id) }}" data-toggle="tooltip"
-                                        title="Edit"> {{ $user->role->name }}</a>
+                                @if (isset($user->role_id))
+                                    {{ ucfirst($user->role) }}
                                 @else
                                     ---
                                 @endif
                             </td>
                             <td>
                                 @if ($user->approval_status == '0')
-                                <span class="text-danger fs-6">
-                                    Unapproved
-                                </span>
+                                    <span class="text-danger fs-6">
+                                        Unapproved
+                                    </span>
                                 @else
-                                <span class="text-success fs-6">
-                                    Approved
-                                </span>
+                                    <span class="text-success fs-6">
+                                        Approved
+                                    </span>
                                 @endif
                                 {{-- {{ $user->approval_status == '0' ? 'Unapproved' : 'Approved' }} --}}
                             </td>
 
                             <td>
+
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-icon btn-success btn-xs mr-2"
+                                    data-toggle="tooltip" title="Edit">
+                                    <i class="fa fa-pen"></i>
+                                </a>
                                 @if ($user->approval_status == '0')
                                     <a href="{{ route('user.approve', $user->id) }}"
                                         class="btn btn-icon btn-info btn-xs mr-2" data-toggle="tooltip" title="Approve">
@@ -135,10 +139,6 @@
                                         <i class="fa fa-minus"></i>
                                     </a>
                                 @endif
-                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-icon btn-success btn-xs mr-2"
-                                    data-toggle="tooltip" title="Edit">
-                                    <i class="fa fa-pen"></i>
-                                </a>
                                 <form action="{{ route('users.delete', $user->id) }}" style="display: inline-block;"
                                     method="post">
                                     {{ method_field('POST') }}
@@ -171,8 +171,24 @@
                     width: 20,
                 },
                 {
-                    field: "E-mail",
-                    width: 200,
+                    field: "Name",
+                    width: 120,
+                },
+                {
+                    field: "Email",
+                    width: 250,
+                },
+                {
+                    field: "Role",
+                    width: 100,
+                },
+                {
+                    field: "Approval Status",
+                    width: 120,
+                },
+                {
+                    field: "Action",
+                    width: 150,
                 },
 
             ],
@@ -184,9 +200,6 @@
         $('#kt_datatable_search_role').on('change', function() {
             datatable.search($(this).val(), 'Role');
         });
-        // $('#kt_datatable_search_status').on('change', function() {
-        //     datatable.search($(this).val(), 'Approval Status');
-        // });
 
         $('#kt_datatable_search_status, #kt_datatable_search_type').selectpicker();
     </script>

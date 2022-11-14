@@ -29,7 +29,8 @@ class UserController extends Controller
 
     public function index()
     {
-        $this->_data['users'] = User::all();
+        $users= User::leftjoin('roles','users.role_id','=','roles.id')->get(['users.id','users.name','users.email','users.approval_status','roles.name as role','roles.id as role_id']);
+        $this->_data['users'] = $users;
         $this->_data['roles'] = Role::pluck('name', 'id')->prepend('Select Role', '');
         $this->_data['approval_status'] = User::select('approval_status')->distinct()->get();
 
@@ -49,27 +50,33 @@ class UserController extends Controller
 
     public function approveUser($id)
     {
-        $user = User::find($id);
-        $user->approval_status = '1';
-        $user->save();
-        Mail::to($user->email)->send(new AccountVerification([
-            'body' => 'Your account has been approved. You can now start using NoPrice',
-            'user' => $user->name,
-        ]));
-        return redirect(route('users.index'));
+        if (Auth::user()->id != $id) {
+            $user = User::find($id);
+            $user->approval_status = '1';
+            $user->save();
+            Mail::to($user->email)->send(new AccountVerification([
+                'body' => 'Your account has been approved. You can now start using NoPrice',
+                'user' => $user->name,
+            ]));
+            return redirect(route('users.index'))->with('success', 'This user account has been approved. Email has been sent to the user.');
+        } else {
+            return redirect()->back()->with('fail', 'This user cannot perform the operation.');
+        }
     }
-
-
     public function unapproveUser($id)
     {
-        $user = User::find($id);
-        $user->approval_status = '0';
-        $user->save();
-        Mail::to($user->email)->send(new AccountVerification([
-            'body' => 'Your account has been suspended! Until NoPrice approves you, you cannot use it.',
-            'user' => $user->name,
-        ]));
-        return redirect(route('users.index'));
+        if (Auth::user()->id != $id) {
+            $user = User::find($id);
+            $user->approval_status = '0';
+            $user->save();
+            Mail::to($user->email)->send(new AccountVerification([
+                'body' => 'Your account has been suspended! Until NoPrice approves you, you cannot use it.',
+                'user' => $user->name,
+            ]));
+            return redirect(route('users.index'))->with('success', 'This user account has been temporarily suspensed. Email has been sent to the user.');
+        } else {
+            return redirect()->back()->with('fail', 'This user cannot perform the operation.');
+        }
     }
 
     public function create()
@@ -99,12 +106,12 @@ class UserController extends Controller
         $user->approval_status = '1';
         if ($user->save()) {
             $date = Carbon::now();
-            $portfolio=new Portfolio();
-            $portfolio->user_id=$user->id;
-            $portfolio->status=1;
+            $portfolio = new Portfolio();
+            $portfolio->user_id = $user->id;
+            $portfolio->status = 1;
             $portfolio->save();
             (new AuthController)->create_asset_matrix($user, $portfolio);
-            
+
             event(new Registered($user));
             return redirect()->route('users.index')->with('success', 'Your Information has been Added .');
         }
