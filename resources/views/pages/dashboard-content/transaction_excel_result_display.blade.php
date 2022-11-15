@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="card-body">
-            <form action="{{ route('transaction.final.excel.submit') }}" method="POST">
+            <form action="{{ route('transaction.final.excel.submit') }}" method="POST" id="excel-import-form">
                 {{ method_field('POST') }}
                 {{ csrf_field() }}
                 <input type="hidden" name="portfolio_id" value="{{ $portfolio_id }}">
@@ -61,10 +61,10 @@
                                             } ?>>sell</option>
                                         </select>
                                     </td>
-                                    <td><input type="number" name="units[]" value="{{ $datas[$key][3] }}" 
+                                    <td><input type="number" name="units[]" value="{{ $datas[$key][3] }}"
                                             class="form-control">
                                     </td>
-                                    <td><input type="number" name="price_per_unit[]" value="{{ $datas[$key][4] }}" 
+                                    <td><input type="number" name="price_per_unit[]" value="{{ $datas[$key][4] }}"
                                             class="form-control"></td>
 
                                     <td><input type="date" name="purchase_date[]" value="<?php
@@ -79,7 +79,10 @@
                         @endfor
 
                     </tbody>
+
                 </table>
+                <div id="selected-coin-error-box" class="mt-3">
+                </div>
                 <button type="submit" class="btn btn-primary mt-5" id="submit-btn-valid-data">Submit</button>
             </form>
             <hr>
@@ -135,6 +138,7 @@
                         @endif
                     @endfor
 
+
                 </tbody>
             </table>
         </div>
@@ -144,7 +148,19 @@
     <script src="{{ asset('js/pages/crud/datatables/extensions/buttons.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/pages/widgets.js') }}" type="text/javascript"></script>
     <script type="text/javascript">
-
+        $(document).ready(function() {
+            $('#excel-import-form').submit(function(event) {
+                
+                $.each($('input[type=number]'), function() {
+                    if (this.value <= 0) {
+                        event.preventDefault();
+                        $('#selected-coin-error-box').html('<p class="bg-danger p-2 text-white text-sm">Please enter valid purchase price /quantity.</p>');
+                    } else {
+                        $('#excel-import-form').submit();
+                    }
+                });
+            });
+        });
         var datatable = $('#kt_datatable_transaction_import_valid').KTDatatable({
             data: {
                 saveState: {
