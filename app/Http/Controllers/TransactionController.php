@@ -78,6 +78,7 @@ class TransactionController extends Controller
         $transaction = new Transaction();
         $transaction->user_id = $user->id;
         $transaction->coin_id = $data['coin_id'];
+        $transaction->symbol = $data['symbol'];
         $transaction->units = $data['units'];
         $transaction->purchase_price_per_unit = $data['purchase_price'];
         $transaction->purchase_date = $data['purchase_date'];

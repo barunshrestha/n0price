@@ -191,7 +191,7 @@
                             row.image +
                             '" alt="img" class="dropdown-image mx-2 "><div class="mx-2 font-weight-bold">' +
                             row.name + '</div><input type="hidden" value="' + row.coin_id +
-                            '"class="coin_org_symbol" /><input type="hidden" value="' + row.id +
+                            '"class="coin_org_symbol" name="symbol" /><input type="hidden" value="' + row.id +
                             '"class="coin_table_id" name="coin_id" /><div class="align-items-center d-flex ml-auto price_and_gain"></div></div></div></div>';
                     },
                     width: 130,
