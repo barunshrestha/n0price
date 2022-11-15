@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ImportTransaction;
 use App\Models\AssetMatrixConstraints;
+use App\Models\Coin;
 use App\Models\Portfolio;
 use App\Models\Transaction;
 use App\Models\User;
@@ -10,6 +12,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionController extends Controller
 {
@@ -58,7 +62,7 @@ class TransactionController extends Controller
         $selected_portfolio = Portfolio::where("user_id", $user->id)->where('id', $request->portfolio_id)->get('id');
         if ($data['coin_investment_type'] == 'sell') {
             $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $data['coin_id'] . ',' . $selected_portfolio[0]->id . ')');
-            
+
             if (!empty($to_check_transaction)) {
                 $to_check_buy_total = isset($to_check_transaction[0]->buy_unit) ? $to_check_transaction[0]->buy_unit : 0;
                 $to_check_sell_total = isset($to_check_transaction[0]->sell_unit) ? $to_check_transaction[0]->sell_unit : 0;
@@ -186,7 +190,7 @@ class TransactionController extends Controller
         $selected_portfolio = Portfolio::where("user_id", $user->id)->where('id', $portfolio_id)->get('id');
         if ($investment_type == 'sell') {
             $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $given_coin_id . ',' . $selected_portfolio[0]->id .  ')');
-            
+
             $to_check_buy_total = $to_check_transaction[0]->buy_unit;
             $to_check_sell_total = $to_check_transaction[0]->sell_unit ? $to_check_transaction[0]->sell_unit : 0;
             $to_check_amt = $to_check_buy_total - $to_check_sell_total - $request->units;
@@ -330,10 +334,10 @@ class TransactionController extends Controller
 
     public function change_allocation(Request $request)
     {
-        
+
         $data = $request->except('_token');
         $asset_matrix_data = $data['allocation_percentage'];
-        $portfolio_name = isset($data['portfolio_name'])?$data['portfolio_name']:'';
+        $portfolio_name = isset($data['portfolio_name']) ? $data['portfolio_name'] : '';
         $portfolio_id = $data['portfolio_id'];
         $portfolio_to_update = Portfolio::find($portfolio_id);
         $portfolio_to_update->portfolio_name = $portfolio_name;
@@ -355,5 +359,61 @@ class TransactionController extends Controller
 
         $transactions = DB::table('vw_all_transactions')->get();
         return response()->json(["data" => $transactions]);
+    }
+    public function excel_import_sample_download()
+    {
+        $file = public_path() . "/TransactionImportSample.xlsx";
+        $headers = ['Content-Type:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+        if (file_exists($file)) {
+
+            return response()->download($file, 'TransactionImportSample.xlsx', $headers);
+        } else {
+        }
+    }
+    public function excel_import_submit(Request $request)
+    {
+        $file = $request->file('file_name');
+        $portfolio_id = $request->portfolio_id;
+        $rows = Excel::toCollection(new ImportTransaction, $file);
+        $datas = $rows[0];
+        return view('pages.dashboard-content.transaction_excel_result_display', compact('datas', 'portfolio_id'))->with('delete-success', "Transaction is imported");;
+    }
+    public function displayExcelData()
+    {
+        return view('pages.dashboard-content.transaction_excel_result_display');
+    }
+    public function convertExcelTimetoCarbon($time)
+    {
+        return Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($time))->format('Y-m-d');
+    }
+    public function final_excel_report_submit(Request $request)
+    {
+        $user=Auth::user();
+        $data = $request->except('_method', '_token');
+        for ($i = 0; $i < count($data['coin_id']); $i++) {
+            $transaction = new Transaction();
+            $transaction->portfolio_id = $data['portfolio_id'];
+            $transaction->symbol = $data['symbol'][$i];
+            $transaction->coin_id = $data['coin_id'][$i];
+            $transaction->purchase_price_per_unit = $data['price_per_unit'][$i];
+            $transaction->units = $data['units'][$i];
+            $transaction->purchase_date = $data['purchase_date'][$i];
+            $transaction->investment_type = $data['investment_type'][$i];
+            $transaction->purchase_price = $data['price_per_unit'][$i] * $data['units'][$i];
+            $transaction->user_id=$user->id;
+            $transaction->save();
+        }
+        return redirect()->route('portfolio.specific',$data['portfolio_id'])->with('success','New Transactions from excel file added');
+    }
+    public function checkCoinInDatabase($coin_name, $coin_symbol)
+    {
+        $coin = strtolower($coin_name);
+        return Coin::where('coin_id', '=', $coin)
+            ->orWhere('symbol', '=', $coin_name)
+            ->orWhere('name', '=', $coin_name)
+            ->orWhere('symbol', '=', $coin_symbol)
+            ->orWhere('name', '=', $coin_symbol)
+            ->select(['coin_id', 'id'])
+            ->first();
     }
 }

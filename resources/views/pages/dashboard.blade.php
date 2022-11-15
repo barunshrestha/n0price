@@ -132,6 +132,7 @@
 
                     </div>
                     @include('pages.transaction_add')
+                    @include('pages.dashboard-content.transaction_excel_import')
                 </div>
             </div>
         </div>

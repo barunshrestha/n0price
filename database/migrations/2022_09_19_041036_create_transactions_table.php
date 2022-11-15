@@ -17,6 +17,7 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('coin_id');
+            $table->string('symbol');
             $table->unsignedBigInteger('portfolio_id');
             $table->string('purchase_price_per_unit');
             $table->string('units');

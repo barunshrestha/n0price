@@ -18,5 +18,6 @@ class Transaction extends Model
         'purchase_price',
         'investment_type',
         'purchase_date',
+        'symbol'
     ];
 }

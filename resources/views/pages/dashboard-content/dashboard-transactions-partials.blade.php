@@ -7,6 +7,11 @@
             </h3>
         </div>
         <div class="card-toolbar">
+            <button type="button" class="btn btn-success mx-2 my-3" data-toggle="modal"
+                data-target="#excelImport">
+                <i class="flaticon-upload"></i>
+                Import</button>
+
             <button type="button" class="btn btn-primary mx-2 my-3" data-toggle="modal"
                 data-target="#new_transaction_modal">
                 <i class="flaticon2-plus"></i>

@@ -73,7 +73,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('/return_calculation/{portfolio_id}', [DashboardController::class, 'return_calculation'])->name('return_calculation');
     Route::get('/dashboardTransactionPartials/{portfolio_id}', 'DashboardController@dashboardTransactionPartials')->name('dashboardTransactionPartials');
     Route::get('/get/specific/user/transaction/{portfolio_id}', [DashboardController::class, 'get_transaction_of_specific_user'])->name('get_transaction_of_specific_user');
-    Route::get('/select/portfolio/{portfolio_id}',[DashboardController::class,'renderSpecificPortfolio'])->name('portfolio.specific');
+    Route::get('/select/portfolio/{portfolio_id}', [DashboardController::class, 'renderSpecificPortfolio'])->name('portfolio.specific');
 
     Route::get('/get/all/coins', [DashboardController::class, 'getallcoins']);
     Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
@@ -82,6 +82,11 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::post('/portfolio/update/{id}', [PortfolioController::class, 'update'])->name('portfolio.update');
     Route::post('/portfolio/delete/{id}', [PortfolioController::class, 'destroy'])->name('portfolio.destroy');
     Route::post('/portfolio/store', [PortfolioController::class, 'store'])->name('portfolio.store');
+
+    Route::get('/transactions/download/excel-import-sample/', [TransactionController::class, 'excel_import_sample_download'])->name('transaction.excel.sample.download');
+    Route::post('transactions/excel-import', [TransactionController::class, 'excel_import_submit'])->name('transaction.excel.import.submit');
+    Route::get('transaction/excel/result', [TransactionController::class, 'displayExcelData'])->name('transaction.display.excel');
+    Route::post('transactions/excel/result/submit', [TransactionController::class, 'final_excel_report_submit'])->name('transaction.final.excel.submit');
 
 });
 
@@ -115,5 +120,5 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 
-Route::get('/add/asset/to/all/user',[TransactionController::class,'assign_asset_matrix_constraints']);
-Route::get('/add/portfolio/to/all/user',[TransactionController::class,'assign_portfolio_default']);
+Route::get('/add/asset/to/all/user', [TransactionController::class, 'assign_asset_matrix_constraints']);
+Route::get('/add/portfolio/to/all/user', [TransactionController::class, 'assign_portfolio_default']);
