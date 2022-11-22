@@ -11,19 +11,21 @@
             <i class="flaticon2-plus"></i>
             Transaction</button>
 
-            <button type="button" class="btn btn-success mx-2 my-3" data-toggle="modal"
-                data-target="#excelImport">
-                <i class="flaticon-upload"></i>
-                Import</button>
+        <button type="button" class="btn btn-success mx-2 my-3" data-toggle="modal" data-target="#excelImport">
+            <i class="flaticon-upload"></i>
+            Import</button>
     </div>
 @else
     <div class="card card-custom">
         <div class="card-header flex-wrap border-0 pt-6 pb-0">
             <div style="border: 1px solid #d6d6d6; padding:2em;">
-                <h5 class="card-title">Your Portfolio : {{$portfolio_details->portfolio_name}}</h5>
+                <h5 class="card-title">Your Portfolio : {{ $portfolio_details->portfolio_name }}</h5>
                 <h6 class="card-text" id="total_holding_valuation"></h6>
             </div>
             <div class="card-toolbar">
+                <button type="button" class="btn btn-success mx-2 my-3" data-toggle="modal" data-target="#excelImport">
+                    <i class="flaticon-upload"></i>
+                    Import</button>
                 <button type="button" class="btn btn-primary mx-2 my-3" data-toggle="modal"
                     data-target="#new_transaction_modal">
                     <i class="flaticon2-plus"></i>
@@ -34,7 +36,7 @@
         <div class="card-body">
 
             <table class="table table-responsive w-100 d-block d-md-table table-bordered" style="width: 100%">
-              
+
                 <thead>
                     <tr>
                         <th scope="col" colspan="2">Market Cap</th>
@@ -66,8 +68,9 @@
                         </td>
                         <form action="{{ route('percentage.allocation') }}" method="POST">
                             @csrf
-                            <input type="hidden" value="{{$portfolio_details->id}}" name="portfolio_id">
-                            <input type="hidden" value="{{$portfolio_details->portfolio_name}}" name="portfolio_name">
+                            <input type="hidden" value="{{ $portfolio_details->id }}" name="portfolio_id">
+                            <input type="hidden" value="{{ $portfolio_details->portfolio_name }}"
+                                name="portfolio_name">
                             @foreach ($asset_matrix_constraints as $constraints)
                                 <td>
                                     <div class="hideAfteredit allocation-percentage" style="text-align: center;">
