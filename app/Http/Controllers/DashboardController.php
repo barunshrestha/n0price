@@ -237,9 +237,8 @@ class DashboardController extends Controller
         $this->_data['portfolio'] = $portfolio;
 
         $coins_available = DB::select('select coin_name,coin_id,buy_amount,buy_unit,sell_unit from vw_final_transaction where user_id = ? and portfolio_id = ?', [$user->id, $portfolio_id]);
-        $buy_transactions = DB::select('select units,name,purchase_price,coin_id from vw_buy_transactions where user_id = ? and portfolio_id = ? order by name asc', [$user->id, $portfolio_id]);
-        $sell_transactions = DB::select('select units,name,purchase_price,coin_id from vw_sell_transactions where user_id = ? and portfolio_id = ? order by name asc', [$user->id, $portfolio_id]);
-
+        $buy_transactions = DB::select('select units,name,purchase_price,coin_id from vw_buy_transactions where user_id = ? and portfolio_id = ? order by purchase_date asc', [$user->id, $portfolio_id]);
+        $sell_transactions = DB::select('select units,name,purchase_price,coin_id from vw_sell_transactions where user_id = ? and portfolio_id = ? order by purchase_date asc', [$user->id, $portfolio_id]);
         $total_worth = array();
         $current_transactions = array();
 
