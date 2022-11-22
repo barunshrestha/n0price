@@ -377,7 +377,21 @@ class TransactionController extends Controller
         $portfolio_id = $request->portfolio_id;
         $rows = Excel::toCollection(new ImportTransaction, $file);
         $datas = $rows[0];
-        return view('pages.dashboard-content.transaction_excel_result_display', compact('datas', 'portfolio_id'))->with('delete-success', "Transaction is imported");;
+        $valid_transaction=array();
+        $invalid_transaction=array();
+        for ($key = 1; $key < count($datas); $key++){
+            $coin_id =  $this->checkCoinInDatabase($datas[$key][0], $datas[$key][1]);
+            $datas[$key][5]=$this->convertExcelTimetoCarbon($datas[$key][5]);
+            if (!empty($coin_id)){
+                $datas[$key][0]=$coin_id->coin_id;
+                $datas[$key][1]=$coin_id->id;
+               array_push($valid_transaction,$datas[$key]);
+            }
+            else{
+                array_push($invalid_transaction,$datas[$key]);
+            }
+        }
+        return view('pages.dashboard-content.transaction_excel_result_display', compact('valid_transaction','invalid_transaction', 'portfolio_id'))->with('delete-success', "Transaction is imported");;
     }
     public function displayExcelData()
     {

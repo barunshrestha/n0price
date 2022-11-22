@@ -4,6 +4,19 @@
 {{-- Styles --}}
 @section('styles')
     <link href="{{ asset('css/pages/wizard/wizard-2.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        .fixed-height-table {
+            max-height: 30em;
+        }
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            background-color: white;
+        }
+        .fixed-width{
+            width: 12em;
+        }
+    </style>
 @endsection
 
 {{-- Content --}}
@@ -22,10 +35,12 @@
                 {{ csrf_field() }}
                 <input type="hidden" name="portfolio_id" value="{{ $portfolio_id }}">
                 <div class="d-block text-success mt-5 font-size-md"><b>List of Valid Data</b></div>
-                <div class="d-block text-muted font-size-sm">These data will be uploaded to transaction table.
+                <div class="d-block text-muted font-size-sm">Please <b>verify</b> the transactions. These data will be
+                    uploaded to transaction table.
                 </div>
-                <table class="datatable datatable-bordered table-responsive" id="kt_datatable_transaction_import_valid">
-                    <thead>
+
+                <table class="table table-responsive fixed-height-table">
+                    <thead class="sticky-header">
                         <tr>
                             <th>Coin</th>
                             <th>Investment Type</th>
@@ -39,43 +54,36 @@
                         <?php
                         $zero_input_flag = 1;
                         ?>
-                        @for ($key = 1; $key < count($datas); $key++)
-                            <?php
-                            $coin_id = (new App\Http\Controllers\TransactionController())->checkCoinInDatabase($datas[$key][0], $datas[$key][1]);
-                            ?>
-                            @if (!empty($coin_id))
-                                <tr>
-                                    <td>
-                                        <input type="text" value="{{ $coin_id->coin_id }}" class="form-control"
-                                            name="symbol[]">
-                                        <input type="hidden" value="{{ $coin_id->id }}" name="coin_id[]">
-                                    </td>
-                                    <td>
-                                        <select name="investment_type[]" class="form-control">
-                                            <option value="buy" <?php if ($datas[$key][2] == 'buy') {
-                                                echo 'selected';
-                                            }
-                                            ?>>buy</option>
-                                            <option value="sell" <?php if ($datas[$key][2] == 'sell') {
-                                                echo 'selected';
-                                            } ?>>sell</option>
-                                        </select>
-                                    </td>
-                                    <td><input type="number" name="units[]" value="{{ $datas[$key][3] }}"
-                                            class="form-control">
-                                    </td>
-                                    <td><input type="number" name="price_per_unit[]" value="{{ $datas[$key][4] }}"
-                                            class="form-control"></td>
+                        @for ($key = 1; $key < count($valid_transaction); $key++)
+                            <tr>
+                                <td>
+                                    <input type="text" value="{{ $valid_transaction[$key][0] }}" class="form-control fixed-width"
+                                        name="symbol[]">
+                                    <input type="hidden" value="{{ $valid_transaction[$key][1] }}" name="coin_id[]">
+                                </td>
+                                <td>
+                                    <select name="investment_type[]" class="form-control fixed-width">
+                                        <option value="buy" <?php if ($valid_transaction[$key][2] == 'buy') {
+                                            echo 'selected';
+                                        }
+                                        ?>>buy</option>
+                                        <option value="sell" <?php if ($valid_transaction[$key][2] == 'sell') {
+                                            echo 'selected';
+                                        } ?>>sell</option>
+                                    </select>
+                                </td>
+                                <td><input type="number" name="units[]" value="{{ $valid_transaction[$key][3] }}"
+                                        class="form-control fixed-width">
+                                </td>
+                                <td><input type="number" name="price_per_unit[]" value="{{ $valid_transaction[$key][4] }}"
+                                        class="form-control fixed-width"></td>
 
-                                    <td><input type="date" name="purchase_date[]" value="<?php
-                                    echo (new App\Http\Controllers\TransactionController())->convertExcelTimetoCarbon($datas[$key][5]);
-                                    ?>"
-                                            class="form-control">
-                                    </td>
-                                    <td><button type="button" class="btn btn-danger flaticon2-delete"
-                                            onclick="removeField(event)"></button></td>
-                                </tr>
-                            @endif
+                                <td><input type="date" name="purchase_date[]" value="{{ $valid_transaction[$key][5] }}"
+                                        class="form-control fixed-width">
+                                </td>
+                                <td><button type="button" class="btn btn-danger flaticon2-delete"
+                                        onclick="removeField(event)"></button></td>
+                            </tr>
                         @endfor
 
                     </tbody>
@@ -89,8 +97,8 @@
             <div class="d-block text-danger mt-4 font-size-md"><b>List of Invalid Data</b></div>
             <div class="d-block text-muted font-size-sm">You need to import these data manually.
             </div>
-            <table class="datatable datatable-bordered table-responsive" id="kt_datatable_transaction_import_invalid">
-                <thead>
+            <table class="table table-responsive fixed-height-table">
+                <thead class="sticky-header">
                     <tr>
                         <th>Coin</th>
                         <th>Investment Type</th>
@@ -101,140 +109,61 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for ($key = 1; $key < count($datas); $key++)
-                        <?php
-                        $coin_id = (new App\Http\Controllers\TransactionController())->checkCoinInDatabase($datas[$key][0], $datas[$key][1]);
-                        ?>
-                        @if (empty($coin_id))
-                            <tr>
-                                <td>
-                                    <input type="text" value="{{ $datas[$key][0] }}" class="form-control" disabled
-                                        name="coin_name">
-                                </td>
-                                <td>
-                                    <select name="investment_type" class="form-control" disabled>
-                                        <option value="buy" <?php if ($datas[$key][2] == 'buy') {
-                                            echo 'selected';
-                                        }
-                                        ?>>buy</option>
-                                        <option value="sell" <?php if ($datas[$key][2] == 'sell') {
-                                            echo 'selected';
-                                        } ?>>sell</option>
-                                    </select>
-                                </td>
-                                <td><input type="text" name="units" value="{{ $datas[$key][3] }}" class="form-control"
-                                        disabled>
-                                </td>
-                                <td><input type="text" name="price_per_unit" value="{{ $datas[$key][4] }}"
-                                        class="form-control" disabled></td>
-                                </td>
-                                <td><input type="date" name="purchase_date" value="<?php
-                                echo (new App\Http\Controllers\TransactionController())->convertExcelTimetoCarbon($datas[$key][5]);
-                                ?>"
-                                        class="form-control" disabled>
-                                </td>
+                    @for ($key = 1; $key < count($invalid_transaction); $key++)
+                        <tr>
+                            <td>
+                                <input type="text" value="{{ $invalid_transaction[$key][0] }}" class="form-control fixed-width"
+                                    disabled name="coin_name">
+                            </td>
+                            <td>
+                                <select name="investment_type" class="form-control fixed-width" disabled>
+                                    <option value="buy" <?php if ($invalid_transaction[$key][2] == 'buy') {
+                                        echo 'selected';
+                                    }
+                                    ?>>buy</option>
+                                    <option value="sell" <?php if ($invalid_transaction[$key][2] == 'sell') {
+                                        echo 'selected';
+                                    } ?>>sell</option>
+                                </select>
+                            </td>
+                            <td><input type="text" name="units" value="{{ $invalid_transaction[$key][3] }}"
+                                    class="form-control fixed-width" disabled>
+                            </td>
+                            <td><input type="text" name="price_per_unit" value="{{ $invalid_transaction[$key][4] }}"
+                                    class="form-control fixed-width" disabled></td>
+                            </td>
+                            <td><input type="date" name="purchase_date" value="{{ $invalid_transaction[$key][5] }}"
+                                    class="form-control fixed-width" disabled>
+                            </td>
 
-                            </tr>
-                        @endif
+                        </tr>
                     @endfor
-
-
                 </tbody>
             </table>
         </div>
     </div>
 @endsection
 @section('scripts')
-    <script src="{{ asset('js/pages/crud/datatables/extensions/buttons.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/pages/widgets.js') }}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('#excel-import-form').submit(function(event) {
-                
+
                 $.each($('input[type=number]'), function() {
                     if (this.value <= 0) {
                         event.preventDefault();
-                        $('#selected-coin-error-box').html('<p class="bg-danger p-2 text-white text-sm">Please enter valid purchase price /quantity.</p>');
+                        $('#selected-coin-error-box').html(
+                            '<p class="bg-danger p-2 text-white text-sm">Please enter valid purchase price /quantity.</p>'
+                        );
                     } else {
                         $('#excel-import-form').submit();
                     }
                 });
             });
         });
-        var datatable = $('#kt_datatable_transaction_import_valid').KTDatatable({
-            data: {
-                saveState: {
-                    cookie: false
-                }
-            },
-            columns: [{
-                    field: "Coin",
-                    width: 120,
-                },
-                {
-                    field: "Investment Type",
-                    width: 120,
-                },
-                {
-                    field: "Units Purchased",
-                    width: 120,
-                },
-                {
-                    field: "Price per unit",
-                    width: 120,
-                },
-                {
-                    field: "Purchase date",
-                    width: 150,
-                },
-                {
-                    field: "Actions",
-                    width: 120,
-                    textAlign: "center"
-                }
-
-            ],
-            search: {
-                input: $('#kt_datatable_transaction_import_valid_search_query_user'),
-                key: 'generalSearch'
-            }
-        });
-        var datatable2 = $('#kt_datatable_transaction_import_invalid').KTDatatable({
-            data: {
-                saveState: {
-                    cookie: false
-                }
-            },
-            columns: [{
-                    field: "Coin",
-                    width: 120,
-                },
-                {
-                    field: "Investment Type",
-                    width: 120,
-                },
-                {
-                    field: "Units Purchased",
-                    width: 120,
-                },
-                {
-                    field: "Price per unit",
-                    width: 120,
-                },
-                {
-                    field: "Purchase date",
-                    width: 150,
-                },
-
-            ],
-            search: {
-                input: $('#kt_datatable_transaction_import_valid_search_query_user'),
-                key: 'generalSearch'
-            }
-        });
 
         function removeField(event) {
-            var parent = $(event.target.parentElement.parentElement.parentElement);
+            var parent = $(event.target.parentElement.parentElement);
             if (parent.is("tr")) {
                 parent.remove();
             }
