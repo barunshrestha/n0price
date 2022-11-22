@@ -10,6 +10,11 @@
             data-target="#new_transaction_modal">
             <i class="flaticon2-plus"></i>
             Transaction</button>
+
+            <button type="button" class="btn btn-success mx-2 my-3" data-toggle="modal"
+                data-target="#excelImport">
+                <i class="flaticon-upload"></i>
+                Import</button>
     </div>
 @else
     <div class="card card-custom">
