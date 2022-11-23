@@ -30,7 +30,8 @@ class VwFinalTranaction extends Migration
                         from (vw_total_buy tb 
                                 left join vw_total_sell 
                                 on(tb.coin_id = vw_total_sell.coin_id 
-                                and tb.user_id = vw_total_sell.user_id)) 
+                                and tb.user_id = vw_total_sell.user_id
+                                and tb.portfolio_id = vw_total_sell.portfolio_id)) 
                         group by tb.user_id,
                         tb.coin_name,
                         tb.coin_id,
