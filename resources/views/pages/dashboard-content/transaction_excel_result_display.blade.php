@@ -54,7 +54,7 @@
                         <?php
                         $zero_input_flag = 1;
                         ?>
-                        @for ($key = 1; $key < count($valid_transaction); $key++)
+                        @for ($key = 0; $key < count($valid_transaction); $key++)
                             <tr>
                                 <td>
                                     <input type="text" value="{{ $valid_transaction[$key][0] }}" class="form-control fixed-width"
@@ -109,7 +109,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for ($key = 1; $key < count($invalid_transaction); $key++)
+                    @for ($key = 0; $key < count($invalid_transaction); $key++)
                         <tr>
                             <td>
                                 <input type="text" value="{{ $invalid_transaction[$key][0] }}" class="form-control fixed-width"
