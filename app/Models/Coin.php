@@ -9,6 +9,7 @@ class Coin extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'id',
         'name',
         'coin_id',
         'symbol',

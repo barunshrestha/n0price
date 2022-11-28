@@ -56,6 +56,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval', 'adminAuth'])->group(
     Route::post('/coin/active', [CoinController::class, 'activeCoin'])->name('coins.active');
     Route::post('/coin/inactive', [CoinController::class, 'inactiveCoin'])->name('coins.inactive');
     Route::get('/sync/coin', [CoinController::class, 'sync_coin'])->name('coins.sync');
+    Route::get('/sync/image/coin', [CoinController::class, 'sync_image'])->name('coins.image.sync');
     Route::get('/all/transactions', [TransactionController::class, 'all_transaction'])->name('all.transactions');
     Route::get('/get/all/transactions', [TransactionController::class, 'getall_transactions'])->name('get.all.transactions');
     Route::get('/admin/get/all/coins', [CoinController::class, 'adminGetAllCoins'])->name('adminGetAllCoins');

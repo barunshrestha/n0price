@@ -149,33 +149,38 @@ class CoinController extends Controller
         //     ]);
         // }
 
-        $url='https://pro-api.coingecko.com/api/v3/coins/list?include_platform=false&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX';
+        $url = 'https://pro-api.coingecko.com/api/v3/coins/list?include_platform=false&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($ch);
         curl_close($ch);
-        $coins = json_decode($response, true);       
-        
+        $coins = json_decode($response, true);
+        foreach ($coins as $coin) {
+            Coin::query()->updateOrCreate([
+                'coin_id' => $coin['id'],
+                'symbol' => $coin['symbol']
+            ], [
+                'status' => 1,
+                'name' => $coin['name'],
+            ]);
+        }
+        return redirect()->back()->with('success', 'Coin Synced Successfully');
+    }
+    public function sync_image()
+    {
+        $coins = Coin::where('image', NULL)->get(['id','coin_id']);
         foreach ($coins as $value) {
-            $coin_id=$value['id'];
-            $image_url= 'https://pro-api.coingecko.com/api/v3/coins/'.$coin_id.'/history?date=22-09-2022&localization=false&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX';
+            $coin_id = $value->coin_id;
+            $image_url = 'https://pro-api.coingecko.com/api/v3/coins/' . $coin_id . '/history?date=22-09-2022&localization=false&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX';
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $image_url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $image_response = curl_exec($ch);
             curl_close($ch);
             $image_coin = json_decode($image_response, true);
-            $image_name=$image_coin['image']['small'];
-
-            Coin::query()->updateOrCreate([
-                'name' => $value['name'],
-                'coin_id' => $value['id'],
-                'symbol' => $value['symbol'],
-                'image'=>$image_name,
-            ]);
+            $image_name = isset($image_coin['image']) ? (isset($image_coin['image']['small']) ? $image_coin['image']['small'] : NULL) : NULL;
+            Coin::find($value->id)->update(['image' => $image_name]);
         }
-        return redirect()->back()->with('success', 'Coin Synced Successfully');
     }
-
 }
