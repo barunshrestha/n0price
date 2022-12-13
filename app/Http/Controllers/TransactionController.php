@@ -377,21 +377,20 @@ class TransactionController extends Controller
         $portfolio_id = $request->portfolio_id;
         $rows = Excel::toCollection(new ImportTransaction, $file);
         $datas = $rows[0];
-        $valid_transaction=array();
-        $invalid_transaction=array();
-        for ($key = 1; $key < count($datas); $key++){
-            $coin_id =  $this->checkCoinInDatabase($datas[$key][0], $datas[$key][1]);
-            $datas[$key][5]=$this->convertExcelTimetoCarbon($datas[$key][5]);
-            if (!empty($coin_id)){
-                $datas[$key][0]=$coin_id->coin_id;
-                $datas[$key][1]=$coin_id->id;
-               array_push($valid_transaction,$datas[$key]);
-            }
-            else{
-                array_push($invalid_transaction,$datas[$key]);
+        $valid_transaction = array();
+        $invalid_transaction = array();
+        for ($key = 1; $key < count($datas); $key++) {
+            $coin_id =  $this->checkCoinInDatabase($datas[$key][0]);
+            $datas[$key][5] = $this->convertExcelTimetoCarbon($datas[$key][4]);
+            if (!empty($coin_id)) {
+                $datas[$key][0] = $coin_id->coin_id;
+                $datas[$key][1] = $coin_id->id;
+                array_push($valid_transaction, $datas[$key]);
+            } else {
+                array_push($invalid_transaction, $datas[$key]);
             }
         }
-        return view('pages.dashboard-content.transaction_excel_result_display', compact('valid_transaction','invalid_transaction', 'portfolio_id'))->with('delete-success', "Transaction is imported");;
+        return view('pages.dashboard-content.transaction_excel_result_display', compact('valid_transaction', 'invalid_transaction', 'portfolio_id'))->with('delete-success', "Transaction is imported");;
     }
     public function displayExcelData()
     {
@@ -403,29 +402,35 @@ class TransactionController extends Controller
     }
     public function final_excel_report_submit(Request $request)
     {
-        $user=Auth::user();
+
+        $user = Auth::user();
         $data = $request->except('_method', '_token');
-        for ($i = 0; $i < count($data['coin_id']); $i++) {
-            $transaction = new Transaction();
-            $transaction->portfolio_id = $data['portfolio_id'];
-            $transaction->symbol = $data['symbol'][$i];
-            $transaction->coin_id = $data['coin_id'][$i];
-            $transaction->purchase_price_per_unit = $data['price_per_unit'][$i];
-            $transaction->units = $data['units'][$i];
-            $transaction->purchase_date = $data['purchase_date'][$i];
-            $transaction->investment_type = $data['investment_type'][$i];
-            $transaction->purchase_price = $data['price_per_unit'][$i] * $data['units'][$i];
-            $transaction->user_id=$user->id;
-            $transaction->save();
+        try {
+            DB::transaction(function () use ($data, $user) {
+                for ($i = 0; $i < count($data['coin_id']); $i++) {
+                    $transaction = new Transaction();
+                    $transaction->portfolio_id = $data['portfolio_id'];
+                    $transaction->symbol = $data['symbol'][$i];
+                    $transaction->coin_id = $data['coin_id'][$i];
+                    $transaction->purchase_price_per_unit = $data['price_per_unit'][$i];
+                    $transaction->units = $data['units'][$i];
+                    $transaction->purchase_date = $data['purchase_date'][$i];
+                    $transaction->investment_type = $data['investment_type'][$i];
+                    $transaction->purchase_price = $data['price_per_unit'][$i] * $data['units'][$i];
+                    $transaction->user_id = $user->id;
+                    $transaction->save();
+                }
+            });
+            return redirect()->route('portfolio.specific', $data['portfolio_id'])->with('success', 'New Transactions from excel file added');
+        } catch (\Throwable $th) {
+            return redirect()->route('portfolio.specific', $data['portfolio_id'])->with('fail', 'Error in Submitting Transaction'); 
         }
-        return redirect()->route('portfolio.specific',$data['portfolio_id'])->with('success','New Transactions from excel file added');
+      
     }
-    public function checkCoinInDatabase($coin_name, $coin_symbol)
+    public function checkCoinInDatabase($coin_symbol)
     {
-        $coin = strtolower($coin_name);
+        $coin = strtolower($coin_symbol);
         return Coin::where('coin_id', '=', $coin)
-            ->orWhere('symbol', '=', $coin_name)
-            ->orWhere('name', '=', $coin_name)
             ->orWhere('symbol', '=', $coin_symbol)
             ->orWhere('name', '=', $coin_symbol)
             ->select(['coin_id', 'id'])
