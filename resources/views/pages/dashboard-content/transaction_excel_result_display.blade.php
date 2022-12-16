@@ -58,6 +58,8 @@
                             <tr>
                                 <td>
                                     <input type="text" value="{{ $valid_transaction[$key][0] }}" class="form-control fixed-width"
+                                       disabled>
+                                    <input type="hidden" value="{{ $valid_transaction[$key][0] }}"
                                         name="symbol[]">
                                     <input type="hidden" value="{{ $valid_transaction[$key][1] }}" name="coin_id[]">
                                 </td>
