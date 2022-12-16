@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExcelExport;
 use App\Imports\ImportTransaction;
 use App\Models\AssetMatrixConstraints;
 use App\Models\Coin;
@@ -361,15 +362,10 @@ class TransactionController extends Controller
         $transactions = DB::table('vw_all_transactions')->get();
         return response()->json(["data" => $transactions]);
     }
-    public function excel_import_sample_download()
+    public function excel_import_sample_download(Request $request)
     {
-        $file = public_path() . "/TransactionImportSample.xlsx";
-        $headers = ['Content-Type:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-        if (file_exists($file)) {
-
-            return response()->download($file, 'TransactionImportSample.xlsx', $headers);
-        } else {
-        }
+        $filename = "TransactionImportSamplefile.xlsx";
+        return Excel::download(new ExcelExport, $filename);
     }
     public function excel_import_submit(Request $request)
     {
@@ -380,14 +376,41 @@ class TransactionController extends Controller
         $valid_transaction = array();
         $invalid_transaction = array();
         for ($key = 1; $key < count($datas); $key++) {
-            $coin_id =  $this->checkCoinInDatabase($datas[$key][0]);
-            $datas[$key][5] = $this->convertExcelTimetoCarbon($datas[$key][4]);
-            if (!empty($coin_id)) {
-                $datas[$key][0] = $coin_id->coin_id;
-                $datas[$key][1] = $coin_id->id;
-                array_push($valid_transaction, $datas[$key]);
-            } else {
-                array_push($invalid_transaction, $datas[$key]);
+            if ($datas[$key][2] > 0 && $datas[$key][3] > 0) {
+                $coin_id =  $this->checkCoinInDatabase($datas[$key][0]);
+                if (!empty($coin_id)) {
+                    $datas_array = array();
+                    if (gettype($datas[$key][4]) == "string") {
+                        $date = strtotime($datas[$key][4]);
+                        $datas_array[5] =  date('Y-m-d', $date);
+                    } elseif (gettype($datas[$key][4]) == "int" || gettype($datas[$key][4]) == "float") {
+                        $datas_array[5] = $this->convertExcelTimetoCarbon($datas[$key][4]);
+                    } else {
+                        $datas_array[5] = '';
+                    }
+                    $datas_array[4] = $datas[$key][3];
+                    if (gettype($datas[$key][3]) == "string") {
+                        $datas_array[4] = floatVal(str_replace(",", "", $datas[$key][3]));
+                    }
+                    $datas_array[2] = $datas[$key][1];
+                    if (gettype($datas[$key][2]) == "string") {
+                        $datas_array[3] = floatVal(str_replace(",", "", $datas[$key][2]));
+                    }
+                    $datas_array[0] = $coin_id->coin_id;
+                    $datas_array[1] = $coin_id->id;
+                    $datas_array[3] = $datas[$key][2];
+                    array_push($valid_transaction, $datas_array);
+                } else {
+                    if (gettype($datas[$key][4]) == "string") {
+                        $date = strtotime($datas[$key][4]);
+                        $datas[$key][4] =  date('Y-m-d', $date);
+                    } elseif (gettype($datas[$key][4]) == "int" || gettype($datas[$key][4]) == "float") {
+                        $datas[$key][4] = $this->convertExcelTimetoCarbon($datas[$key][4]);
+                    } else {
+                        $datas[$key][4] = '';
+                    }
+                    array_push($invalid_transaction, $datas[$key]);
+                }
             }
         }
         return view('pages.dashboard-content.transaction_excel_result_display', compact('valid_transaction', 'invalid_transaction', 'portfolio_id'))->with('delete-success', "Transaction is imported");;
@@ -423,9 +446,8 @@ class TransactionController extends Controller
             });
             return redirect()->route('portfolio.specific', $data['portfolio_id'])->with('success', 'New Transactions from excel file added');
         } catch (\Throwable $th) {
-            return redirect()->route('portfolio.specific', $data['portfolio_id'])->with('fail', 'Error in Submitting Transaction'); 
+            return redirect()->route('portfolio.specific', $data['portfolio_id'])->with('fail', 'Error in Submitting Transaction');
         }
-      
     }
     public function checkCoinInDatabase($coin_symbol)
     {

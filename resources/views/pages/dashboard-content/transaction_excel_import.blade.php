@@ -10,14 +10,15 @@
             </div>
             <div class="modal-body">
                 <div class="card px-3 container card-custom" style="width: 100%">
-                    <a href="{{ route('transaction.excel.sample.download') }}" class="" data-toggle="tooltip"
-                        title="Excel Sample">
-                        Download Sample Excel
+                    <a href="{{ route('download.excel.sample') }}" data-toggle="tooltip"
+                        title="Download Excel Sample">
+                        Download Excel Sample
                     </a>
                     <form class="form" id="kt_form" action="{{ route('transaction.excel.import.submit') }}"
                         method="post" enctype="multipart/form-data">
                         {{ csrf_field() }}
-                        <input type="hidden" id="dashboard-portfolio-id" value="{{ $portfolio_details->id }}" name="portfolio_id">
+                        <input type="hidden" id="dashboard-portfolio-id" value="{{ $portfolio_details->id }}"
+                            name="portfolio_id">
                         <div class="card-body">
                             <div class="form-group row">
                                 <input name="file_name" type="file" accept="excel/*"

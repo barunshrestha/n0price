@@ -84,7 +84,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::post('/portfolio/delete/{id}', [PortfolioController::class, 'destroy'])->name('portfolio.destroy');
     Route::post('/portfolio/store', [PortfolioController::class, 'store'])->name('portfolio.store');
 
-    Route::get('/transactions/download/excel-import-sample/', [TransactionController::class, 'excel_import_sample_download'])->name('transaction.excel.sample.download');
+    Route::get('/transactions/download/excel-import-sample/', [TransactionController::class, 'excel_import_sample_download'])->name('download.excel.sample');
     Route::post('transactions/excel-import', [TransactionController::class, 'excel_import_submit'])->name('transaction.excel.import.submit');
     Route::get('transaction/excel/result', [TransactionController::class, 'displayExcelData'])->name('transaction.display.excel');
     Route::post('transactions/excel/result/submit', [TransactionController::class, 'final_excel_report_submit'])->name('transaction.final.excel.submit');

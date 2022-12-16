@@ -50,7 +50,7 @@ class PortfolioController extends Controller
     {
         $portfolio = Portfolio::where('user_id', Auth::user()->id)->where('id', $id)->get();
         if ($portfolio[0]->status == 1) {
-            return redirect()->back()->with(['fail' => "Cannot Delete Default Portfolio"]);
+            return redirect()->back()->with(['fail' => "This is your active portfolio. This portfolio cannot be deleted."]);
         }
         Portfolio::where('user_id', Auth::user()->id)->where('id', $id)->delete();
         return redirect()->back()->with(['success' => "Portfolio has been removed"]);
