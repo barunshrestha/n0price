@@ -378,7 +378,7 @@ class TransactionController extends Controller
         for ($key = 1; $key < count($datas); $key++) {
             if ($datas[$key][2] > 0 && $datas[$key][3] > 0) {
                 $coin_id =  $this->checkCoinInDatabase($datas[$key][0]);
-                if (!empty($coin_id)) {
+                if (!empty($coin_id) && ($datas[$key][1] == "buy" || $datas[$key][1] == "sell")) {
                     $datas_array = array();
                     if (gettype($datas[$key][4]) == "string") {
                         $date = strtotime($datas[$key][4]);

@@ -116,15 +116,8 @@
                                     disabled name="coin_name">
                             </td>
                             <td>
-                                <select name="investment_type" class="form-control fixed-width" disabled>
-                                    <option value="buy" <?php if ($invalid_transaction[$key][1] == 'buy') {
-                                        echo 'selected';
-                                    }
-                                    ?>>buy</option>
-                                    <option value="sell" <?php if ($invalid_transaction[$key][1] == 'sell') {
-                                        echo 'selected';
-                                    } ?>>sell</option>
-                                </select>
+                                <input type="text" name="investment_type" value="{{ $invalid_transaction[$key][1] }}"
+                                    class="form-control fixed-width" disabled>
                             </td>
                             <td><input type="text" name="units" value="{{ $invalid_transaction[$key][2] }}"
                                     class="form-control fixed-width" disabled>
@@ -132,7 +125,7 @@
                             <td><input type="text" name="price_per_unit" value="{{ $invalid_transaction[$key][3] }}"
                                     class="form-control fixed-width" disabled></td>
                             </td>
-                            <td><input type="date" name="purchase_date" value="{{ $invalid_transaction[$key][4] }}"
+                            <td><input type="text" name="purchase_date" value="{{ $invalid_transaction[$key][4] }}"
                                     class="form-control fixed-width" disabled>
                             </td>
                         </tr>
