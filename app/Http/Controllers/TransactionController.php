@@ -364,7 +364,7 @@ class TransactionController extends Controller
     }
     public function excel_import_sample_download(Request $request)
     {
-        $filename = "TransactionImportSamplefile.xlsx";
+        $filename = "TransactionImportSamplefile.csv";
         return Excel::download(new ExcelExport, $filename);
     }
     public function excel_import_submit(Request $request)
