@@ -1,3 +1,12 @@
+<tr>
+    <td>Market Cap</td>
+    <td>Coin</td>
+    <td colspan="5"></td>
+    <td>Return</td>
+    <td>24hr</td>
+    <td>7d</td>
+    <td>ATH</td>
+</tr>
 @foreach ($portfolio as $key => $data)
     <tr>
         <?php
