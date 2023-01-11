@@ -99,7 +99,7 @@
             },
             columns: [{
                     field: "id",
-                    title: "ID",
+                    title: "Id",
                     width: 20,
                 },
                 {
@@ -117,12 +117,12 @@
                 },
                 {
                     field: "name",
-                    title: "name",
+                    title: "Name",
                     width: 200,
                 },
                 {
                     field: "status",
-                    title: "status",
+                    title: "Status",
                     template: function(row) {
                         if (row.status == 0) {
                             return '<span class="text-danger fs-6">Inactive</span>';

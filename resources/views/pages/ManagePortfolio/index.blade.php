@@ -51,19 +51,19 @@
                                 }
                             },
                             columns: [{
-                                    field: "PORTFOLIO",
+                                    field: "Portfolio",
                                     width: 150,
                                     sortable: false,
                                     textAlign: 'center'
                                 },
                                 {
-                                    field: "DEFAULT",
+                                    field: "Default",
                                     width: 60,
                                     sortable: false,
                                     textAlign: 'center'
                                 },
                                 {
-                                    field: "ACTIONS",
+                                    field: "Actions",
                                     width: 180,
                                     sortable: false,
                                     textAlign: 'right'
@@ -75,7 +75,7 @@
                             },
 
                         });
-                    my_portfolio_datatable.sort('ACTIVE', 'desc');
+                    my_portfolio_datatable.sort('Default', 'desc');
 
                     $('#kt_datatable_search_status, #kt_datatable_search_type').selectpicker();
 

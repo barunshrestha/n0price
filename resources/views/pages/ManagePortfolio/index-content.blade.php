@@ -36,9 +36,9 @@
         </div>
         <table class="datatable datatable-bordered table-responsive" id="kt_datatable_my_portfolio">
             <thead>
-                <th>PORTFOLIO</th>
-                <th>DEFAULT</th>
-                <th>ACTIONS</th>
+                <th>Portfolio</th>
+                <th>Default</th>
+                <th>Actions</th>
             </thead>
             <tbody>
                 @foreach ($portfolios as $portfolio)

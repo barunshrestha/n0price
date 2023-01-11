@@ -301,33 +301,33 @@
                         },
 
                         columns: [{
-                                field: "SYMBOL",
+                                field: "Symbol",
                                 width: 60,
                                 sortable: false,
                             },
                             {
-                                field: "TICKER",
+                                field: "Ticker",
                                 width: 65,
                                 overflow: 'visible'
                             },
                             {
-                                field: "TYPE",
+                                field: "Type",
                                 width: 80,
                             },
                             {
-                                field: "DATE",
+                                field: "Date",
                                 width: 160,
                             },
                             {
-                                field: "UNITS",
+                                field: "Units",
                                 width: 60,
                             },
                             {
-                                field: "PRICE(PER UNIT)",
+                                field: "Price(per unit)",
                                 width: 147,
                             },
                             {
-                                field: "ACTIONS",
+                                field: "Actions",
                                 width: 147,
                             },
                         ],
@@ -338,7 +338,7 @@
 
 
                     });
-                    datatable_transactions.sort('SYMBOL', 'asc');
+                    datatable_transactions.sort('Symbol', 'asc');
                 }
             });
         }

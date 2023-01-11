@@ -32,14 +32,14 @@
             id="kt_datatable_transactions">
             <thead class="card card-custom" style="background: #f6f6f6;">
                 <tr>
-                    <th class="text-center">SYMBOL</th>
-                    <th class="text-center">TICKER</th>
-                    <th class="text-center">TYPE</th>
-                    <th class="text-center">DATE</th>
-                    <th class="text-center">UNITS</th>
-                    <th class="text-center">PRICE(PER UNIT)</th>
-                    <th class="text-center">TOTAL AMOUNT</th>
-                    <th class="text-center">ACTIONS</th>
+                    <th class="text-center">Symbol</th>
+                    <th class="text-center">Ticker</th>
+                    <th class="text-center">Type</th>
+                    <th class="text-center">Date</th>
+                    <th class="text-center">Units</th>
+                    <th class="text-center">Price(per unit)</th>
+                    <th class="text-center">Total Amount</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
