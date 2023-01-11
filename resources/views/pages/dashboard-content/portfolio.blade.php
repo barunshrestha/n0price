@@ -61,7 +61,7 @@
                         @endforeach
                     </tr>
                     <tr>
-                        <td style="border-right: 1px solid #ffffff;" colspan="2">Allocation%
+                        <td style="border-right: 1px solid #ffffff;">Allocation%
                         </td>
                         <td style="text-align: right">
                             <span id="total_allocation" class="ml-auto"></span>

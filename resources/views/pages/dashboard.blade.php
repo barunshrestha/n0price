@@ -191,7 +191,8 @@
                             row.image +
                             '" alt="img" class="dropdown-image mx-2 "><div class="mx-2 font-weight-bold">' +
                             row.name + '</div><input type="hidden" value="' + row.coin_id +
-                            '"class="coin_org_symbol" name="symbol" /><input type="hidden" value="' + row.id +
+                            '"class="coin_org_symbol" name="symbol" /><input type="hidden" value="' +
+                            row.id +
                             '"class="coin_table_id" name="coin_id" /><div class="align-items-center d-flex ml-auto price_and_gain"></div></div></div></div>';
                     },
                     width: 130,
@@ -508,6 +509,7 @@
                         .replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(
                             sign_total_not_allocated))
                         .replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                    sortTable();
                 }
             });
         }
@@ -728,6 +730,46 @@
                     // $("#" + form_id).submit();
                 }
             });
+        }
+
+        function sortTable() {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("coin_worth_all_summary");
+            switching = true;
+            /*Make a loop that will continue until
+            no switching has been done:*/
+            while (switching) {
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < (rows.length - 1); i++) {
+                    //start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /*Get the two elements you want to compare,
+                    one from current row and one from the next:*/
+                    x = rows[i].getElementsByTagName("td")[0];
+                    y = rows[i + 1].getElementsByTagName("td")[0];
+
+                    //check if the two rows should switch place:
+
+                    if (parseInt((x.innerHTML).replace(/\$|M|,/g, '')) > parseInt((y.innerHTML).replace(/\$|M|\,/g, ''))) {
+                        console.log("removing dollar and M and comma", (x.innerHTML).replace(/\$|M|\,/g, ''),
+                            (y.innerHTML).replace(/\$|M|\,/g, ''));
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    /*If a switch has been marked, make the switch
+                    and mark that a switch has been done:*/
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+
+                }
+            }
         }
     </script>
 @endsection
