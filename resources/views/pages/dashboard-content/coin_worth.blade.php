@@ -1,6 +1,6 @@
 <tr>
     <td id="market-cap-asc-desc">Market Cap <i class="fa fa-sort" onclick="sortTableasc(0)"></i></td>
-    <td>Coin</td>
+    <td id="coin-asc-desc">Coin<i class="fa fa-sort" onclick="sortTabletextasc(1)"></i></td>
     <td colspan="5"></td>
     <td id="return-asc-desc">Return <i class="fa fa-sort" onclick="sortTableasc(7)"></i></td>
     <td id="24hr-asc-desc">24hr <i class="fa fa-sort" onclick="sortTableasc(8)"></i></td>

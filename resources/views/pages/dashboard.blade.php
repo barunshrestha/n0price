@@ -762,7 +762,8 @@
 
                     //check if the two rows should switch place:
 
-                    if (parseFloat((x.innerHTML).replace(/\$|M|\,|\%/g, '')) > parseFloat((y.innerHTML).replace(/\$|M|\,|\%/g,
+                    if (parseFloat((x.innerHTML).replace(/\$|M|\,|\%/g, '')) > parseFloat((y.innerHTML).replace(
+                            /\$|M|\,|\%/g,
                             ''))) {
                         //if so, mark as a switch and break the loop:
                         shouldSwitch = true;
@@ -816,7 +817,8 @@
 
                     //check if the two rows should switch place:
 
-                    if (parseFloat((x.innerHTML).replace(/\$|M|\,|\%/g, '')) < parseFloat((y.innerHTML).replace(/\$|M|\,|\%/g, ''))) {
+                    if (parseFloat((x.innerHTML).replace(/\$|M|\,|\%/g, '')) < parseFloat((y.innerHTML).replace(
+                            /\$|M|\,|\%/g, ''))) {
                         //if so, mark as a switch and break the loop:
                         shouldSwitch = true;
                         break;
@@ -846,6 +848,89 @@
                 $('#ath-asc-desc').html('ATH <i class="fa fa-sort"onclick="sortTableasc(10)"></i>');
             }
 
+        }
+
+        function sortTabletextasc(column_id) {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("coin_worth_all_summary");
+            switching = true;
+            /*Make a loop that will continue until
+            no switching has been done:*/
+            while (switching) {
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < (rows.length - 1); i++) {
+                    //start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /*Get the two elements you want to compare,
+                    one from current row and one from the next:*/
+                    x = rows[i].getElementsByTagName("td")[column_id];
+                    y = rows[i + 1].getElementsByTagName("td")[column_id];
+
+                    //check if the two rows should switch place:
+
+                    if ((x.innerHTML).toLowerCase() > (y.innerHTML).toLowerCase()) {
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    /*If a switch has been marked, make the switch
+                    and mark that a switch has been done:*/
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+
+                }
+            }
+            if (column_id == 1) {
+                $('#coin-asc-desc').html('Coin  <i class="fa fa-sort" onclick="sortTabletextdesc(1)"></i>');
+            }
+
+        }
+
+        function sortTabletextdesc(column_id) {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("coin_worth_all_summary");
+            switching = true;
+            /*Make a loop that will continue until
+            no switching has been done:*/
+            while (switching) {
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < (rows.length - 1); i++) {
+                    //start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /*Get the two elements you want to compare,
+                    one from current row and one from the next:*/
+                    x = rows[i].getElementsByTagName("td")[column_id];
+                    y = rows[i + 1].getElementsByTagName("td")[column_id];
+
+                    //check if the two rows should switch place:
+
+                    if ((x.innerHTML).toLowerCase() < (y.innerHTML).toLowerCase()) {
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    /*If a switch has been marked, make the switch
+                    and mark that a switch has been done:*/
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+
+                }
+            }
+            if (column_id == 1) {
+                $('#coin-asc-desc').html('Coin <i class="fa fa-sort" onclick="sortTabletextasc(1)"></i>');
+            }
         }
     </script>
 @endsection
