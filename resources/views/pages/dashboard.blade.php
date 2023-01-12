@@ -762,7 +762,7 @@
 
                     //check if the two rows should switch place:
 
-                    if (parseInt((x.innerHTML).replace(/\$|M|\,|%/g, '')) > parseInt((y.innerHTML).replace(/\$|M|\,|%/g,
+                    if (parseFloat((x.innerHTML).replace(/\$|M|\,|%/g, '')) > parseFloat((y.innerHTML).replace(/\$|M|\,|%/g,
                             ''))) {
                         //if so, mark as a switch and break the loop:
                         shouldSwitch = true;
@@ -778,7 +778,7 @@
                 }
             }
             if (column_id == 0) {
-                $('#market-cap-asc-desc').html('Return <i class="fa fa-sort" onclick="sortTabledesc(0)"></i>');
+                $('#market-cap-asc-desc').html('Market Cap  <i class="fa fa-sort" onclick="sortTabledesc(0)"></i>');
             }
             if (column_id == 7) {
                 $('#return-asc-desc').html('Return <i class="fa fa-sort" onclick="sortTabledesc(7)"></i>');
@@ -816,7 +816,7 @@
 
                     //check if the two rows should switch place:
 
-                    if (parseInt((x.innerHTML).replace(/\$|M|,/g, '')) < parseInt((y.innerHTML).replace(/\$|M|\,/g, ''))) {
+                    if (parseFloat((x.innerHTML).replace(/\$|M|,/g, '')) < parseFloat((y.innerHTML).replace(/\$|M|\,/g, ''))) {
                         console.log("removing dollar and M and comma", (x.innerHTML).replace(/\$|M|\,/g, ''),
                             (y.innerHTML).replace(/\$|M|\,/g, ''));
                         //if so, mark as a switch and break the loop:
