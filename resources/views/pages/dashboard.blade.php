@@ -762,7 +762,7 @@
 
                     //check if the two rows should switch place:
 
-                    if (parseFloat((x.innerHTML).replace(/\$|M|\,|%/g, '')) > parseFloat((y.innerHTML).replace(/\$|M|\,|%/g,
+                    if (parseFloat((x.innerHTML).replace(/\$|M|\,|\%/g, '')) > parseFloat((y.innerHTML).replace(/\$|M|\,|\%/g,
                             ''))) {
                         //if so, mark as a switch and break the loop:
                         shouldSwitch = true;
@@ -816,7 +816,7 @@
 
                     //check if the two rows should switch place:
 
-                    if (parseFloat((x.innerHTML).replace(/\$|M|,/g, '')) < parseFloat((y.innerHTML).replace(/\$|M|\,/g, ''))) {
+                    if (parseFloat((x.innerHTML).replace(/\$|M|\,|\%/g, '')) < parseFloat((y.innerHTML).replace(/\$|M|\,|\%/g, ''))) {
                         //if so, mark as a switch and break the loop:
                         shouldSwitch = true;
                         break;
