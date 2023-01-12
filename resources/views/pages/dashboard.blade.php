@@ -833,7 +833,7 @@
                 }
             }
             if (column_id == 0) {
-                $('#market-cap-asc-desc').html('Return <i class="fa fa-sort" onclick="sortTableasc(0)"></i>');
+                $('#market-cap-asc-desc').html('Market Cap <i class="fa fa-sort" onclick="sortTableasc(0)"></i>');
             }
             if (column_id == 7) {
                 $('#return-asc-desc').html('Return <i class="fa fa-sort" onclick="sortTableasc(7)"></i>');
