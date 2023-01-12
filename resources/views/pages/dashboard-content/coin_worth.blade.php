@@ -1,11 +1,11 @@
 <tr>
-    <td>Market Cap</td>
+    <td id="market-cap-asc-desc">Market Cap <i class="fa fa-sort" onclick="sortTableasc(0)"></i></td>
     <td>Coin</td>
     <td colspan="5"></td>
-    <td>Return</td>
-    <td>24hr</td>
-    <td>7d</td>
-    <td>ATH</td>
+    <td id="return-asc-desc">Return <i class="fa fa-sort" onclick="sortTableasc(7)"></i></td>
+    <td id="24hr-asc-desc">24hr <i class="fa fa-sort" onclick="sortTableasc(8)"></i></td>
+    <td id="7d-asc-desc">7d <i class="fa fa-sort" onclick="sortTableasc(9)"></i></td>
+    <td id="ath-asc-desc">ATH <i class="fa fa-sort" onclick="sortTableasc(10)"></i></td>
 </tr>
 @foreach ($portfolio as $key => $data)
     <tr>
@@ -20,12 +20,12 @@
         $req_unit = $total_buy_unit - $total_sell_unit;
         $calculated_worth = $req_unit * $usd;
         ?>
-        <td style="text-align: right;">${{ number_format($usd_market_cap/1000000,0) }} M</td>
+        <td style="text-align: right;">${{ number_format($usd_market_cap / 1000000, 0) }} M</td>
         @if ($usd_market_cap < 25000000)
             <td style="background:#e9fac8;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    
+
                 </div>
             </td>
             <td class="tabledata-veryhigh" style="text-align: right;">
@@ -53,7 +53,7 @@
             <td style="background:#fff3bf;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    
+
                 </div>
             </td>
             <td class="tabledata-veryhigh">
@@ -81,7 +81,7 @@
             <td style="background:#d3f9d8;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    
+
                 </div>
             </td>
             <td class="tabledata-veryhigh">
@@ -109,7 +109,7 @@
             <td style="background:#ffd8a8;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    
+
                 </div>
             </td>
             <td class="tabledata-veryhigh">
@@ -137,7 +137,7 @@
             <td style="background:#ffa8a8;color:black;">
                 <div class="d-flex">
                     {{ $data->coin_name }}
-                    
+
                 </div>
             </td>
             <td class="tabledata-veryhigh">
@@ -160,9 +160,9 @@
                 @endif
             </td>
         @endif
-        <td style="text-align: center; color:<?php echo $worth[$curr]['return'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['return'],1) }}%</td>
-        <td style="text-align: center; color:<?php echo $worth[$curr]['24hr'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['24hr'],1) }}%</td>
-        <td style="text-align: center; color:<?php echo $worth[$curr]['7d'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['7d'],1) }}%</td>
-        <td style="text-align: center; color:<?php echo $worth[$curr]['ATH'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['ATH'],1) }}%</td>
+        <td style="text-align: center; color:<?php echo $worth[$curr]['return'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['return'], 1) }}%</td>
+        <td style="text-align: center; color:<?php echo $worth[$curr]['24hr'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['24hr'], 1) }}%</td>
+        <td style="text-align: center; color:<?php echo $worth[$curr]['7d'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['7d'], 1) }}%</td>
+        <td style="text-align: center; color:<?php echo $worth[$curr]['ATH'] > 0 ? 'green' : 'red'; ?>">{{ number_format($worth[$curr]['ATH'], 1) }}%</td>
     </tr>
 @endforeach

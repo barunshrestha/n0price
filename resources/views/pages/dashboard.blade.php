@@ -67,6 +67,14 @@
             width: 100% !important;
         }
 
+        #coin_worth_all_summary tr td i {
+            float: right;
+        }
+
+        #coin_worth_all_summary tr td i:hover {
+            color: black;
+        }
+
         @media screen and (min-width: 1287px) {
             .portfolio-table {
                 display: inline-table;
@@ -509,7 +517,7 @@
                         .replace(/\d(?=(\d{3})+\.)/g, '$&,') : '-$' + String(Math.abs(
                             sign_total_not_allocated))
                         .replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                    sortTable();
+                    sortTableasc(0);
                 }
             });
         }
@@ -732,7 +740,7 @@
             });
         }
 
-        function sortTable() {
+        function sortTableasc(column_id) {
             var table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementById("coin_worth_all_summary");
             switching = true;
@@ -749,12 +757,66 @@
                     shouldSwitch = false;
                     /*Get the two elements you want to compare,
                     one from current row and one from the next:*/
-                    x = rows[i].getElementsByTagName("td")[0];
-                    y = rows[i + 1].getElementsByTagName("td")[0];
+                    x = rows[i].getElementsByTagName("td")[column_id];
+                    y = rows[i + 1].getElementsByTagName("td")[column_id];
 
                     //check if the two rows should switch place:
 
-                    if (parseInt((x.innerHTML).replace(/\$|M|,/g, '')) > parseInt((y.innerHTML).replace(/\$|M|\,/g, ''))) {
+                    if (parseInt((x.innerHTML).replace(/\$|M|\,|%/g, '')) > parseInt((y.innerHTML).replace(/\$|M|\,|%/g,
+                            ''))) {
+                        //if so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    /*If a switch has been marked, make the switch
+                    and mark that a switch has been done:*/
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+
+                }
+            }
+            if (column_id == 0) {
+                $('#market-cap-asc-desc').html('Return <i class="fa fa-sort" onclick="sortTabledesc(0)"></i>');
+            }
+            if (column_id == 7) {
+                $('#return-asc-desc').html('Return <i class="fa fa-sort" onclick="sortTabledesc(7)"></i>');
+            }
+            if (column_id == 8) {
+                $('#24hr-asc-desc').html('24hr <i class="fa fa-sort"onclick="sortTabledesc(8)"></i>');
+            }
+            if (column_id == 9) {
+                $('#7d-asc-desc').html('7d <i class="fa fa-sort"onclick="sortTabledesc(9)"></i>');
+            }
+            if (column_id == 10) {
+                $('#ath-asc-desc').html('ATH <i class="fa fa-sort"onclick="sortTabledesc(10)"></i>');
+            }
+        }
+
+        function sortTabledesc(column_id) {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("coin_worth_all_summary");
+            switching = true;
+            /*Make a loop that will continue until
+            no switching has been done:*/
+            while (switching) {
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < (rows.length - 1); i++) {
+                    //start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /*Get the two elements you want to compare,
+                    one from current row and one from the next:*/
+                    x = rows[i].getElementsByTagName("td")[column_id];
+                    y = rows[i + 1].getElementsByTagName("td")[column_id];
+
+                    //check if the two rows should switch place:
+
+                    if (parseInt((x.innerHTML).replace(/\$|M|,/g, '')) < parseInt((y.innerHTML).replace(/\$|M|\,/g, ''))) {
                         console.log("removing dollar and M and comma", (x.innerHTML).replace(/\$|M|\,/g, ''),
                             (y.innerHTML).replace(/\$|M|\,/g, ''));
                         //if so, mark as a switch and break the loop:
@@ -770,6 +832,22 @@
 
                 }
             }
+            if (column_id == 0) {
+                $('#market-cap-asc-desc').html('Return <i class="fa fa-sort" onclick="sortTableasc(0)"></i>');
+            }
+            if (column_id == 7) {
+                $('#return-asc-desc').html('Return <i class="fa fa-sort" onclick="sortTableasc(7)"></i>');
+            }
+            if (column_id == 8) {
+                $('#24hr-asc-desc').html('24hr <i class="fa fa-sort"onclick="sortTableasc(8)"></i>');
+            }
+            if (column_id == 9) {
+                $('#7d-asc-desc').html('7d <i class="fa fa-sort"onclick="sortTableasc(9)"></i>');
+            }
+            if (column_id == 10) {
+                $('#ath-asc-desc').html('ATH <i class="fa fa-sort"onclick="sortTableasc(10)"></i>');
+            }
+
         }
     </script>
 @endsection
