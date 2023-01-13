@@ -476,11 +476,11 @@
                             /\d(?=(\d{3})+\.)/g, '$&,'));
 
 
-                    var not_allocated_verylow = sum_verylow - allocated_verylow;
-                    var not_allocated_low = sum_low - allocated_low;
-                    var not_allocated_medium = sum_medium - allocated_medium;
-                    var not_allocated_high = sum_high - allocated_high;
-                    var not_allocated_veryhigh = sum_veryhigh - allocated_veryhigh;
+                    var not_allocated_verylow = allocated_verylow - sum_verylow;
+                    var not_allocated_low = allocated_low - sum_low;
+                    var not_allocated_medium = allocated_medium - sum_medium;
+                    var not_allocated_high = allocated_high - sum_high;
+                    var not_allocated_veryhigh = allocated_veryhigh - sum_veryhigh;
 
                     var total_not_allocated = not_allocated_verylow + not_allocated_low +
                         not_allocated_medium +

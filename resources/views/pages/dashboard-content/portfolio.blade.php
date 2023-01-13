@@ -121,7 +121,7 @@
                     <tr>
 
                         <td colspan="2">
-                            Not Allocated
+                            Reallocate
                         </td>
                         <td style="text-align: right;"><span id="not_allocated-veryhigh"></span></td>
                         <td style="text-align: right;"><span id="not_allocated-high"></span></td>
