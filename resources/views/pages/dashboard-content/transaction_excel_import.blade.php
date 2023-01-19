@@ -9,10 +9,9 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="card px-3 container card-custom" style="width: 100%">
-                    <a href="{{ route('download.excel.sample') }}" data-toggle="tooltip"
-                        title="Download Excel Sample">
-                        Download Excel Sample
+                <div class="card px-3 py-3 container card-custom" style="width: 100%">
+                    <a href="{{ route('download.excel.sample') }}" data-toggle="tooltip" title="Download Excel Sample">
+                        Download CSV Sample
                     </a>
                     <form class="form" id="kt_form" action="{{ route('transaction.excel.import.submit') }}"
                         method="post" enctype="multipart/form-data">
@@ -38,3 +37,4 @@
             </div>
         </div>
     </div>
+</div>
