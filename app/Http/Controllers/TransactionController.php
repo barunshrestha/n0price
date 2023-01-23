@@ -458,4 +458,86 @@ class TransactionController extends Controller
             ->select(['coin_id', 'id'])
             ->first();
     }
+    public function loadWallet(Request $request)
+    {
+        $base_url = "https://api.etherscan.io/api?module=account";
+        $action = "&action=txlist";
+        $wallet_address = "&address=" . $request->wallet_address;
+        $sort_details = "&sort=asc";
+        $api_key = "&apikey=FY5RF1IUVNPFKSY4FV9MBAJ6NDAJ5SRTDA";
+        $url = $base_url . $action . $wallet_address . $sort_details . $api_key;
+
+
+        // Lists the successful transaction's block number
+        $results = $this->establish_curl($url);
+
+        if ($results['status'] != 1) {
+            return redirect()->back()->with('fail', "Couldn't load wallet. Please try again later.");
+        }
+
+        $success_block_number = array_column(array_filter($results['result'], function ($result) {
+            return $result['isError'] == '0' && $result['txreceipt_status'] == '1';
+        }), 'blockNumber');
+
+        // Lists the transctions with coin details
+        $action = "&action=tokentx";
+        $url = $base_url . $action . $wallet_address . $sort_details . $api_key;
+        $results = $this->establish_curl($url);
+        if ($results['status'] != 1) {
+            return redirect()->back()->with('fail', "Couldn't load wallet. Please try again later.");
+        }
+        $coins_available = array();
+        $buy_transactions = array();
+        $sell_transactions = array();
+        $portfolio = array();
+
+
+        // coins_available-> coin_id,buy_unit,sell_unit,coin_name
+        // portfolio-> coin_id,buy_unit,sell_unit,coin_name
+        // $b_t->coin_id, $b_t->units, $b_t->purchase_price
+        // $s_t->coin_id, $s_t->units, $s_t->purchase_price
+        $wallet_address = strtolower($request->wallet_address);
+        $actual_results = array_filter($results['result'], function ($result) use ($success_block_number) {
+            return in_array($result['blockNumber'], $success_block_number) && $result['value'] !== '0';
+        });
+
+
+        foreach ($actual_results as $result) {
+            $contract_address = $result['contractAddress'];
+            $from_timestamp = $result['timeStamp'];
+            $to_timestamp = $from_timestamp + 8000;
+            $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "/market_chart/range?vs_currency=usd&from=" . $from_timestamp . "&to=" . $to_timestamp . "&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+            $price_response = $this->establish_curl($url);
+            $price_per_coin = isset($price_response['prices']) ? $price_response['prices'][0][1] : 0;
+            $price_per_coin = 10000;
+            $purchase_price = ($result['value'] / 1000000000000000000) * $price_per_coin;
+            if ($result['from'] == $wallet_address) {
+                // sell transaction
+                array_push($sell_transactions, (object)[
+                    'tokenName' => $result['tokenName'],
+                    'tokenSymbol' => $result['tokenSymbol'],
+                    'units' => $result['value'] / 1000000000000000000,
+                    'purchase_price' => $purchase_price
+                ]);
+            } elseif ($result['to'] == $wallet_address) {
+                // buy transaction
+                array_push($buy_transactions, (object)[
+                    'tokenName' => $result['tokenName'],
+                    'tokenSymbol' => $result['tokenSymbol'],
+                    'units' => $result['value'] / 1000000000000000000,
+                    'purchase_price' => $purchase_price
+                ]);
+            }
+        }
+        dd($buy_transactions, $sell_transactions);
+    }
+    public function establish_curl($url)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        return json_decode($response, true);
+    }
 }
