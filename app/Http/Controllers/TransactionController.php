@@ -532,7 +532,7 @@ class TransactionController extends Controller
                         $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
                         $cache_key = $contract_address . '_' . $new_unix_timestamp;
                         $price = Redis::get($cache_key);
-                        if (!isset($price)) {
+                        if (!isset($price) && $timestamp_price[1] > 0) {
                             Redis::set($cache_key, $timestamp_price[1]);
                         }
                     }
@@ -551,10 +551,10 @@ class TransactionController extends Controller
                 $unix_timestamp = $result['timeStamp'];
                 $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
                 $cache_key = $contract_address . '_' . $new_unix_timestamp;
-                $price = Redis::getBit($cache_key, 0) ? Redis::get($cache_key) : 0;
+                $redis_price = Redis::get($cache_key);
+                $price = isset($redis_price) ? $redis_price : 0;
                 $units = $result['value'] / 1000000000000000000;
                 $purchase_price = $units * $price;
-
                 if ($result['from'] == $wallet_address) {
                     // sell transaction
                     array_push($sell_transactions, (object)[
