@@ -10,6 +10,8 @@ use App\Models\Portfolio;
 use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
+use DateTime;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -487,13 +489,12 @@ class TransactionController extends Controller
         $action = "&action=tokentx";
         $url = $base_url . $action . $wallet_address . $sort_details . $api_key;
         $results = $this->establish_curl($url);
-        if ($results['status'] != 1) {
+        if (!isset($results) || $results['status'] != 1) {
             return redirect()->back()->with('fail', "Couldn't load wallet. Please try again later.");
         }
         $coins_available = array();
         $buy_transactions = array();
         $sell_transactions = array();
-        $portfolio = array();
         $wallet_address = strtolower($request->wallet_address);
         $actual_results = array_filter($results['result'], function ($result) use ($success_block_number) {
             return in_array($result['blockNumber'], $success_block_number) && $result['value'] !== '0';
@@ -501,57 +502,80 @@ class TransactionController extends Controller
 
         // Group actual results by contract address
         $grouped_results = array();
+        $missing_cache = array();
         foreach ($actual_results as $result) {
             $grouped_results[$result['contractAddress']][] = $result;
+            $contract_address = $result['contractAddress'];
+            $unix_timestamp = $result['timeStamp'];
+            $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+            $cache_key = $contract_address . '_' . $new_unix_timestamp;
+            $price =  Redis::get($cache_key);
+            // dd($price, $cache_key, $result);
+            if (!isset($price)) {
+                $missing_cache[$result['contractAddress']][] = $result;
+            }
         }
+        if (!empty($missing_cache)) {
+            foreach ($missing_cache as $contract_address => $results) {
+                $max_timestamp = strtotime("+2 hour", max(array_column($results, 'timeStamp')));
+                $min_timestamp = strtotime("-2 hour", min(array_column($results, 'timeStamp')));
+
+                // Use the max and min timestamp to make the API call
+                $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "/market_chart/range?vs_currency=usd&from=" . $min_timestamp . "&to=" . $max_timestamp . "&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+                $price_response = $this->establish_curl($url);
+                // dd($results, $price_response, $min_timestamp, $max_timestamp, isset($price_response['prices']) && !empty($price_response['prices']));
+                if (isset($price_response['prices']) && !empty($price_response['prices'])) {
+                    // Process the results for this contract address
+                    foreach ($price_response['prices'] as $timestamp_price) {
+                        $unix_timestamp = $timestamp_price[0];
+                        $unix_timestamp = floor($unix_timestamp / 1000);
+                        $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+                        $cache_key = $contract_address . '_' . $new_unix_timestamp;
+                        $price = Redis::get($cache_key);
+                        if (!isset($price)) {
+                            Redis::set($cache_key, $timestamp_price[1]);
+                        }
+                    }
+                }
+                // dd($missing_cache, $grouped_results, $price_response, $url);
+            }
+        }
+        // dd($missing_cache, $grouped_results);
+
         foreach ($grouped_results as $contract_address => $results) {
-            // Get the max and min timestamp of the successful transactions
-            $max_timestamp = strtotime("+1 hour", max(array_column($results, 'timeStamp')));
-            $min_timestamp = strtotime("-1 hour", min(array_column($results, 'timeStamp')));
             $grouped_results[$contract_address]['buy_unit'] = '0';
             $grouped_results[$contract_address]['sell_unit'] = '0';
             $grouped_results[$contract_address]['buy_amount'] = '0';
-            // Use the max and min timestamp to make the API call
-            $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "/market_chart/range?vs_currency=usd&from=" . $min_timestamp . "&to=" . $max_timestamp . "&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
-            $price_response = $this->establish_curl($url);
-            if (isset($price_response['prices']) && !empty($price_response['prices'])) {
-                // Process the results for this contract address
-                foreach ($results as $result) {
-                    $transaction_timestamp = $result['timeStamp'];
-                    $closest_timestamp = '';
-                    $closest_diff = '';
-                    foreach ($price_response['prices'] as $key => $price) {
-                        $api_timestamp = $price[0];
-                        $diff = abs($api_timestamp - $transaction_timestamp);
-                        if ($closest_diff === '' || $diff < $closest_diff) {
-                            $closest_diff = $diff;
-                            $closest_timestamp = $key;
-                        }
-                    }
-                    $units = $result['value'] / 1000000000000000000;
-                    $purchase_price = $units * $price_response['prices'][$closest_timestamp][1];
-                    if ($result['from'] == $wallet_address) {
-                        // sell transaction
-                        array_push($sell_transactions, (object)[
-                            'tokenName' => $result['tokenName'],
-                            'tokenSymbol' => $result['tokenSymbol'],
-                            'units' => $units,
-                            'purchase_price' => $purchase_price,
-                            'contract_address' => $contract_address
-                        ]);
-                        $grouped_results[$contract_address]['sell_unit'] = floatval($grouped_results[$contract_address]['sell_unit']) + floatval($units);
-                    } elseif ($result['to'] == $wallet_address) {
-                        // buy transaction
-                        array_push($buy_transactions, (object)[
-                            'tokenName' => $result['tokenName'],
-                            'tokenSymbol' => $result['tokenSymbol'],
-                            'units' => $units,
-                            'purchase_price' => $purchase_price,
-                            'contract_address' => $contract_address
-                        ]);
-                        $grouped_results[$contract_address]['buy_unit'] = floatval($grouped_results[$contract_address]['buy_unit']) + floatval($units);
-                        $grouped_results[$contract_address]['buy_amount'] = floatval($grouped_results[$contract_address]['buy_amount']) + floatval($purchase_price);
-                    }
+            // Process the results for this contract address
+            foreach ($results as $result) {
+                $unix_timestamp = $result['timeStamp'];
+                $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+                $cache_key = $contract_address . '_' . $new_unix_timestamp;
+                $price = Redis::getBit($cache_key, 0) ? Redis::get($cache_key) : 0;
+                $units = $result['value'] / 1000000000000000000;
+                $purchase_price = $units * $price;
+
+                if ($result['from'] == $wallet_address) {
+                    // sell transaction
+                    array_push($sell_transactions, (object)[
+                        'tokenName' => $result['tokenName'],
+                        'tokenSymbol' => $result['tokenSymbol'],
+                        'units' => $units,
+                        'purchase_price' => $purchase_price,
+                        'contract_address' => $contract_address
+                    ]);
+                    $grouped_results[$contract_address]['sell_unit'] = floatval($grouped_results[$contract_address]['sell_unit']) + floatval($units);
+                } elseif ($result['to'] == $wallet_address) {
+                    // buy transaction
+                    array_push($buy_transactions, (object)[
+                        'tokenName' => $result['tokenName'],
+                        'tokenSymbol' => $result['tokenSymbol'],
+                        'units' => $units,
+                        'purchase_price' => $purchase_price,
+                        'contract_address' => $contract_address
+                    ]);
+                    $grouped_results[$contract_address]['buy_unit'] = floatval($grouped_results[$contract_address]['buy_unit']) + floatval($units);
+                    $grouped_results[$contract_address]['buy_amount'] = floatval($grouped_results[$contract_address]['buy_amount']) + floatval($purchase_price);
                 }
             }
         }
@@ -582,7 +606,6 @@ class TransactionController extends Controller
                 'profit_loss' => 0,
             ];
         }
-
         if (!empty($sell_transactions)) {
             foreach ($sell_transactions as $s_t) {
                 $coin_name = $s_t->contract_address;
@@ -651,6 +674,9 @@ class TransactionController extends Controller
     }
     public function establish_curl($url)
     {
+        // $client = new Client();
+        // $response = $client->get($url);
+        // return json_decode($response->getBody()->getContents(), true);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
