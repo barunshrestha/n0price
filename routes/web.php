@@ -89,6 +89,7 @@ Route::middleware(['auth', 'verified', 'topLevelApproval'])->group(function () {
     Route::get('transaction/excel/result', [TransactionController::class, 'displayExcelData'])->name('transaction.display.excel');
     Route::post('transactions/excel/result/submit', [TransactionController::class, 'final_excel_report_submit'])->name('transaction.final.excel.submit');
     Route::post('/load/wallet', [TransactionController::class, 'loadWallet'])->name('load.wallet');
+    Route::get('/calculate/wallet/{wallet_address}', [TransactionController::class, 'loadWalletCalculations'])->name('calculate.wallet.calculations');
 });
 
 Route::group(['middleware' => 'auth'], function () {

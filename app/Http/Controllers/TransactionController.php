@@ -12,7 +12,9 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -460,21 +462,23 @@ class TransactionController extends Controller
     }
     public function loadWallet(Request $request)
     {
+        $wallet_address = $request->wallet_address;
+        return view('pages.wallet.dashboard', compact('wallet_address'));
+    }
+
+    public function loadWalletCalculations(Request $request)
+    {
         $base_url = "https://api.etherscan.io/api?module=account";
         $action = "&action=txlist";
         $wallet_address = "&address=" . $request->wallet_address;
         $sort_details = "&sort=asc";
         $api_key = "&apikey=FY5RF1IUVNPFKSY4FV9MBAJ6NDAJ5SRTDA";
         $url = $base_url . $action . $wallet_address . $sort_details . $api_key;
-
-
         // Lists the successful transaction's block number
         $results = $this->establish_curl($url);
-
         if ($results['status'] != 1) {
             return redirect()->back()->with('fail', "Couldn't load wallet. Please try again later.");
         }
-
         $success_block_number = array_column(array_filter($results['result'], function ($result) {
             return $result['isError'] == '0' && $result['txreceipt_status'] == '1';
         }), 'blockNumber');
@@ -490,46 +494,160 @@ class TransactionController extends Controller
         $buy_transactions = array();
         $sell_transactions = array();
         $portfolio = array();
-
-
-        // coins_available-> coin_id,buy_unit,sell_unit,coin_name
-        // portfolio-> coin_id,buy_unit,sell_unit,coin_name
-        // $b_t->coin_id, $b_t->units, $b_t->purchase_price
-        // $s_t->coin_id, $s_t->units, $s_t->purchase_price
         $wallet_address = strtolower($request->wallet_address);
         $actual_results = array_filter($results['result'], function ($result) use ($success_block_number) {
             return in_array($result['blockNumber'], $success_block_number) && $result['value'] !== '0';
         });
 
-
+        // Group actual results by contract address
+        $grouped_results = array();
         foreach ($actual_results as $result) {
-            $contract_address = $result['contractAddress'];
-            $from_timestamp = $result['timeStamp'];
-            $to_timestamp = $from_timestamp + 8000;
-            $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "/market_chart/range?vs_currency=usd&from=" . $from_timestamp . "&to=" . $to_timestamp . "&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+            $grouped_results[$result['contractAddress']][] = $result;
+        }
+        foreach ($grouped_results as $contract_address => $results) {
+            // Get the max and min timestamp of the successful transactions
+            $max_timestamp = strtotime("+1 hour", max(array_column($results, 'timeStamp')));
+            $min_timestamp = strtotime("-1 hour", min(array_column($results, 'timeStamp')));
+            $grouped_results[$contract_address]['buy_unit'] = '0';
+            $grouped_results[$contract_address]['sell_unit'] = '0';
+            $grouped_results[$contract_address]['buy_amount'] = '0';
+            // Use the max and min timestamp to make the API call
+            $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "/market_chart/range?vs_currency=usd&from=" . $min_timestamp . "&to=" . $max_timestamp . "&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
             $price_response = $this->establish_curl($url);
-            $price_per_coin = isset($price_response['prices']) ? $price_response['prices'][0][1] : 0;
-            $price_per_coin = 10000;
-            $purchase_price = ($result['value'] / 1000000000000000000) * $price_per_coin;
-            if ($result['from'] == $wallet_address) {
-                // sell transaction
-                array_push($sell_transactions, (object)[
-                    'tokenName' => $result['tokenName'],
-                    'tokenSymbol' => $result['tokenSymbol'],
-                    'units' => $result['value'] / 1000000000000000000,
-                    'purchase_price' => $purchase_price
-                ]);
-            } elseif ($result['to'] == $wallet_address) {
-                // buy transaction
-                array_push($buy_transactions, (object)[
-                    'tokenName' => $result['tokenName'],
-                    'tokenSymbol' => $result['tokenSymbol'],
-                    'units' => $result['value'] / 1000000000000000000,
-                    'purchase_price' => $purchase_price
-                ]);
+            if (isset($price_response['prices']) && !empty($price_response['prices'])) {
+                // Process the results for this contract address
+                foreach ($results as $result) {
+                    $transaction_timestamp = $result['timeStamp'];
+                    $closest_timestamp = '';
+                    $closest_diff = '';
+                    foreach ($price_response['prices'] as $key => $price) {
+                        $api_timestamp = $price[0];
+                        $diff = abs($api_timestamp - $transaction_timestamp);
+                        if ($closest_diff === '' || $diff < $closest_diff) {
+                            $closest_diff = $diff;
+                            $closest_timestamp = $key;
+                        }
+                    }
+                    $units = $result['value'] / 1000000000000000000;
+                    $purchase_price = $units * $price_response['prices'][$closest_timestamp][1];
+                    if ($result['from'] == $wallet_address) {
+                        // sell transaction
+                        array_push($sell_transactions, (object)[
+                            'tokenName' => $result['tokenName'],
+                            'tokenSymbol' => $result['tokenSymbol'],
+                            'units' => $units,
+                            'purchase_price' => $purchase_price,
+                            'contract_address' => $contract_address
+                        ]);
+                        $grouped_results[$contract_address]['sell_unit'] = floatval($grouped_results[$contract_address]['sell_unit']) + floatval($units);
+                    } elseif ($result['to'] == $wallet_address) {
+                        // buy transaction
+                        array_push($buy_transactions, (object)[
+                            'tokenName' => $result['tokenName'],
+                            'tokenSymbol' => $result['tokenSymbol'],
+                            'units' => $units,
+                            'purchase_price' => $purchase_price,
+                            'contract_address' => $contract_address
+                        ]);
+                        $grouped_results[$contract_address]['buy_unit'] = floatval($grouped_results[$contract_address]['buy_unit']) + floatval($units);
+                        $grouped_results[$contract_address]['buy_amount'] = floatval($grouped_results[$contract_address]['buy_amount']) + floatval($purchase_price);
+                    }
+                }
             }
         }
-        dd($buy_transactions, $sell_transactions);
+        foreach ($grouped_results as $contract_address => $results) {
+            $token_name = $results[0]['tokenName'];
+            $token_symbol = $results[0]['tokenSymbol'];
+            array_push($coins_available, (object) [
+                'contract_address' => $contract_address,
+                'tokenName' => $token_name,
+                'tokenSymbol' => $token_symbol,
+                'buy_unit' => $results['buy_unit'],
+                'sell_unit' => $results['sell_unit'],
+                'buy_amount' => $results['buy_amount']
+            ]);
+        }
+        $total_worth = array();
+        $current_transactions = array();
+
+        foreach ($coins_available as $coin) {
+            $total_worth[$coin->contract_address] = $coin->buy_amount;
+        }
+
+        foreach ($buy_transactions as $b_t) {
+            $current_transactions[$b_t->contract_address] = [
+                'units' => $b_t->units,
+                'purchase_price' => $b_t->purchase_price,
+                'debited_units' => 0,
+                'profit_loss' => 0,
+            ];
+        }
+
+        if (!empty($sell_transactions)) {
+            foreach ($sell_transactions as $s_t) {
+                $coin_name = $s_t->contract_address;
+                $sell_units = $s_t->units;
+                $sell_unit_price = $s_t->purchase_price / $s_t->units;
+
+                if (isset($current_transactions[$coin_name])) {
+                    $current_transaction = $current_transactions[$coin_name];
+                    $purchase_unit_price = $current_transaction['purchase_price'] / $current_transaction['units'];
+                    $profit_loss_rate = $sell_unit_price - $purchase_unit_price;
+                    $total_units = $current_transaction['units'];
+                    $total_debited_units = $current_transaction['debited_units'];
+                    $slot_units_available = $total_units - $total_debited_units;
+                    $profit_earned = $current_transaction['profit_loss'];
+
+                    if ($slot_units_available > 0) {
+                        if ($slot_units_available >= $sell_units) {
+                            $current_transactions[$coin_name]['debited_units'] = $total_debited_units + $sell_units;
+                            $current_transactions[$coin_name]['profit_loss'] = $profit_earned + $profit_loss_rate * $sell_units;
+
+                            $total_worth[$coin_name] = $total_worth[$coin_name] - $sell_units * $purchase_unit_price;
+                            break;
+                        } else {
+                            $current_transactions[$coin_name]['debited_units'] = $total_debited_units + $slot_units_available;
+                            $current_transactions[$coin_name]['profit_loss'] = $profit_earned + $profit_loss_rate * $slot_units_available;
+                            $total_worth[$coin_name] = $total_worth[$coin_name] - $slot_units_available * $purchase_unit_price;
+                            $sell_units -= $slot_units_available;
+                        }
+                    }
+                }
+            }
+        }
+        $worth = array();
+        foreach ($coins_available as $coins) {
+            $total_current_invested = $total_worth[$coins->contract_address];
+            $total_buy = $coins->buy_unit ? $coins->buy_unit : 0;
+            $total_sell = $coins->sell_unit ? $coins->sell_unit : 0;
+            $remaining_coins = $total_buy - $total_sell;
+            $contract_address = "$coins->contract_address";
+            $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "?x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+            $current_prices_list_details_from_server = $this->establish_curl($url);
+            $current_market_capital = isset($current_prices_list_details_from_server['market_data']['market_cap']['usd']) ? $current_prices_list_details_from_server['market_data']['market_cap']['usd'] : 0;
+            $current_price = isset($current_prices_list_details_from_server['market_data']['current_price']['usd']) ? $current_prices_list_details_from_server['market_data']['current_price']['usd'] : 0;
+            $price_change_percentage_24h = isset($current_prices_list_details_from_server['market_data']['price_change_percentage_24h']) ? $current_prices_list_details_from_server['market_data']['price_change_percentage_24h'] : 0;
+            $price_change_percentage_7d = isset($current_prices_list_details_from_server['market_data']['price_change_percentage_7d']) ? $current_prices_list_details_from_server['market_data']['price_change_percentage_7d'] : 0;
+            $all_time_high_price_percentage = isset($current_prices_list_details_from_server['market_data']['ath_change_percentage']['usd']) ? $current_prices_list_details_from_server['market_data']['ath_change_percentage']['usd'] : 0;
+            $todaysWorth = $remaining_coins * $current_price;
+            $return = $total_current_invested == 0 ? 0 : round(($todaysWorth - $total_current_invested) / $total_current_invested, 2) * 100;
+            $worth = array_merge(
+                $worth,
+                array($coins->tokenName =>
+                array(
+                    "buy_unit" => $total_buy,
+                    "sell_unit" => $total_sell,
+                    "usd_market_cap" => round($current_market_capital, 2),
+                    "current_usd" => round($current_price, 2),
+                    "return" => $return,
+                    "24hr" => round($price_change_percentage_24h, 2),
+                    "7d" => round($price_change_percentage_7d, 2),
+                    "ATH" => round($all_time_high_price_percentage, 2)
+                ))
+            );
+        }
+        $this->_data['worth'] = $worth;
+        return view("pages." . 'wallet.' . 'coin_worth', $this->_data);
     }
     public function establish_curl($url)
     {

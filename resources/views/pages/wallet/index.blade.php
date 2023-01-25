@@ -32,11 +32,6 @@
 
                             @include('pages.dashboard-content.transaction')
                         </div>
-                        {{-- <div class="tab-pane fade" id="kt_tab_pane_3_4" role="tabpanel" aria-labelledby="kt_tab_pane_3_4">
-
-                        @include('pages.dashboard-content.asset-matrix')
-                    </div> --}}
-
                     </div>
                     @include('pages.transaction_add')
                     @include('pages.dashboard-content.transaction_excel_import')
