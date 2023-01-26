@@ -519,29 +519,9 @@ class TransactionController extends Controller
             foreach ($missing_cache as $contract_address => $results) {
                 $max_timestamp = strtotime("+2 hour", max(array_column($results, 'timeStamp')));
                 $min_timestamp = strtotime("-2 hour", min(array_column($results, 'timeStamp')));
-
-                // Use the max and min timestamp to make the API call
-                $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "/market_chart/range?vs_currency=usd&from=" . $min_timestamp . "&to=" . $max_timestamp . "&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
-                $price_response = $this->establish_curl($url);
-                // dd($results, $price_response, $min_timestamp, $max_timestamp, isset($price_response['prices']) && !empty($price_response['prices']));
-                if (isset($price_response['prices']) && !empty($price_response['prices'])) {
-                    // Process the results for this contract address
-                    foreach ($price_response['prices'] as $timestamp_price) {
-                        $unix_timestamp = $timestamp_price[0];
-                        $unix_timestamp = floor($unix_timestamp / 1000);
-                        $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
-                        $cache_key = $contract_address . '_' . $new_unix_timestamp;
-                        $price = Redis::get($cache_key);
-                        if (!isset($price) && $timestamp_price[1] > 0) {
-                            Redis::set($cache_key, $timestamp_price[1]);
-                        }
-                    }
-                }
-                // dd($missing_cache, $grouped_results, $price_response, $url);
+                $this->sync_cache($contract_address, $max_timestamp, $min_timestamp);
             }
         }
-        // dd($missing_cache, $grouped_results);
-
         foreach ($grouped_results as $contract_address => $results) {
             $grouped_results[$contract_address]['buy_unit'] = '0';
             $grouped_results[$contract_address]['sell_unit'] = '0';
@@ -684,4 +664,27 @@ class TransactionController extends Controller
         curl_close($ch);
         return json_decode($response, true);
     }
+
+    // Use the max and min timestamp and contract address to make the API call
+    public function sync_cache($contract_address, $max_timestamp, $min_timestamp)
+    {
+        $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "/market_chart/range?vs_currency=usd&from=" . $min_timestamp . "&to=" . $max_timestamp . "&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+        $price_response = $this->establish_curl($url);
+        if (isset($price_response['prices']) && !empty($price_response['prices'])) {
+            // Process the results for this contract address
+            foreach ($price_response['prices'] as $timestamp_price) {
+                $unix_timestamp = $timestamp_price[0];
+                $unix_timestamp = floor($unix_timestamp / 1000);
+                $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+                $cache_key = $contract_address . '_' . $new_unix_timestamp;
+                $price = Redis::get($cache_key);
+                if (!isset($price) && $timestamp_price[1] > 0) {
+                    Redis::set($cache_key, $timestamp_price[1]);
+                }
+            }
+        }
+    }
 }
+
+
+
