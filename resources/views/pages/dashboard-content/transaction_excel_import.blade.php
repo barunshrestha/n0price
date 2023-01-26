@@ -20,13 +20,15 @@
                                         <span class="nav-text">Import CSV</span>
                                     </a>
                                 </li>
-                                <li class="nav-item col-sm-12 col-md-5">
-                                    <a class="nav-link mx-sm-5" data-toggle="tab" href="#kt_tab_pane_wallet"
-                                        id="transaction-btn">
-                                        <span class="nav-icon mx-2"><i class="flaticon-piggy-bank"></i></span>
-                                        <span class="nav-text">Wallet</span>
-                                    </a>
-                                </li>
+                                @if (Auth::user()->role_id == '1')
+                                    <li class="nav-item col-sm-12 col-md-5">
+                                        <a class="nav-link mx-sm-5" data-toggle="tab" href="#kt_tab_pane_wallet"
+                                            id="transaction-btn">
+                                            <span class="nav-icon mx-2"><i class="flaticon-piggy-bank"></i></span>
+                                            <span class="nav-text">Wallet</span>
+                                        </a>
+                                    </li>
+                                @endif
                             </ul>
                         </div>
                     </div>
@@ -60,27 +62,29 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="tab-pane fade" id="kt_tab_pane_wallet" role="tabpanel"
-                                aria-labelledby="kt_tab_pane_wallet">
-                                <form class="form" id="wallet_form"
-                                    action="{{ route('load.wallet') }}" method="post"
-                                    enctype="multipart/form-data">
-                                    {{ csrf_field() }}
-                                    <div class="card-body">
-                                        <div class="form-group row">
-                                            <input name="wallet_address" type="text"
-                                                class="form-control form-control-solid" placeholder="Enter your wallet address"
-                                                required autocomplete="off" />
+                            @if (Auth::user()->role_id == '1')
+                                <div class="tab-pane fade" id="kt_tab_pane_wallet" role="tabpanel"
+                                    aria-labelledby="kt_tab_pane_wallet">
+                                    <form class="form" id="wallet_form" action="{{ route('load.wallet') }}"
+                                        method="post" enctype="multipart/form-data">
+                                        {{ csrf_field() }}
+                                        <div class="card-body">
+                                            <div class="form-group row">
+                                                <input name="wallet_address" type="text"
+                                                    class="form-control form-control-solid"
+                                                    placeholder="Enter your wallet address" required
+                                                    autocomplete="off" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light-primary font-weight-bold"
-                                            data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary font-weight-bold"
-                                            id="coin-save-transaction-btn">Save</button>
-                                    </div>
-                                </form>
-                            </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light-primary font-weight-bold"
+                                                data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary font-weight-bold"
+                                                id="coin-save-transaction-btn">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
