@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -543,7 +544,7 @@ class TransactionController extends Controller
                         'units' => $units,
                         'purchase_price' => $purchase_price,
                         'contract_address' => $contract_address,
-                        'timeStamp'=>$result['timeStamp']
+                        'timeStamp' => $result['timeStamp']
                     ]);
                     $grouped_results[$contract_address]['sell_unit'] = floatval($grouped_results[$contract_address]['sell_unit']) + floatval($units);
                 } elseif ($result['to'] == $wallet_address) {
@@ -554,7 +555,7 @@ class TransactionController extends Controller
                         'units' => $units,
                         'purchase_price' => $purchase_price,
                         'contract_address' => $contract_address,
-                        'timeStamp'=>$result['timeStamp']
+                        'timeStamp' => $result['timeStamp']
                     ]);
                     $grouped_results[$contract_address]['buy_unit'] = floatval($grouped_results[$contract_address]['buy_unit']) + floatval($units);
                     $grouped_results[$contract_address]['buy_amount'] = floatval($grouped_results[$contract_address]['buy_amount']) + floatval($purchase_price);
@@ -589,10 +590,10 @@ class TransactionController extends Controller
             ];
         }
         // dd($buy_transactions, $sell_transactions);
-        usort($sell_transactions, function($a, $b) {
+        usort($sell_transactions, function ($a, $b) {
             return $a->timeStamp > $b->timeStamp;
         });
-        usort($buy_transactions, function($a, $b) {
+        usort($buy_transactions, function ($a, $b) {
             return $a->timeStamp > $b->timeStamp;
         });
         if (!empty($sell_transactions)) {
@@ -629,18 +630,47 @@ class TransactionController extends Controller
         }
         $worth = array();
         foreach ($coins_available as $coins) {
+            $contract_address = $coins->contract_address;
+            $unix_timestamp = time();
+            $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+            $cache_key = $contract_address . '_' . $new_unix_timestamp;
+            $current_value =  Redis::get($cache_key);
+            if (!isset($current_value)) {
+                $this->sync_current_price_coin($contract_address, $cache_key);
+            }
+
             $total_current_invested = $total_worth[$coins->contract_address];
             $total_buy = $coins->buy_unit ? $coins->buy_unit : 0;
             $total_sell = $coins->sell_unit ? $coins->sell_unit : 0;
             $remaining_coins = $total_buy - $total_sell;
-            $contract_address = "$coins->contract_address";
-            $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "?x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
-            $current_prices_list_details_from_server = $this->establish_curl($url);
-            $current_market_capital = isset($current_prices_list_details_from_server['market_data']['market_cap']['usd']) ? $current_prices_list_details_from_server['market_data']['market_cap']['usd'] : 0;
-            $current_price = isset($current_prices_list_details_from_server['market_data']['current_price']['usd']) ? $current_prices_list_details_from_server['market_data']['current_price']['usd'] : 0;
-            $price_change_percentage_24h = isset($current_prices_list_details_from_server['market_data']['price_change_percentage_24h']) ? $current_prices_list_details_from_server['market_data']['price_change_percentage_24h'] : 0;
-            $price_change_percentage_7d = isset($current_prices_list_details_from_server['market_data']['price_change_percentage_7d']) ? $current_prices_list_details_from_server['market_data']['price_change_percentage_7d'] : 0;
-            $all_time_high_price_percentage = isset($current_prices_list_details_from_server['market_data']['ath_change_percentage']['usd']) ? $current_prices_list_details_from_server['market_data']['ath_change_percentage']['usd'] : 0;
+
+            // $contract_address = "$coins->contract_address";
+            // $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "?x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+            // $current_prices_list_details_from_server = $this->establish_curl($url);
+            // Log::info("Fetching coingecko for Current price");
+            // if (!isset($current_prices_list_details_from_server['market_data']['market_cap']['usd'])) {
+            //     Log::error("Error fetching" . Carbon::now());
+            //     Log::error($current_prices_list_details_from_server);
+            // }
+            $current_market_capital = 0;
+            $current_price = 0;
+            $price_change_percentage_24h = 0;
+            $price_change_percentage_7d = 0;
+            $all_time_high_price_percentage = 0;
+            $cache_data = Redis::get($cache_key);
+            if (isset($cache_data)) {
+                $current_prices_list_details_from_server = json_decode($cache_data);
+                $current_market_capital = $current_prices_list_details_from_server->current_market_capital;
+                $current_price = $current_prices_list_details_from_server->current_price;
+                $price_change_percentage_24h = $current_prices_list_details_from_server->price_change_percentage_24h;
+                $price_change_percentage_7d = $current_prices_list_details_from_server->price_change_percentage_7d;
+                $all_time_high_price_percentage = $current_prices_list_details_from_server->all_time_high_price_percentage;
+            }
+            // $current_market_capital = isset($current_prices_list_details_from_server['market_data']['market_cap']['usd']) ? $current_prices_list_details_from_server['market_data']['market_cap']['usd'] : 0;
+            // $current_price = isset($current_prices_list_details_from_server['market_data']['current_price']['usd']) ? $current_prices_list_details_from_server['market_data']['current_price']['usd'] : 0;
+            // $price_change_percentage_24h = isset($current_prices_list_details_from_server['market_data']['price_change_percentage_24h']) ? $current_prices_list_details_from_server['market_data']['price_change_percentage_24h'] : 0;
+            // $price_change_percentage_7d = isset($current_prices_list_details_from_server['market_data']['price_change_percentage_7d']) ? $current_prices_list_details_from_server['market_data']['price_change_percentage_7d'] : 0;
+            // $all_time_high_price_percentage = isset($current_prices_list_details_from_server['market_data']['ath_change_percentage']['usd']) ? $current_prices_list_details_from_server['market_data']['ath_change_percentage']['usd'] : 0;
             $todaysWorth = $remaining_coins * $current_price;
             $return = $total_current_invested == 0 ? 0 : round(($todaysWorth - $total_current_invested) / $total_current_invested, 2) * 100;
             $worth = array_merge(
@@ -679,6 +709,11 @@ class TransactionController extends Controller
     {
         $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "/market_chart/range?vs_currency=usd&from=" . $min_timestamp . "&to=" . $max_timestamp . "&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
         $price_response = $this->establish_curl($url);
+        Log::info("Fetching coingecko for Syncing cache");
+        if (!isset($price_response['prices']) || empty($price_response['prices'])) {
+            Log::error("Error fetching" . Carbon::now());
+            Log::error($price_response);
+        }
         if (isset($price_response['prices']) && !empty($price_response['prices'])) {
             // Process the results for this contract address
             foreach ($price_response['prices'] as $timestamp_price) {
@@ -691,6 +726,30 @@ class TransactionController extends Controller
                     Redis::set($cache_key, $timestamp_price[1]);
                 }
             }
+        }
+    }
+    public function sync_current_price_coin($contract_address, $cache_key)
+    {
+        $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "?x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+        $current_prices_list_details_from_server = $this->establish_curl($url);
+        if (isset($current_prices_list_details_from_server['market_data']['market_cap']['usd'])) {
+            $current_market_capital = $current_prices_list_details_from_server['market_data']['market_cap']['usd'];
+            $current_price = $current_prices_list_details_from_server['market_data']['current_price']['usd'];
+            $price_change_percentage_24h = $current_prices_list_details_from_server['market_data']['price_change_percentage_24h'];
+            $price_change_percentage_7d = $current_prices_list_details_from_server['market_data']['price_change_percentage_7d'];
+            $all_time_high_price_percentage =  $current_prices_list_details_from_server['market_data']['ath_change_percentage']['usd'];
+            Redis::set($cache_key, json_encode([
+                'current_market_capital' => $current_market_capital,
+                'current_price' => $current_price,
+                'price_change_percentage_24h' => $price_change_percentage_24h,
+                'price_change_percentage_7d' => $price_change_percentage_7d,
+                'all_time_high_price_percentage' => $all_time_high_price_percentage
+            ]), 'EX', 3000);
+        }
+        Log::info("Fetching coingecko for Current price");
+        if (!isset($current_prices_list_details_from_server['market_data']['market_cap']['usd'])) {
+            Log::error("Error fetching" . Carbon::now());
+            Log::error($current_prices_list_details_from_server);
         }
     }
 }
