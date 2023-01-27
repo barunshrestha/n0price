@@ -542,7 +542,8 @@ class TransactionController extends Controller
                         'tokenSymbol' => $result['tokenSymbol'],
                         'units' => $units,
                         'purchase_price' => $purchase_price,
-                        'contract_address' => $contract_address
+                        'contract_address' => $contract_address,
+                        'timeStamp'=>$result['timeStamp']
                     ]);
                     $grouped_results[$contract_address]['sell_unit'] = floatval($grouped_results[$contract_address]['sell_unit']) + floatval($units);
                 } elseif ($result['to'] == $wallet_address) {
@@ -552,7 +553,8 @@ class TransactionController extends Controller
                         'tokenSymbol' => $result['tokenSymbol'],
                         'units' => $units,
                         'purchase_price' => $purchase_price,
-                        'contract_address' => $contract_address
+                        'contract_address' => $contract_address,
+                        'timeStamp'=>$result['timeStamp']
                     ]);
                     $grouped_results[$contract_address]['buy_unit'] = floatval($grouped_results[$contract_address]['buy_unit']) + floatval($units);
                     $grouped_results[$contract_address]['buy_amount'] = floatval($grouped_results[$contract_address]['buy_amount']) + floatval($purchase_price);
@@ -586,6 +588,13 @@ class TransactionController extends Controller
                 'profit_loss' => 0,
             ];
         }
+        // dd($buy_transactions, $sell_transactions);
+        usort($sell_transactions, function($a, $b) {
+            return $a->timeStamp > $b->timeStamp;
+        });
+        usort($buy_transactions, function($a, $b) {
+            return $a->timeStamp > $b->timeStamp;
+        });
         if (!empty($sell_transactions)) {
             foreach ($sell_transactions as $s_t) {
                 $coin_name = $s_t->contract_address;
@@ -685,6 +694,3 @@ class TransactionController extends Controller
         }
     }
 }
-
-
-
