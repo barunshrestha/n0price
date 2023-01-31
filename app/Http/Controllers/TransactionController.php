@@ -174,77 +174,77 @@ class TransactionController extends Controller
 
 
     // backup
-    public function profit_calculation()
-    {
-        $user = Auth::user();
-        $coins_available = DB::select('select distinct name from vw_buy_transactions where user_id = ?', [$user->id]);
-        $buy_transactions = DB::select('select units,name,purchase_price from vw_buy_transactions where user_id = ? order by name asc', [$user->id]);
-        $sell_transactions = DB::select('select units,name,purchase_price from vw_sell_transactions where user_id = ? order by name asc', [$user->id]);
-        // return([$sell_transactions]);
-        $total_profit = array();
+    // public function profit_calculation()
+    // {
+    //     $user = Auth::user();
+    //     $coins_available = DB::select('select distinct name from vw_buy_transactions where user_id = ?', [$user->id]);
+    //     $buy_transactions = DB::select('select units,name,purchase_price from vw_buy_transactions where user_id = ? order by name asc', [$user->id]);
+    //     $sell_transactions = DB::select('select units,name,purchase_price from vw_sell_transactions where user_id = ? order by name asc', [$user->id]);
+    //     // return([$sell_transactions]);
+    //     $total_profit = array();
 
 
-        $current_transactions = array();
-        foreach ($coins_available as $coins) {
-            array_push($total_profit, array($coins->name, 0));
-        }
+    //     $current_transactions = array();
+    //     foreach ($coins_available as $coins) {
+    //         array_push($total_profit, array($coins->name, 0));
+    //     }
 
 
-        foreach ($buy_transactions as $b_t) {
-            array_push($current_transactions, array($b_t->name, $b_t->units, $b_t->purchase_price, 0, 0));
-        }
+    //     foreach ($buy_transactions as $b_t) {
+    //         array_push($current_transactions, array($b_t->name, $b_t->units, $b_t->purchase_price, 0, 0));
+    //     }
 
 
-        $total_sell_units = array();
-        foreach ($sell_transactions as $s_t) {
-            array_push($total_sell_units, array($s_t->name, $s_t->units, $s_t->purchase_price));
-        }
-        foreach ($total_sell_units as $sell_unit) {
-            $total_sell_unit = $sell_unit[1];
-            $sell_unit_price = $sell_unit[2] / $sell_unit[1];
-            $sell_unit_coin_name = $sell_unit[0];
+    //     $total_sell_units = array();
+    //     foreach ($sell_transactions as $s_t) {
+    //         array_push($total_sell_units, array($s_t->name, $s_t->units, $s_t->purchase_price));
+    //     }
+    //     foreach ($total_sell_units as $sell_unit) {
+    //         $total_sell_unit = $sell_unit[1];
+    //         $sell_unit_price = $sell_unit[2] / $sell_unit[1];
+    //         $sell_unit_coin_name = $sell_unit[0];
 
-            if ($total_sell_unit > 0) {
-                for ($i = 0; $i < count($current_transactions); $i++) {
-                    if ($sell_unit_coin_name == $current_transactions[$i][0]) {
-                        $current_transaction = $current_transactions[$i];
-                        $purchase_unit_price = $current_transaction[2] / $current_transaction[1];
-                        $profit_loss_rate = $sell_unit_price - $purchase_unit_price;
-                        $total_units = $current_transaction[1];
-                        $total_debited_units = $current_transaction[3];
-                        $slot_units_available = $total_units - $total_debited_units;
-                        $profit_earned = $current_transaction[4];
-                        if ($slot_units_available > 0) {
-                            if ($slot_units_available >= $total_sell_unit) {
-                                if ($total_sell_unit > 0) {
-                                    $current_transactions[$i][3] = $total_debited_units + $total_sell_unit;
-                                    $current_transactions[$i][4] = $profit_earned + $profit_loss_rate * $total_sell_unit;
-                                    $total_sell_unit = $total_sell_unit - $total_debited_units;
-                                    break;
-                                }
-                            } elseif ($slot_units_available < $total_sell_unit) {
-                                if ($total_sell_unit > 0) {
-                                    $current_transactions[$i][3] = $total_debited_units + $slot_units_available;
-                                    $current_transactions[$i][4] = $profit_earned + $profit_loss_rate * $slot_units_available;
-                                    $total_sell_unit = $total_sell_unit - $slot_units_available;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        // return ([$current_transactions]);
-        for ($i = 0; $i < count($total_profit); $i++) {
-            $profit = $total_profit[$i];
-            foreach ($current_transactions as $ct) {
-                if ($profit[0] == $ct[0]) {
-                    $total_profit[$i][1] = $total_profit[$i][1] + $ct[4];
-                }
-            }
-        }
-        return response()->json(["success" => true, "data" => $total_profit]);
-    }
+    //         if ($total_sell_unit > 0) {
+    //             for ($i = 0; $i < count($current_transactions); $i++) {
+    //                 if ($sell_unit_coin_name == $current_transactions[$i][0]) {
+    //                     $current_transaction = $current_transactions[$i];
+    //                     $purchase_unit_price = $current_transaction[2] / $current_transaction[1];
+    //                     $profit_loss_rate = $sell_unit_price - $purchase_unit_price;
+    //                     $total_units = $current_transaction[1];
+    //                     $total_debited_units = $current_transaction[3];
+    //                     $slot_units_available = $total_units - $total_debited_units;
+    //                     $profit_earned = $current_transaction[4];
+    //                     if ($slot_units_available > 0) {
+    //                         if ($slot_units_available >= $total_sell_unit) {
+    //                             if ($total_sell_unit > 0) {
+    //                                 $current_transactions[$i][3] = $total_debited_units + $total_sell_unit;
+    //                                 $current_transactions[$i][4] = $profit_earned + $profit_loss_rate * $total_sell_unit;
+    //                                 $total_sell_unit = $total_sell_unit - $total_debited_units;
+    //                                 break;
+    //                             }
+    //                         } elseif ($slot_units_available < $total_sell_unit) {
+    //                             if ($total_sell_unit > 0) {
+    //                                 $current_transactions[$i][3] = $total_debited_units + $slot_units_available;
+    //                                 $current_transactions[$i][4] = $profit_earned + $profit_loss_rate * $slot_units_available;
+    //                                 $total_sell_unit = $total_sell_unit - $slot_units_available;
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     // return ([$current_transactions]);
+    //     for ($i = 0; $i < count($total_profit); $i++) {
+    //         $profit = $total_profit[$i];
+    //         foreach ($current_transactions as $ct) {
+    //             if ($profit[0] == $ct[0]) {
+    //                 $total_profit[$i][1] = $total_profit[$i][1] + $ct[4];
+    //             }
+    //         }
+    //     }
+    //     return response()->json(["success" => true, "data" => $total_profit]);
+    // }
 
 
     public function assign_asset_matrix_constraints()
@@ -306,8 +306,17 @@ class TransactionController extends Controller
     }
     public function getall_transactions(Request $request)
     {
-
-        $transactions = DB::table('vw_all_transactions')->get();
+        $transactions = Transaction::join('coins', 'transactions.coin_id', '=', 'coins.id')
+            ->join('users', 'transactions.user_id', '=', 'coins.id')
+            ->select(DB::raw('
+            transactions.units as units,
+              transactions.purchase_price as purchase_price,
+              transactions.investment_type as status,
+              transactions.purchase_date as date,
+              coins.name as coin_name,
+              users.name as username
+            '))
+            ->get();
         return response()->json(["data" => $transactions]);
     }
     public function excel_import_sample_download(Request $request)
