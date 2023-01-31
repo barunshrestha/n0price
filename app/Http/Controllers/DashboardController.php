@@ -218,10 +218,21 @@ class DashboardController extends Controller
         }
         $portfolio_id = $selected_portfolio[0]->id;
         $this->_data['user'] = $user;
-        $transactions = DB::table('transactions')->join('coins', 'transactions.coin_id', '=', 'coins.id')
+        $transactions = Transaction::join('coins', 'transactions.coin_id', '=', 'coins.id')
             ->where('transactions.user_id', $user->id)
             ->where('transactions.portfolio_id', $portfolio_id)
-            ->select(DB::raw('coins.name as coin_name,coins.image as image,transactions.*'))
+            ->select(DB::raw('coins.name as coin_name,
+                            coins.image as image,
+                            transactions.id,
+                            transactions.user_id,
+                            transactions.coin_id,
+                            transactions.symbol,
+                            transactions.investment_type,
+                            transactions.purchase_date,
+                            transactions.purchase_price_per_unit,
+                            transactions.units,
+                            transactions.purchase_price
+                            '))
             ->orderBy('purchase_date', 'desc')
             ->get();
         $this->_data['transactions'] = $transactions;
