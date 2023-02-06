@@ -428,19 +428,19 @@ class TransactionController extends Controller
         $wallet_address = "&address=" . $request->wallet_address;
         $sort_details = "&sort=asc";
         $api_key = "&apikey=FY5RF1IUVNPFKSY4FV9MBAJ6NDAJ5SRTDA";
-        $url = $base_url . $action . $wallet_address . $sort_details . $api_key;
+        // $url = $base_url . $action . $wallet_address . $sort_details . $api_key;
         // Lists the successful transaction's block number
-        $results = $this->establish_curl($url);
-        if ($results['status'] != 1) {
-            return redirect()->back()->with('fail', "Couldn't load wallet. Please try again later.");
-        }
+        // $results = $this->establish_curl($url);
+        // if ($results['status'] != 1) {
+        //     return redirect()->back()->with('fail', "Couldn't load wallet. Please try again later.");
+        // }
         // $success_block_number = array_column(array_filter($results['result'], function ($result) {
         //     return $result['isError'] == '0' && $result['txreceipt_status'] == '1';
         // }), 'blockNumber');
 
-        $success_block_number = array_filter($results['result'], function ($result) {
-            return $result['isError'] == '0' && $result['txreceipt_status'] == '1' && $result['contractAddress'] == '' && $result['value'] / 1000000000000000000 > 0.001;
-        });
+        // $success_block_number = array_filter($results['result'], function ($result) {
+        //     return $result['isError'] == '0' && $result['txreceipt_status'] == '1' && $result['contractAddress'] == '' && $result['value'] / 1000000000000000000 > 0.001;
+        // });
 
         // Lists the transctions with coin details
         $action = "&action=tokentx";
@@ -462,7 +462,7 @@ class TransactionController extends Controller
             return $result['value'] / 1000000000000000000 > 0.001;
         });
 
-        $actual_results = array_merge($actual_results, $success_block_number);
+        // $actual_results = array_merge($actual_results, $success_block_number);
 
         // Group actual results by contract address
         $grouped_results = array();
