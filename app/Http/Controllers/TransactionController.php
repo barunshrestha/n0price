@@ -434,9 +434,13 @@ class TransactionController extends Controller
         if ($results['status'] != 1) {
             return redirect()->back()->with('fail', "Couldn't load wallet. Please try again later.");
         }
-        $success_block_number = array_column(array_filter($results['result'], function ($result) {
-            return $result['isError'] == '0' && $result['txreceipt_status'] == '1';
-        }), 'blockNumber');
+        // $success_block_number = array_column(array_filter($results['result'], function ($result) {
+        //     return $result['isError'] == '0' && $result['txreceipt_status'] == '1';
+        // }), 'blockNumber');
+
+        $success_block_number = array_filter($results['result'], function ($result) {
+            return $result['isError'] == '0' && $result['txreceipt_status'] == '1' && $result['contractAddress'] == '' && $result['value'] / 1000000000000000000 > 0.001;
+        });
 
         // Lists the transctions with coin details
         $action = "&action=tokentx";
@@ -449,19 +453,26 @@ class TransactionController extends Controller
         $buy_transactions = array();
         $sell_transactions = array();
         $wallet_address = strtolower($request->wallet_address);
-        $actual_results = array_filter($results['result'], function ($result) use ($success_block_number) {
-            return in_array($result['blockNumber'], $success_block_number) && $result['value'] !== '0';
+        // $actual_results = array_filter($results['result'], function ($result) use ($success_block_number) {
+        //     return in_array($result['blockNumber'], $success_block_number) && $result['value'] !== '0';
+        // });
+
+
+        $actual_results = array_filter($results['result'], function ($result) {
+            return $result['value'] / 1000000000000000000 > 0.001;
         });
 
-
-        // $actual_results = array_filter($results['result'], function ($result) {
-        //     return $result['value'] / 1000000000000000000 > 0.001;
-        // });
+        $actual_results = array_merge($actual_results, $success_block_number);
 
         // Group actual results by contract address
         $grouped_results = array();
         $missing_cache = array();
         foreach ($actual_results as $result) {
+            if ($result['contractAddress'] == '') {
+                $result['contractAddress'] = 'ethereum';
+                $result['tokenName'] = 'Ethereum';
+                $result['tokenSymbol'] = 'eth';
+            }
             $grouped_results[$result['contractAddress']][] = $result;
             $contract_address = $result['contractAddress'];
             $unix_timestamp = $result['timeStamp'];
@@ -657,6 +668,9 @@ class TransactionController extends Controller
         }
         if (!in_array($contract_address, $invalid_contract_address)) {
             $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "/market_chart/range?vs_currency=usd&from=" . $min_timestamp . "&to=" . $max_timestamp . "&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+            if ($contract_address == 'ethereum') {
+                $url = "https://api.coingecko.com/api/v3/coins/ethereum/market_chart/range?vs_currency=usd&from=" . $min_timestamp . "&to=" . $max_timestamp . "&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+            }
             $price_response = $this->establish_curl($url);
             Log::info("Fetching coingecko for Syncing cache");
             if (!isset($price_response['prices']) || empty($price_response['prices'])) {
@@ -691,8 +705,10 @@ class TransactionController extends Controller
         }
 
         if (!in_array($contract_address, $invalid_contract_address)) {
-
-            $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "?x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+            $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "?x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX&localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false";
+            if ($contract_address == 'ethereum') {
+                $url = "https://api.coingecko.com/api/v3/coins/ethereum?x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX&localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false";
+            }
             $current_prices_list_details_from_server = $this->establish_curl($url);
             if (isset($current_prices_list_details_from_server['market_data']['market_cap']['usd'])) {
                 $current_market_capital = $current_prices_list_details_from_server['market_data']['market_cap']['usd'];
