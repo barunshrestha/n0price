@@ -23,29 +23,31 @@ class Transaction extends Model
         'purchase_price_per_unit'
     ];
 
+    public $secret_key = "BPCJY!US619";
+
     public function setUnitsAttribute($value)
     {
-        $this->attributes['units'] = DB::raw("AES_ENCRYPT('$value', 'secretkey')");
+        $this->attributes['units'] = DB::raw("AES_ENCRYPT('$value', '$this->secret_key')");
     }
     public function setPurchasePricePerUnitAttribute($value)
     {
-        $this->attributes['purchase_price_per_unit'] = DB::raw("AES_ENCRYPT('$value', 'secretkey')");
+        $this->attributes['purchase_price_per_unit'] = DB::raw("AES_ENCRYPT('$value', '$this->secret_key')");
     }
     public function setPurchasePriceAttribute($value)
     {
-        $this->attributes['purchase_price'] = DB::raw("AES_ENCRYPT('$value', 'secretkey')");
+        $this->attributes['purchase_price'] = DB::raw("AES_ENCRYPT('$value', '$this->secret_key')");
     }
 
     public function getUnitsAttribute($value)
     {
-        return (DB::select("select AES_DECRYPT('$value', 'secretkey') as dec_str"))[0]->dec_str;
+        return (DB::select("select AES_DECRYPT('$value', '$this->secret_key') as dec_str"))[0]->dec_str;
     }
     public function getPurchasePricePerUnitAttribute($value)
     {
-        return (DB::select("select AES_DECRYPT('$value', 'secretkey') as dec_str"))[0]->dec_str;
+        return (DB::select("select AES_DECRYPT('$value', '$this->secret_key') as dec_str"))[0]->dec_str;
     }
     public function getPurchasePriceAttribute($value)
     {
-        return (DB::select("select AES_DECRYPT('$value', 'secretkey') as dec_str"))[0]->dec_str;
+        return (DB::select("select AES_DECRYPT('$value', '$this->secret_key') as dec_str"))[0]->dec_str;
     }
 }

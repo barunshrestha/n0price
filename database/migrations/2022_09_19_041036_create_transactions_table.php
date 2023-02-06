@@ -19,12 +19,12 @@ class CreateTransactionsTable extends Migration
             $table->unsignedBigInteger('coin_id');
             $table->string('symbol');
             $table->unsignedBigInteger('portfolio_id');
-            $table->string('purchase_price_per_unit');
-            $table->string('units');
+            $table->binary('purchase_price_per_unit');
+            $table->binary('units');
             $table->string('partial_units_debited')->default('0');
             $table->string('profit_earned')->default('0');
             $table->string('current_rate')->nullable();
-            $table->string('purchase_price');
+            $table->binary('purchase_price');
             $table->string('investment_type');
             $table->date('purchase_date');
             $table->timestamps();

@@ -44,134 +44,134 @@
             </thead>
             <tbody>
                 @foreach ($transactions as $key => $transaction)
-                    <tr style="border-bottom: #f6f6f6 solid 0.75px;">
-                        <td class="text-center align-middle">
-                            <img src="{{ $transaction->image }}" alt="img" class="icon-image mx-2 ">
-                        </td>
-                        <td class="text-center align-middle">
-                            {{ $transaction->coin_name }}
+                <tr style="border-bottom: #f6f6f6 solid 0.75px;">
+                    <td class="text-center align-middle">
+                        <img src="{{ $transaction->image }}" alt="img" class="icon-image mx-2 ">
+                    </td>
+                    <td class="text-center align-middle">
+                        {{ $transaction->coin_name }}
 
-                        </td>
-                        <td class="text-center align-middle">
-                            <div id="investment_type-{{ $transaction->id }}">
+                    </td>
+                    <td class="text-center align-middle">
+                        <div id="investment_type-{{ $transaction->id }}">
 
-                                <div class="hide_after_edit">
-                                    <?php
-                                    $type = $transaction->investment_type;
-                                    if ($type == 'buy') {
-                                        echo "<span class=\" text-success font-weight-bold gain-button\">" . 'BUY' . ' </span>';
-                                    } else {
-                                        echo "<span class=\" text-danger font-weight-bold gain-button\">" . 'SELL' . ' </span>';
-                                    }
-                                    ?>
-                                </div>
-
-                                <select name="investment_type" class="form-control hide_before_edit hidden"
-                                    style="width: 85%;">
-                                    <option value="buy" <?php if ($type == 'buy') {
-                                        echo 'selected';
-                                    } ?>>Buy</option>
-                                    <option value="sell" <?php if ($type == 'sell') {
-                                        echo 'selected';
-                                    } ?>>Sell</option>
-                                </select>
-
+                            <div class="hide_after_edit">
+                                <?php
+                                $type = $transaction->investment_type;
+                                if ($type == 'buy') {
+                                    echo "<span class=\" text-success font-weight-bold gain-button\">" . 'BUY' . ' </span>';
+                                } else {
+                                    echo "<span class=\" text-danger font-weight-bold gain-button\">" . 'SELL' . ' </span>';
+                                }
+                                ?>
                             </div>
 
-                        </td>
-                        <td class="text-center align-middle">
-                            <div id="purchase_date-{{ $transaction->id }}">
-                                <div class="hide_after_edit justify-content-center">
-                                    {{ date('m/d/Y', strtotime($transaction->purchase_date)) }}
-                                    {{-- {{ $transaction->purchase_date }} --}}
-                                </div>
-                                <input type="date" name="purchase_date" class="form-control hidden hide_before_edit"
-                                    style="width: 85%;" value="{{ $transaction->purchase_date }}">
+                            <select name="investment_type" class="form-control hide_before_edit hidden"
+                                style="width: 85%;">
+                                <option value="buy" <?php if ($type == 'buy') {
+                                    echo 'selected';
+                                } ?>>Buy</option>
+                                <option value="sell" <?php if ($type == 'sell') {
+                                    echo 'selected';
+                                } ?>>Sell</option>
+                            </select>
 
-                            </div>
-                        </td>
-                        <td class="text-center align-middle">
-                            <div id="units-{{ $transaction->id }}">
-                                <div class="hide_after_edit ">
-                                    {{ $transaction->units }}
-                                </div>
-                                <input type="text" name="units" class="form-control hidden hide_before_edit"
-                                    style="width: 85%;" value="{{ $transaction->units }}">
-                            </div>
-                        </td>
-                        <td class="text-center align-middle">
-                            <div id="purchase_price-{{ $transaction->id }}">
-                                <div class="hide_after_edit ">
-                                    <?php
-                                    if (is_numeric($transaction->purchase_price) && is_numeric($transaction->units)) {
-                                        $my_avg_price = number_format($transaction->purchase_price / $transaction->units, 2);
-                                        $avg_price = "$" . $my_avg_price;
-                                    } else {
-                                        $avg_price = 'NA';
-                                    }
-                                    echo $avg_price;
-                                    ?>
-                                </div>
-                                <input type="text" name="price_per_unit"
-                                    class="form-control hidden  hide_before_edit" style="width: 85%;"
-                                    value={{ round($transaction->purchase_price / $transaction->units, 2) }}>
-                            </div>
-                        </td>
-                        <td class="text-center align-middle">
-                            <div id="purchase_price_total-{{ $transaction->id }}">
-                                <div class="hide_after_edit ">
-                                    <?php
-                                    if (is_numeric($transaction->purchase_price) && is_numeric($transaction->units)) {
-                                        $total_price = number_format($transaction->purchase_price, 2);
-                                        $total_price = "$" . $total_price;
-                                    } else {
-                                        $total_price = 'NA';
-                                    }
-                                    echo $total_price;
-                                    ?>
-                                </div>
-                                <input type="text" name="price_total" class="form-control hidden  hide_before_edit"
-                                    style="width: 85%;" value={{ round($transaction->purchase_price, 2) }}>
-                            </div>
-                        </td>
-                        <td>
-                            <div id="transaction_action_buttons-{{ $transaction->id }}">
-                                <div class="hide_after_edit d-flex justify-content-center">
-                                    <button class="btn btn-icon btn-success btn-xs mr-2 transactionEditBtn"
-                                        data-toggle="tooltip" title="Edit"
-                                        id="transactionEdit-{{ $transaction->id }}"
-                                        onclick="transactionEditBtn(event)">
-                                        <i class="fa fa-pen"></i>
-                                    </button>
-                                    <button type="button" value="Delete" class="btn btn-icon btn-danger btn-xs mr-2"
-                                        data-toggle="tooltip" onclick="deleteTransaction({{ $transaction->id }})"
-                                        title="Delete"><i class="fa fa-trash"></i></button>
-                                    <form action="{{ route('transactions.destroy', $transaction->id) }}"
-                                        id="deleteMyTransaction-{{ $transaction->id }}" style="display: inline-block;"
-                                        method="post">
-                                        {{ method_field('DELETE') }}
-                                        {{ csrf_field() }}
-                                        {{-- <button type="submit" value="Delete"
-                                        class="btn btn-icon btn-danger btn-xs mr-2 deleteBtn transactiondeleteBtn" data-toggle="tooltip"
-                                        title="Delete"><i class="fa fa-trash"></i></button> --}}
-                                    </form>
-                                </div>
-                                <div class="hide_before_edit hidden d-flex justify-content-center">
-                                    <button type="button" value="Save"
-                                        class="btn btn-icon btn-success btn-xs mr-2" data-toggle="tooltip"
-                                        title="Save" id="transaction_save_btn-{{ $transaction->id }}"
-                                        onclick="transactionsaveBtn(event)"><i
-                                            class="flaticon2-check-mark"></i></button>
+                        </div>
 
-                                    <button type="button" value="Discard" onclick="transactionDiscardBtn(event)"
-                                        id="transactionDiscard-{{ $transaction->id }}"
-                                        class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip"
-                                        title="Discard"><i class="flaticon2-cross"></i></button>
-                                </div>
+                    </td>
+                    <td class="text-center align-middle">
+                        <div id="purchase_date-{{ $transaction->id }}">
+                            <div class="hide_after_edit justify-content-center">
+                                {{ date('m/d/Y', strtotime($transaction->purchase_date)) }}
+                                {{-- {{ $transaction->purchase_date }} --}}
                             </div>
-                        </td>
-                    </tr>
-                @endforeach
+                            <input type="date" name="purchase_date" class="form-control hidden hide_before_edit"
+                                style="width: 85%;" value="{{ $transaction->purchase_date }}">
+
+                        </div>
+                    </td>
+                    <td class="text-center align-middle">
+                        <div id="units-{{ $transaction->id }}">
+                            <div class="hide_after_edit ">
+                                {{ $transaction->units }}
+                            </div>
+                            <input type="text" name="units" class="form-control hidden hide_before_edit"
+                                style="width: 85%;" value="{{ $transaction->units }}">
+                        </div>
+                    </td>
+                    <td class="text-center align-middle">
+                        <div id="purchase_price-{{ $transaction->id }}">
+                            <div class="hide_after_edit ">
+                                <?php
+                                if (is_numeric($transaction->purchase_price) && is_numeric($transaction->units)) {
+                                    $my_avg_price = number_format($transaction->purchase_price / $transaction->units, 2);
+                                    $avg_price = "$" . $my_avg_price;
+                                } else {
+                                    $avg_price = 'NA';
+                                }
+                                echo $avg_price;
+                                ?>
+                            </div>
+                            <input type="text" name="price_per_unit"
+                                class="form-control hidden  hide_before_edit" style="width: 85%;"
+                                value={{ round($transaction->purchase_price / $transaction->units, 2) }}>
+                        </div>
+                    </td>
+                    <td class="text-center align-middle">
+                        <div id="purchase_price_total-{{ $transaction->id }}">
+                            <div class="hide_after_edit ">
+                                <?php
+                                if (is_numeric($transaction->purchase_price) && is_numeric($transaction->units)) {
+                                    $total_price = number_format($transaction->purchase_price, 2);
+                                    $total_price = "$" . $total_price;
+                                } else {
+                                    $total_price = 'NA';
+                                }
+                                echo $total_price;
+                                ?>
+                            </div>
+                            <input type="text" name="price_total" class="form-control hidden  hide_before_edit"
+                                style="width: 85%;" value={{ round($transaction->purchase_price, 2) }}>
+                        </div>
+                    </td>
+                    <td>
+                        <div id="transaction_action_buttons-{{ $transaction->id }}">
+                            <div class="hide_after_edit d-flex justify-content-center">
+                                <button class="btn btn-icon btn-success btn-xs mr-2 transactionEditBtn"
+                                    data-toggle="tooltip" title="Edit"
+                                    id="transactionEdit-{{ $transaction->id }}"
+                                    onclick="transactionEditBtn(event)">
+                                    <i class="fa fa-pen"></i>
+                                </button>
+                                <button type="button" value="Delete" class="btn btn-icon btn-danger btn-xs mr-2"
+                                    data-toggle="tooltip" onclick="deleteTransaction({{ $transaction->id }})"
+                                    title="Delete"><i class="fa fa-trash"></i></button>
+                                <form action="{{ route('transactions.destroy', $transaction->id) }}"
+                                    id="deleteMyTransaction-{{ $transaction->id }}" style="display: inline-block;"
+                                    method="post">
+                                    {{ method_field('DELETE') }}
+                                    {{ csrf_field() }}
+                                    {{-- <button type="submit" value="Delete"
+                                    class="btn btn-icon btn-danger btn-xs mr-2 deleteBtn transactiondeleteBtn" data-toggle="tooltip"
+                                    title="Delete"><i class="fa fa-trash"></i></button> --}}
+                                </form>
+                            </div>
+                            <div class="hide_before_edit hidden d-flex justify-content-center">
+                                <button type="button" value="Save"
+                                    class="btn btn-icon btn-success btn-xs mr-2" data-toggle="tooltip"
+                                    title="Save" id="transaction_save_btn-{{ $transaction->id }}"
+                                    onclick="transactionsaveBtn(event)"><i
+                                        class="flaticon2-check-mark"></i></button>
+
+                                <button type="button" value="Discard" onclick="transactionDiscardBtn(event)"
+                                    id="transactionDiscard-{{ $transaction->id }}"
+                                    class="btn btn-icon btn-danger btn-xs mr-2" data-toggle="tooltip"
+                                    title="Discard"><i class="flaticon2-cross"></i></button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
             </tbody>
         </table>
     </div>
