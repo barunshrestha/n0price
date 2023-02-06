@@ -24,16 +24,70 @@ class UspGetCurrentTransactionCoinWise extends Migration
         tb.image,
         tb.user_id,
         tb.total as buy_unit,
-        vw_total_sell.total as sell_unit,
+        ts.total as sell_unit,
         tb.total_investment as buy_amount,
-        vw_total_sell.total_investment as sell_amount
-        from vw_total_buy as tb 
-        LEFT JOIN vw_total_sell ON tb.coin_id = vw_total_sell.coin_id 
+        ts.total_investment as sell_amount
+        from (
+            SELECT
+                coins.name AS coin_name,
+                coins.coin_id AS coin_id,
+                coins.symbol AS symbol,
+                transactions.portfolio_id AS portfolio_id,
+                SUM(AES_DECRYPT(units,'secretkey')) AS total,
+                coins.id AS id_of_coin,
+                coins.image AS image,
+                SUM(AES_DECRYPT(transactions.purchase_price,'secretkey')) AS total_investment,
+                transactions.user_id AS user_id
+                FROM
+                transactions
+                JOIN coins ON transactions.coin_id = coins.id
+                WHERE
+                investment_type = 'buy'
+                GROUP BY
+                coin_id,
+                user_id,
+                coins.name,
+                coins.symbol,
+                coins.id,
+                coins.image,
+                transactions.portfolio_id
+        )       
+        tb 
+        LEFT JOIN 
+        (
+            SELECT
+                coins.name AS coin_name,
+                coins.coin_id AS coin_id,
+                coins.symbol AS symbol,
+                transactions.portfolio_id AS portfolio_id,
+                SUM(AES_DECRYPT(units,'secretkey')) AS total,
+                coins.id AS id_of_coin,
+                coins.image AS image,
+                SUM(AES_DECRYPT(transactions.purchase_price,'secretkey')) AS total_investment,
+                transactions.user_id AS user_id
+                FROM
+                transactions
+                JOIN coins ON transactions.coin_id = coins.id
+                WHERE
+                investment_type = 'sell'
+                GROUP BY
+                coin_id,
+                user_id,
+                coins.name,
+                coins.symbol,
+                coins.id,
+                coins.image,
+                transactions.portfolio_id
+        )        
+        ts ON tb.coin_id = ts.coin_id 
         AND tb.user_id=vw_total_sell.user_id 
         where tb.user_id= current_user_id
+
+
+
         and tb.id_of_coin=current_coin_id;
         END";
-  
+
         DB::unprepared($procedure);
     }
 
