@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Query extends Model
 {
     use HasFactory;
-
+    private $secret_key = '';
+    public function __construct()
+    {
+        $this->secret_key = (new Transaction)->secret_key;
+    }
     public function query_vw_final_transaction($user_id, $portfolio_id)
     {
         return "
@@ -29,10 +33,10 @@ class Query extends Model
                 coins.coin_id AS coin_id,
                 coins.symbol AS symbol,
                 transactions.portfolio_id AS portfolio_id,
-                SUM(AES_DECRYPT(units,'secretkey')) AS total,
+                SUM(AES_DECRYPT(units,'$this->secret_key')) AS total,
                 coins.id AS id_of_coin,
                 coins.image AS image,
-                SUM(AES_DECRYPT(transactions.purchase_price,'secretkey')) AS total_investment,
+                SUM(AES_DECRYPT(transactions.purchase_price,'$this->secret_key')) AS total_investment,
                 transactions.user_id AS user_id
                 FROM
                 transactions
@@ -64,10 +68,10 @@ class Query extends Model
                 coins.coin_id AS coin_id,
                 coins.symbol AS symbol,
                 transactions.portfolio_id AS portfolio_id,
-                SUM(AES_DECRYPT(units,'secretkey')) AS total,
+                SUM(AES_DECRYPT(units,'$this->secret_key')) AS total,
                 coins.id AS id_of_coin,
                 coins.image AS image,
-                SUM(AES_DECRYPT(transactions.purchase_price,'secretkey')) AS total_investment,
+                SUM(AES_DECRYPT(transactions.purchase_price,'$this->secret_key')) AS total_investment,
                 transactions.user_id AS user_id
                 FROM
                 transactions
@@ -109,8 +113,8 @@ class Query extends Model
         select
             transactions.id,
             transactions.user_id,
-            AES_DECRYPT(transactions.units,'secretkey') as units,
-            AES_DECRYPT(transactions.purchase_price,'secretkey') as purchase_price,
+            AES_DECRYPT(transactions.units,'$this->secret_key') as units,
+            AES_DECRYPT(transactions.purchase_price,'$this->secret_key') as purchase_price,
             transactions.portfolio_id,
             transactions.purchase_date,
             coins.symbol,
@@ -138,8 +142,8 @@ class Query extends Model
         select
             transactions.id,
             transactions.user_id,
-            AES_DECRYPT(transactions.units,'secretkey') as units,
-            AES_DECRYPT(transactions.purchase_price,'secretkey') as purchase_price,
+            AES_DECRYPT(transactions.units,'$this->secret_key') as units,
+            AES_DECRYPT(transactions.purchase_price,'$this->secret_key') as purchase_price,
             transactions.portfolio_id,
             transactions.purchase_date,
             coins.symbol,
