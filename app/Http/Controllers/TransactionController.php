@@ -458,8 +458,12 @@ class TransactionController extends Controller
         // });
 
 
-        $actual_results = array_filter($results['result'], function ($result) {
-            return $result['value'] / 1000000000000000000 > 0.001;
+        $invalid_contract_address = json_decode(Redis::get('invalid_coins'));
+        if (!isset($invalid_contract_address)) {
+            $invalid_contract_address = [];
+        }
+        $actual_results = array_filter($results['result'], function ($result) use ($invalid_contract_address) {
+            return $result['value'] > 0 && !in_array($result['contractAddress'], $invalid_contract_address);
         });
 
         // $actual_results = array_merge($actual_results, $success_block_number);
@@ -479,7 +483,6 @@ class TransactionController extends Controller
             $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
             $cache_key = $contract_address . '_' . $new_unix_timestamp;
             $price =  Redis::get($cache_key);
-            // dd($price, $cache_key, $result);
             if (!isset($price)) {
                 $missing_cache[$result['contractAddress']][] = $result;
             }
@@ -557,7 +560,6 @@ class TransactionController extends Controller
                 'profit_loss' => 0,
             ];
         }
-        // dd($buy_transactions, $sell_transactions);
         usort($sell_transactions, function ($a, $b) {
             return $a->timeStamp > $b->timeStamp;
         });
@@ -648,6 +650,17 @@ class TransactionController extends Controller
         $this->_data['worth'] = $worth;
         return view("pages." . 'wallet.' . 'coin_worth', $this->_data);
     }
+    public function calc_ether_value($wallet_address)
+    {
+        $url = "https://api.etherscan.io/api?module=account&action=balance&address=" . $wallet_address . "&tag=latest&apikey=FY5RF1IUVNPFKSY4FV9MBAJ6NDAJ5SRTDA";
+        $response = $this->establish_curl($url);
+        $total_ether = 0;
+        if ($response['status'] == '1') {
+            $total_ether = $response['result'];
+        }
+        $this->_data['total_ether'] = ($total_ether / 1000000000000000000) . " ETH";
+        return view("pages." . 'wallet.' . 'total_ether', $this->_data);
+    }
     public function establish_curl($url)
     {
         $ch = curl_init();
@@ -676,9 +689,11 @@ class TransactionController extends Controller
             if (!isset($price_response['prices']) || empty($price_response['prices'])) {
                 Log::error("Error fetching" . Carbon::now());
                 Log::error($price_response);
-                if ($price_response['error'] == 'coin not found') {
-                    array_push($invalid_contract_address, $contract_address);
-                    Redis::set("invalid_coins", json_encode($invalid_contract_address));
+                if (isset($price_response['error'])) {
+                    if ($price_response['error'] == 'coin not found') {
+                        array_push($invalid_contract_address, $contract_address);
+                        Redis::set("invalid_coins", json_encode($invalid_contract_address));
+                    }
                 }
             }
             if (isset($price_response['prices']) && !empty($price_response['prices'])) {
@@ -724,13 +739,16 @@ class TransactionController extends Controller
                     'all_time_high_price_percentage' => $all_time_high_price_percentage
                 ]), 'EX', 3000);
             } else {
-                if ($current_prices_list_details_from_server['error'] == 'coin not found') {
-                    array_push($invalid_contract_address, $contract_address);
-                    Redis::set("invalid_coins", json_encode($invalid_contract_address));
+                if (isset($current_prices_list_details_from_server['error'])) {
+
+                    if ($current_prices_list_details_from_server['error'] == 'coin not found') {
+                        array_push($invalid_contract_address, $contract_address);
+                        Redis::set("invalid_coins", json_encode($invalid_contract_address));
+                    }
+                    Log::info("Fetching coingecko for Current price");
+                    Log::error("Error fetching" . Carbon::now());
+                    Log::error($current_prices_list_details_from_server);
                 }
-                Log::info("Fetching coingecko for Current price");
-                Log::error("Error fetching" . Carbon::now());
-                Log::error($current_prices_list_details_from_server);
             }
         }
     }

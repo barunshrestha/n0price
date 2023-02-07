@@ -86,6 +86,7 @@
 
 @section('content')
     <input type="hidden" id="wallet_address" value="{{ $wallet_address }}" name="wallet_address">
+
     <div class="row">
         <div class="col-md-12">
             <div class="card card-custom gutter-b">
@@ -111,6 +112,10 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <div style="border: 1px solid #d6d6d6; padding:2em; width:50em;">
+                        <h5 class="card-title">Wallet Address : {{ $wallet_address }}</h5>
+                        <h6 class="card-text" id="calculate_total"></h6>
+                    </div>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="kt_tab_pane_1_4" role="tabpanel"
                             aria-labelledby="kt_tab_pane_1_4">
@@ -130,7 +135,18 @@
         $(document).ready(function() {
             wallet_address = $('#wallet_address').val();
             populateReturn();
+            calculateTotal();
         });
+
+        function calculateTotal() {
+            $.ajax({
+                'url': '/calculate/total/' + wallet_address,
+                'type': 'GET',
+                success: function(result) {
+                    $("#calculate_total").html(result);
+                }
+            });
+        }
 
         function populateReturn() {
             $.ajax({
