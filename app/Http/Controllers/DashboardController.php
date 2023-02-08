@@ -220,10 +220,11 @@ class DashboardController extends Controller
         }
         $portfolio_id = $selected_portfolio[0]->id;
         $this->_data['user'] = $user;
-        $transactions = Transaction::join('coins', 'transactions.coin_id', '=', 'coins.id')
+        $transactions = DB::table('transactions')
+            ->join('coins', 'transactions.coin_id', '=', 'coins.id')
             ->where('transactions.user_id', $user->id)
             ->where('transactions.portfolio_id', $portfolio_id)
-            ->select(DB::raw('coins.name as coin_name,
+            ->select(DB::raw("coins.name as coin_name,
                             coins.image as image,
                             transactions.id,
                             transactions.user_id,
@@ -231,12 +232,13 @@ class DashboardController extends Controller
                             transactions.symbol,
                             transactions.investment_type,
                             transactions.purchase_date,
-                            transactions.purchase_price_per_unit,
-                            transactions.units,
-                            transactions.purchase_price
-                            '))
+                            AES_DECRYPT(transactions.units,'BPCJY!US619') as units,
+                            AES_DECRYPT(transactions.purchase_price_per_unit,'BPCJY!US619') as purchase_price_per_unit,
+                            AES_DECRYPT(transactions.purchase_price,'BPCJY!US619') as purchase_price
+                            "))
             ->orderBy('purchase_date', 'desc')
-            ->get();
+            ->get()
+            ->toArray();
         $this->_data['transactions'] = $transactions;
         return view($this->_page . 'dashboard-content.' . 'dashboard-transactions-partials', $this->_data);
     }
