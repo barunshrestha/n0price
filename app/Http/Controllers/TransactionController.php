@@ -640,7 +640,7 @@ class TransactionController extends Controller
                         "buy_unit" => $total_buy,
                         "sell_unit" => $total_sell,
                         "usd_market_cap" => round($current_market_capital, 2),
-                        "current_usd" => round($current_price, 2),
+                        "current_usd" => $current_price,
                         "return" => $return,
                         "24hr" => round($price_change_percentage_24h, 2),
                         "7d" => round($price_change_percentage_7d, 2),
