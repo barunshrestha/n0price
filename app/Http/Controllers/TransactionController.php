@@ -509,8 +509,10 @@ class TransactionController extends Controller
                 }
                 $cache_key = $contract_address . '_' . $new_unix_timestamp;
                 $redis_price = Redis::get($cache_key);
+
                 $price = isset($redis_price) ? $redis_price : 0;
-                $units = $result['value'] / 1000000000000000000;
+                $units = $result['value'] / 10 ** $result['tokenDecimal'];
+                // print_r($cache_key . "   " . $redis_price . "    " . $units . "<br>");
                 $purchase_price = $units * $price;
                 if (in_array($result['from'], $all_wallet_address)) {
                     // sell transaction
