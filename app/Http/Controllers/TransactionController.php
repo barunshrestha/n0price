@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Maatwebsite\Excel\Facades\Excel;
 
+use function PHPUnit\Framework\isNull;
+
 class TransactionController extends Controller
 {
     private $_app = "";
@@ -415,12 +417,21 @@ class TransactionController extends Controller
             ->select(['coin_id', 'id'])
             ->first();
     }
-    public function saveNewWallet()
+
+    public function loadWallet(Request $request)
     {
-    }
-    public function loadWallet($portfolio_id)
-    {
-        return view('pages.wallet.dashboard', compact('portfolio_id'));
+        $user = Auth::user();
+        $transaction_count = Transaction::where('user_id', $user->id)->where('portfolio_id', $request->portfolio_id)->first();
+        if (isset($transaction_count)) {
+            $portfolio = new Portfolio();
+            $portfolio->user_id = Auth::id();
+            $portfolio->wallet_address = json_encode($request->wallet_address);
+            $portfolio->save();
+            (new AuthController)->create_asset_matrix($user, $portfolio);
+            return redirect()->route('portfolio.specific', $portfolio->id);
+        }
+        Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->update(['wallet_address' => json_encode($request->wallet_address)]);
+        return redirect()->back();
     }
 
     public function loadWalletCalculations(Request $request, $portfolio_id)
@@ -749,7 +760,10 @@ class TransactionController extends Controller
     }
     public function updateWallet(Request $request)
     {
+        if (isNull($request->wallet_address)) {
+            Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->update(['wallet_address' => $request->wallet_address]);
+            return redirect()->back();
+        }
         Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->update(['wallet_address' => json_encode($request->wallet_address)]);
-        return redirect()->back();
     }
 }

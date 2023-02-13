@@ -13,7 +13,7 @@
                     <div class="card-header card-header-tabs-line">
                         <div class="card-toolbar">
                             <ul class="nav nav-tabs nav-bold nav-tabs-line row">
-                                <li class="nav-item col-sm-12 col-md-7">
+                                <li class="nav-item col-sm-12 col-md-6" >
                                     <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_csv"
                                         id="portfolio-btn">
                                         <span class="nav-icon mx-2"><i class="flaticon2-infographic"></i></span>
@@ -21,11 +21,11 @@
                                     </a>
                                 </li>
                                 @if (Auth::user()->role_id == '1')
-                                    <li class="nav-item col-sm-12 col-md-5">
-                                        <a class="nav-link mx-sm-5" data-toggle="tab" href="#kt_tab_pane_wallet"
+                                    <li class="nav-item col-sm-12 col-md-6" style="width: min-content;">
+                                        <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_wallet"
                                             id="transaction-btn">
                                             <span class="nav-icon mx-2"><i class="flaticon-piggy-bank"></i></span>
-                                            <span class="nav-text">Wallet</span>
+                                            <span class="nav-text">Add Wallet</span>
                                         </a>
                                     </li>
                                 @endif
@@ -68,6 +68,7 @@
                                     <form class="form" id="wallet_form" action="{{ route('load.wallet') }}"
                                         method="post" enctype="multipart/form-data">
                                         {{ csrf_field() }}
+                                        <input type="hidden" id="portfolioId" value="{{ $portfolio_details->id }}" name="portfolio_id">
                                         <div class="card-body">
                                             <div id="wallet_address_collection">
                                                 <div class="input-group mb-3">
