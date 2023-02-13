@@ -2,7 +2,7 @@
 @extends('layout.default')
 @section('styles')
     <link href="{{ asset('css/pages/wizard/wizard-2.css') }}" rel="stylesheet" type="text/css" />
-
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <style>
         .coin_container .selection {
             margin-bottom: 1em;
@@ -83,43 +83,196 @@
     </style>
 @endsection
 {{-- Content --}}
-
 @section('content')
-    <input type="hidden" id="wallet_address" value="{{ $wallet_address }}" name="wallet_address">
+    <input type="hidden" id="portfolio_id" value="{{ $portfolio_id }}" name="portfolio_id">
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card card-custom gutter-b">
-                <div class="errorbox">
-
-                </div>
+    <div class="card card-custom">
+        <div class="card-header flex-wrap border-0 pt-6 pb-0">
+            <div style="border: 1px solid #d6d6d6; padding:2em;">
+                <h5 class="card-title">Your Portfolio : {{ $portfolio_details->portfolio_name }}</h5>
+                <h6 class="card-text" id="total_holding_valuation"></h6>
+            </div>
+            <div class="card-toolbar">
+                <button type="button" class="btn btn-success mx-2 my-3" data-toggle="modal"
+                    data-target="#my_wallet_addresses">
+                    <i class="flaticon-upload"></i>
+                    My Wallet</button>
             </div>
         </div>
+
+        <div class="card-body">
+            <table class="table table-responsive w-100 d-block d-md-table table-bordered" style="width: 100%">
+                <thead>
+                    <tr>
+                        <th scope="col" colspan="2"></th>
+                        @foreach ($asset_matrix_constraints as $constraints)
+                            <th scope="col" style="background: {{ $constraints->color }};color:black;text-align:center;">
+                                {{ $constraints->market_cap }}
+                            </th>
+                        @endforeach
+                        <th style="text-align:center; border:none;" colspan="4"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2">
+                            Risk
+                        </td>
+                        @foreach ($asset_matrix_constraints as $constraints)
+                            <td style="text-align:center;">
+                                {{ $constraints->risk }}
+                            </td>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <td style="border-right: 1px solid #ffffff;">Allocation%
+                        </td>
+                        <td style="text-align: right">
+                            <span id="total_allocation" class="ml-auto"></span>
+                        </td>
+                        <form action="{{ route('percentage.allocation') }}" method="POST">
+                            @csrf
+                            <input type="hidden" value="{{ $portfolio_details->id }}" name="portfolio_id">
+                            <input type="hidden" value="{{ $portfolio_details->portfolio_name }}" name="portfolio_name">
+                            @foreach ($asset_matrix_constraints as $constraints)
+                                <td>
+                                    <div class="hideAfteredit allocation-percentage" style="text-align: center;">
+                                        {{ $constraints->percentage_allocation }}%
+                                    </div>
+                                    <input type="text" class="form-control hideBeforeedit hidden"
+                                        name="allocation_percentage[]" value="{{ $constraints->percentage_allocation }}">
+                                </td>
+                            @endforeach
+                            <td colspan="4" style="border: none;">
+                                <div class="d-flex justify-content-left">
+                                    <button class="btn btn-icon btn-success btn-xs allocationEditBtn" type="button"
+                                        data-toggle="tooltip" title="Edit">
+                                        <i class="fa fa-pen"></i>
+                                    </button>
+                                    <button class="btn btn-icon btn-success btn-xs ml-2 allocationSaveBtn hidden"
+                                        type="submit" data-toggle="tooltip" title="Submit">
+                                        <i class="fa fa-save"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </form>
+                    </tr>
+                    <tr>
+
+                        <td colspan="2">
+                            To Allocate $
+                        </td>
+                        <td style="text-align: right;"><span id="toallocate-veryhigh"></span></td>
+                        <td style="text-align: right;"><span id="toallocate-high"></span></td>
+                        <td style="text-align: right;"><span id="toallocate-medium"></span></td>
+                        <td style="text-align: right;"><span id="toallocate-low"></span></td>
+                        <td style="text-align: right;"><span id="toallocate-verylow"></span></td>
+
+                    </tr>
+                    <tr>
+
+                        <td colspan="2">
+                            Allocated
+                        </td>
+                        <td style="text-align: right;"><span id="allocated-veryhigh"></span></td>
+                        <td style="text-align: right;"><span id="allocated-high"></span></td>
+                        <td style="text-align: right;"><span id="allocated-medium"></span></td>
+                        <td style="text-align: right;"><span id="allocated-low"></span></td>
+                        <td style="text-align: right;"><span id="allocated-verylow"></span></td>
+                    </tr>
+                    <tr>
+
+                        <td colspan="2">
+                            Reallocate
+                        </td>
+                        <td style="text-align: right;"><span id="not_allocated-veryhigh"></span></td>
+                        <td style="text-align: right;"><span id="not_allocated-high"></span></td>
+                        <td style="text-align: right;"><span id="not_allocated-medium"></span></td>
+                        <td style="text-align: right;"><span id="not_allocated-low"></span></td>
+                        <td style="text-align: right;"><span id="not_allocated-verylow"></span></td>
+                        <td style="text-align: center;font-weight:bold;" colspan="4">Market</td>
+
+                    </tr>
+                </tbody>
+
+                <tbody id="coin_worth_all_summary">
+                    <tr>
+                        <td colspan="11" style="text-align: center;" class="my-5">
+                            <h4>
+                                Loading....
+                            </h4>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card card-custom gutter-b">
-                <div class="card-header card-header-tabs-line">
-                    <div class="card-toolbar">
-                        <ul class="nav nav-tabs nav-bold nav-tabs-line row">
-                            <li class="nav-item col-sm-12 col-md-5">
-                                <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_1_4" id="portfolio-btn">
-                                    <span class="nav-icon"><i class="flaticon2-chat-1"></i></span>
-                                    <span class="nav-text">Portfolio</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+    <div class="modal fade" id="my_wallet_addresses" data-backdrop="static" tabindex="-1" role="dialog"
+        aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Import data</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
                 </div>
-                <div class="card-body">
-                    <div style="border: 1px solid #d6d6d6; padding:2em; width:50em;">
-                        <h5 class="card-title">Wallet Address : {{ $wallet_address }}</h5>
-                        <h6 class="card-text" id="calculate_total"></h6>
-                    </div>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="kt_tab_pane_1_4" role="tabpanel"
-                            aria-labelledby="kt_tab_pane_1_4">
-                            @include('pages.wallet.portfolio')
+                <div class="modal-body">
+                    <div class="card px-3 py-3 container card-custom" style="width: 100%">
+                        <div class="card-header card-header-tabs-line">
+                            <div class="card-toolbar">
+                                <ul class="nav nav-tabs nav-bold nav-tabs-line row">
+                                    @if (Auth::user()->role_id == '1')
+                                        <li class="nav-item col-sm-12 col-md-7">
+                                            <a class="nav-link mx-sm-5" data-toggle="tab" href="#kt_tab_pane_wallet"
+                                                id="transaction-btn">
+                                                <span class="nav-icon mx-2"><i class="flaticon-piggy-bank"></i></span>
+                                                <span class="nav-text">Wallet</span>
+                                            </a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                @if (Auth::user()->role_id == '1')
+                                    <div class="tab-pane fade show active" id="kt_tab_pane_csv" role="tabpanel"
+                                        aria-labelledby="kt_tab_pane_csv">
+                                        <form class="form" id="wallet_form" action="{{ route('update.wallet') }}"
+                                            method="post" enctype="multipart/form-data">
+                                            {{ csrf_field() }}
+                                            <input type="hidden" name="portfolio_id" value="{{ $portfolio_id }}">
+                                            <div class="card-body">
+                                                <div id="wallet_address_collection">
+                                                    @foreach ($all_wallet_address as $wallet_address)
+                                                        <div class="input-group mb-3">
+                                                            <input name="wallet_address[]" type="text"
+                                                                class="form-control form-control-solid"
+                                                                placeholder="Enter your wallet address" required
+                                                                value="{{ $wallet_address }}" autocomplete="off" />
+                                                            <button class="btn btn-icon btn-danger btn-sm mx-2"
+                                                                type="button" onclick="removeWalletAddressField(this)">
+                                                                <i class="fa fa-minus"></i>
+                                                            </button>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <button class="btn btn-icon btn-info btn-sm mx-2" type="button"
+                                                    onclick="addWalletAddressField()">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-light-primary font-weight-bold"
+                                                    data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary font-weight-bold"
+                                                    id="coin-save-transaction-btn">Save</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -133,9 +286,9 @@
     <script src="{{ asset('js/pages/widgets.js') }}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            wallet_address = $('#wallet_address').val();
+            portfolio_id = $('#portfolio_id').val();
             populateReturn();
-            calculateTotal();
+            // calculateTotal();
         });
 
         function calculateTotal() {
@@ -150,7 +303,7 @@
 
         function populateReturn() {
             $.ajax({
-                'url': '/calculate/wallet/' + wallet_address,
+                'url': '/calculate/wallet/' + portfolio_id,
                 'type': 'GET',
                 success: function(result) {
                     $("#coin_worth_all_summary").html(result);

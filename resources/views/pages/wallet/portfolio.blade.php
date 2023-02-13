@@ -23,7 +23,7 @@
                     <th style="text-align:center; border:none;" colspan="4"></th>
                 </tr>
             </thead>
-            <tbody id="coin_worth_all_summary">
+            <tbody id="">
                 <tr>
                     <td colspan="11" style="text-align: center;" class="my-5">
                         <h4>

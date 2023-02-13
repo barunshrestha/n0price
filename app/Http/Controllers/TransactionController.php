@@ -415,57 +415,41 @@ class TransactionController extends Controller
             ->select(['coin_id', 'id'])
             ->first();
     }
-    public function loadWallet(Request $request)
+    public function saveNewWallet()
     {
-        $wallet_address = $request->wallet_address;
-        return view('pages.wallet.dashboard', compact('wallet_address'));
+    }
+    public function loadWallet($portfolio_id)
+    {
+        return view('pages.wallet.dashboard', compact('portfolio_id'));
     }
 
-    public function loadWalletCalculations(Request $request)
+    public function loadWalletCalculations(Request $request, $portfolio_id)
     {
-        $base_url = "https://api.etherscan.io/api?module=account";
-        $action = "&action=txlist";
-        $wallet_address = "&address=" . $request->wallet_address;
-        $sort_details = "&sort=asc";
-        $api_key = "&apikey=FY5RF1IUVNPFKSY4FV9MBAJ6NDAJ5SRTDA";
-        // $url = $base_url . $action . $wallet_address . $sort_details . $api_key;
-        // Lists the successful transaction's block number
-        // $results = $this->establish_curl($url);
-        // if ($results['status'] != 1) {
-        //     return redirect()->back()->with('fail', "Couldn't load wallet. Please try again later.");
-        // }
-        // $success_block_number = array_column(array_filter($results['result'], function ($result) {
-        //     return $result['isError'] == '0' && $result['txreceipt_status'] == '1';
-        // }), 'blockNumber');
-
-        // $success_block_number = array_filter($results['result'], function ($result) {
-        //     return $result['isError'] == '0' && $result['txreceipt_status'] == '1' && $result['contractAddress'] == '' && $result['value'] / 1000000000000000000 > 0.001;
-        // });
-
-        // Lists the transctions with coin details
-        $action = "&action=tokentx";
-        $url = $base_url . $action . $wallet_address . $sort_details . $api_key;
-        $results = $this->establish_curl($url);
-        if (!isset($results) || $results['status'] != 1) {
-            return redirect()->back()->with('fail', "Couldn't load wallet. Please try again later.");
-        }
-        $coins_available = array();
-        $buy_transactions = array();
-        $sell_transactions = array();
-        $wallet_address = strtolower($request->wallet_address);
-        // $actual_results = array_filter($results['result'], function ($result) use ($success_block_number) {
-        //     return in_array($result['blockNumber'], $success_block_number) && $result['value'] !== '0';
-        // });
-
-
+        $portfolio_wallet_addresses = (Portfolio::where('id', $portfolio_id)->first('wallet_address'))->wallet_address;
+        $all_wallet_address = json_decode($portfolio_wallet_addresses);
+        $this->_data['all_wallet_address'] = $all_wallet_address;
+        $this->_data['portfolio_id'] = $portfolio_id;
         $invalid_contract_address = json_decode(Redis::get('invalid_coins'));
         if (!isset($invalid_contract_address)) {
             $invalid_contract_address = [];
         }
-        $actual_results = array_filter($results['result'], function ($result) use ($invalid_contract_address) {
-            return $result['value'] > 0 && !in_array($result['contractAddress'], $invalid_contract_address);
-        });
+        $actual_results = [];
+        $base_url = "https://api.etherscan.io/api?module=account&action=tokentx&sort=asc&apikey=FY5RF1IUVNPFKSY4FV9MBAJ6NDAJ5SRTDA";
+        foreach ($all_wallet_address as $address) {
+            $url = $base_url . "&address=" . $address;
+            $results = $this->establish_curl($url);
+            if (!isset($results) || $results['status'] != 1) {
+                return redirect()->back()->with('fail', "Couldn't load wallet. Please try again later.");
+            }
 
+            $filtered_results = array_filter($results['result'], function ($result) use ($invalid_contract_address) {
+                return $result['value'] > 0 && !in_array($result['contractAddress'], $invalid_contract_address);
+            });
+            $actual_results = array_merge($actual_results, $filtered_results);
+        }
+        $coins_available = array();
+        $buy_transactions = array();
+        $sell_transactions = array();
         // $actual_results = array_merge($actual_results, $success_block_number);
 
         // Group actual results by contract address
@@ -517,7 +501,7 @@ class TransactionController extends Controller
                 $price = isset($redis_price) ? $redis_price : 0;
                 $units = $result['value'] / 1000000000000000000;
                 $purchase_price = $units * $price;
-                if ($result['from'] == $wallet_address) {
+                if (in_array($result['from'], $all_wallet_address)) {
                     // sell transaction
                     array_push($sell_transactions, (object)[
                         'tokenName' => $result['tokenName'],
@@ -528,7 +512,7 @@ class TransactionController extends Controller
                         'timeStamp' => $result['timeStamp']
                     ]);
                     $grouped_results[$contract_address]['sell_unit'] = floatval($grouped_results[$contract_address]['sell_unit']) + floatval($units);
-                } elseif ($result['to'] == $wallet_address) {
+                } elseif (in_array($result['to'], $all_wallet_address)) {
                     // buy transaction
                     array_push($buy_transactions, (object)[
                         'tokenName' => $result['tokenName'],
@@ -762,5 +746,10 @@ class TransactionController extends Controller
                 }
             }
         }
+    }
+    public function updateWallet(Request $request)
+    {
+        Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->update(['wallet_address' => json_encode($request->wallet_address)]);
+        return redirect()->back();
     }
 }

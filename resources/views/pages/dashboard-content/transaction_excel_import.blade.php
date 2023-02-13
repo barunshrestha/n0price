@@ -69,12 +69,18 @@
                                         method="post" enctype="multipart/form-data">
                                         {{ csrf_field() }}
                                         <div class="card-body">
-                                            <div class="form-group row">
-                                                <input name="wallet_address" type="text"
-                                                    class="form-control form-control-solid"
-                                                    placeholder="Enter your wallet address" required
-                                                    autocomplete="off" />
+                                            <div id="wallet_address_collection">
+                                                <div class="input-group mb-3">
+                                                    <input name="wallet_address[]" type="text"
+                                                        class="form-control form-control-solid"
+                                                        placeholder="Enter your wallet address" required
+                                                        autocomplete="off" />
+                                                </div>
                                             </div>
+                                            <button class="btn btn-icon btn-info btn-sm mx-2" type="button"
+                                                onclick="addWalletAddressField()">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-light-primary font-weight-bold"

@@ -328,16 +328,14 @@ class DashboardController extends Controller
     }
     public function renderSpecificPortfolio($portfolio_id)
     {
-
         $user = Auth::user();
         (new AuthController)->checkForAssetMatrix_Portfolio($user);
         $this->_data['user'] = $user;
         $selectedPortfolio = Portfolio::where('user_id', $user->id)->where('id', $portfolio_id)->first();
         $this->_data['page_title'] = $selectedPortfolio->portfolio_name;
         $portfolio_id = $selectedPortfolio->id;
+        $this->_data['portfolio_id'] = $portfolio_id;
         $this->_data['portfolio_details'] = $selectedPortfolio;
-        $transaction_count = Transaction::where('user_id', $user->id)->where('portfolio_id', $portfolio_id)->count();
-        $this->_data['transaction_count'] = $transaction_count;
         $asset_matrix_total = DB::select('select sum(percentage_allocation) as asset_total from asset_matrix_constraints where user_id =? and portfolio_id=? group by user_id', [$user->id, $portfolio_id]);
         $this->_data['asset_total'] = $asset_matrix_total[0]->asset_total;
         $asset_matrix_constraints = AssetMatrixConstraints::where('user_id', Auth::user()->id)->where('portfolio_id', $portfolio_id)->get();
@@ -345,6 +343,16 @@ class DashboardController extends Controller
         if ($asset_matrix_total[0]->asset_total == 0) {
             return view($this->_page . 'no-content-dashboard', $this->_data);
         }
+        if (isset($selectedPortfolio->wallet_address)) {
+            $portfolio_wallet_addresses = (Portfolio::where('id', $portfolio_id)->first('wallet_address'))->wallet_address;
+            $all_wallet_address = json_decode($portfolio_wallet_addresses);
+            $this->_data['all_wallet_address'] = $all_wallet_address;
+            $this->_data['portfolio_id'] = $portfolio_id;
+            return view('pages.wallet.dashboard', $this->_data);
+        }
+
+        $transaction_count = Transaction::where('user_id', $user->id)->where('portfolio_id', $portfolio_id)->count();
+        $this->_data['transaction_count'] = $transaction_count;
         return view($this->_page . 'dashboard', $this->_data);
     }
 }

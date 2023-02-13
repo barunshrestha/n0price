@@ -53,7 +53,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
     @include('layout.base._layout')
 
-    
+
 
     {{-- Global Config (global config for global JS scripts) --}}
     <script>
@@ -216,9 +216,24 @@ License: You must have a valid license purchased only from themeforest(the above
                     }
                 });
             });
-
-
         });
+
+        function addWalletAddressField() {
+            $('#wallet_address_collection').append('<div class="input-group mb-3">' +
+                '<input name="wallet_address[]" type="text"' +
+                'class="form-control form-control-solid"' +
+                'placeholder="Enter another wallet address" required' +
+                'autocomplete="off" />' +
+                '<button class="btn btn-danger btn-info btn-sm mx-2" type="button"' +
+                'onclick="removeWalletAddressField(this)">' +
+                '<i class="fa fa-minus"></i>' +
+                '</button>' +
+                '</div>');
+        }
+
+        function removeWalletAddressField(elem) {
+            $(elem).closest('.input-group').remove();
+        }
     </script>
 
 </body>
