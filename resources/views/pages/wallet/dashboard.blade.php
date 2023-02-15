@@ -296,6 +296,12 @@
         $(document).ready(function() {
             portfolio_id = $('#portfolio_id').val();
             populateReturn();
+            $('.allocationEditBtn').click(function() {
+                $('.allocationEditBtn').addClass('hidden');
+                $('.hideBeforeedit').removeClass('hidden');
+                $('.hideAfteredit').addClass('hidden');
+                $('.allocationSaveBtn').removeClass('hidden');
+            });
             // calculateTotal();
         });
 

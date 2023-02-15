@@ -240,7 +240,7 @@
                             // $("#total_price_label").html(total_price.toLocaleString('en-US', {
                             // style: 'currency',
                             // currency: 'USD',
-                            // })); 
+                            // }));
                         }
                     } else {
                         $('#purchase_price').val(0);
