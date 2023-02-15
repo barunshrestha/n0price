@@ -1,5 +1,7 @@
 <tr>
-    <td id="market-cap-asc-desc">Market Cap <i class="fa fa-sort" onclick="sortTableasc(0)"></i></td>
+    <td id="market-cap-asc-desc">Market Cap <i class="fa fa-sort" onclick="sortTableasc(0)"></i>
+        <input type="hidden" value="{{ $api_rate_limit_flag }}" id="api_rate_limit_flag">
+    </td>
     <td id="coin-asc-desc">Coin<i class="fa fa-sort" onclick="sortTabletextasc(1)"></i></td>
     <td colspan="5"></td>
     <td id="return-asc-desc">Return <i class="fa fa-sort" onclick="sortTableasc(7)"></i></td>

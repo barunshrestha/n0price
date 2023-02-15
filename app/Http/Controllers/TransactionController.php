@@ -466,6 +466,9 @@ class TransactionController extends Controller
         // Group actual results by contract address
         $grouped_results = array();
         $missing_cache = array();
+        $lookup_table = [0, 1, 2, 3, 6, 12, 13, 24, 25, 48, 49, 71, 72];
+
+
         foreach ($actual_results as $result) {
             if ($result['contractAddress'] == '') {
                 $result['contractAddress'] = 'ethereum';
@@ -476,24 +479,53 @@ class TransactionController extends Controller
             $contract_address = $result['contractAddress'];
             $unix_timestamp = $result['timeStamp'];
             $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
-            if ($contract_address == '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48') {
-                $new_unix_timestamp = mktime(0, 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
-            }
+            // if ($contract_address == '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48') {
+            //     $new_unix_timestamp = mktime(0, 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+            // }
             $cache_key = $contract_address . '_' . $new_unix_timestamp;
-            $price =  Redis::get($cache_key);
+            $price = Redis::get($cache_key);
             if (!isset($price)) {
-                $missing_cache[$result['contractAddress']][] = $result;
+                $cache_keys = array();
+                // foreach ($lookup_table as $i) {
+                for ($i = 0; $i < 48; $i++) {
+                    // Generate cache key based on current time plus $i hours
+                    $added_unix_timestamp = strtotime("+$i hour", $unix_timestamp);
+                    $new_unix_timestamp = mktime(date("H", $added_unix_timestamp), 0, 0, date("n", $added_unix_timestamp), date("j", $added_unix_timestamp), date("Y", $added_unix_timestamp));
+                    $cache_keys[] = $contract_address . '_' . $new_unix_timestamp;
+                }
+
+                // Retrieve values for all cache keys in one Redis call
+                $values = Redis::mget($cache_keys);
+                foreach ($values as $value) {
+                    if (isset($value)) {
+                        $price = $value;
+                        break;
+                    }
+                }
+
+                if (!isset($price)) {
+                    // Price not found, add to missing cache
+                    $missing_cache[$result['contractAddress']][] = $result;
+                }
             }
         }
+        $api_rate_limit_flag = 0;
         if (!empty($missing_cache)) {
+            // dd($missing_cache);
             foreach ($missing_cache as $contract_address => $results) {
-                $max_timestamp = strtotime("+2 hour", max(array_column($results, 'timeStamp')));
-                $min_timestamp = strtotime("-2 hour", min(array_column($results, 'timeStamp')));
-                if ($contract_address == '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48') {
-                    $max_timestamp = strtotime("+2 day", max(array_column($results, 'timeStamp')));
-                    $min_timestamp = strtotime("-2 day", min(array_column($results, 'timeStamp')));
+                $max_timestamp = strtotime("+3 day", max(array_column($results, 'timeStamp')));
+                $min_timestamp = strtotime("-2 day", min(array_column($results, 'timeStamp')));
+
+                // $max_timestamp = strtotime("+2 hour", max(array_column($results, 'timeStamp')));
+                // $min_timestamp = strtotime("-2 hour", min(array_column($results, 'timeStamp')));
+                // if ($contract_address == '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48') {
+                //     $max_timestamp = strtotime("+2 day", max(array_column($results, 'timeStamp')));
+                //     $min_timestamp = strtotime("-2 day", min(array_column($results, 'timeStamp')));
+                // }
+                $api_rate_limit_flag = $this->sync_cache($contract_address, $max_timestamp, $min_timestamp);
+                if ($api_rate_limit_flag == 1) {
+                    break;
                 }
-                $this->sync_cache($contract_address, $max_timestamp, $min_timestamp);
             }
         }
         foreach ($grouped_results as $contract_address => $results) {
@@ -504,16 +536,41 @@ class TransactionController extends Controller
             foreach ($results as $result) {
                 $unix_timestamp = $result['timeStamp'];
                 $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
-                if ($contract_address == '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48') {
-                    $new_unix_timestamp = mktime(0, 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
-                }
+                // if ($contract_address == '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48') {
+                //     $new_unix_timestamp = mktime(0, 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+                // }
+
                 $cache_key = $contract_address . '_' . $new_unix_timestamp;
                 $redis_price = Redis::get($cache_key);
 
+                if (!isset($redis_price)) {
+                    $cache_keys = array();
+                    // foreach ($lookup_table as $i) {
+                    for ($i = 0; $i < 48; $i++) {
+                        // Generate cache key based on current time plus $i hours
+                        $added_unix_timestamp = strtotime("+$i hour", $unix_timestamp);
+                        $new_unix_timestamp = mktime(date("H", $added_unix_timestamp), 0, 0, date("n", $added_unix_timestamp), date("j", $added_unix_timestamp), date("Y", $added_unix_timestamp));
+                        $cache_keys[] = $contract_address . '_' . $new_unix_timestamp;
+                    }
+
+                    // Retrieve values for all cache keys in one Redis call
+                    $values = Redis::mget($cache_keys);
+                    // dd($values);
+                    foreach ($values as $value) {
+                        if (isset($value)) {
+                            $redis_price = $value;
+                            break;
+                        }
+                    }
+                }
+                // if ($contract_address == "0x7a58c0be72be218b41c608b7fe7c5bb630736c71") {
+                //     dd($price, $contract_address, $result);
+                // }
                 $price = isset($redis_price) ? $redis_price : 0;
                 $units = $result['value'] / 10 ** $result['tokenDecimal'];
                 // print_r($cache_key . "   " . $redis_price . "    " . $units . "<br>");
                 $purchase_price = $units * $price;
+                // dd($all_wallet_address,$result);
                 if (in_array($result['from'], $all_wallet_address)) {
                     // sell transaction
                     array_push($sell_transactions, (object)[
@@ -540,6 +597,7 @@ class TransactionController extends Controller
                 }
             }
         }
+        // dd($buy_transactions, $sell_transactions);
         foreach ($grouped_results as $contract_address => $results) {
             $token_name = $results[0]['tokenName'];
             $token_symbol = $results[0]['tokenSymbol'];
@@ -552,6 +610,7 @@ class TransactionController extends Controller
                 'buy_amount' => $results['buy_amount']
             ]);
         }
+
         $total_worth = array();
         $current_transactions = array();
 
@@ -612,7 +671,10 @@ class TransactionController extends Controller
             $cache_key = $contract_address . '_' . $new_unix_timestamp;
             $current_value =  Redis::get($cache_key);
             if (!isset($current_value)) {
-                $this->sync_current_price_coin($contract_address, $cache_key);
+                $api_rate_limit_flag = $this->sync_current_price_coin($contract_address, $cache_key);
+                if ($api_rate_limit_flag == 1) {
+                    break;
+                }
             }
 
             $total_current_invested = $total_worth[$coins->contract_address];
@@ -651,6 +713,7 @@ class TransactionController extends Controller
                 );
             }
         }
+        $this->_data['api_rate_limit_flag'] = $api_rate_limit_flag;
         $this->_data['worth'] = $worth;
         return view("pages." . 'wallet.' . 'coin_worth', $this->_data);
     }
@@ -691,12 +754,19 @@ class TransactionController extends Controller
             $price_response = $this->establish_curl($url);
             Log::info("Fetching coingecko for Syncing cache");
             if (!isset($price_response['prices']) || empty($price_response['prices'])) {
+
                 Log::error("Error fetching" . Carbon::now());
                 Log::error($price_response);
                 if (isset($price_response['error'])) {
                     if ($price_response['error'] == 'coin not found') {
                         array_push($invalid_contract_address, $contract_address);
                         Redis::set("invalid_coins", json_encode($invalid_contract_address));
+                        return 0;
+                    }
+                }
+                if (isset($price_response['status']['error_code'])) {
+                    if ($price_response['status']['error_code'] == 429) {
+                        return 1;
                     }
                 }
             }
@@ -707,15 +777,16 @@ class TransactionController extends Controller
                     $unix_timestamp = floor($unix_timestamp / 1000);
                     $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
                     $cache_key = $contract_address . '_' . $new_unix_timestamp;
-                    Log::info("Adding to cache");
+                    // Log::info("Adding to cache");
                     $price = Redis::get($cache_key);
-                    Log::info("cache_key :" . $cache_key);
-                    Log::info("price :" . $price);
+                    // Log::info("cache_key :" . $cache_key);
+                    // Log::info("price :" . $price);
                     if (!isset($price) && $timestamp_price[1] > 0) {
-                        Log::info("price :" . $timestamp_price[1]);
+                        // Log::info("price :" . $timestamp_price[1]);
                         Redis::set($cache_key, $timestamp_price[1]);
                     }
                 }
+                return 0;
             }
         }
     }
@@ -746,15 +817,23 @@ class TransactionController extends Controller
                     'price_change_percentage_7d' => $price_change_percentage_7d,
                     'all_time_high_price_percentage' => $all_time_high_price_percentage
                 ]), 'EX', 3000);
+                return 0;
             } else {
                 if (isset($current_prices_list_details_from_server['error'])) {
-
                     if ($current_prices_list_details_from_server['error'] == 'coin not found') {
                         array_push($invalid_contract_address, $contract_address);
                         Redis::set("invalid_coins", json_encode($invalid_contract_address));
+                        return 0;
                     }
+
                     Log::info("Fetching coingecko for Current price");
                     Log::error("Error fetching" . Carbon::now());
+                    Log::error($current_prices_list_details_from_server);
+                } elseif (isset($current_prices_list_details_from_server['status']['error_code'])) {
+                    if ($current_prices_list_details_from_server['status']['error_code'] == 429) {
+                        return 1;
+                    }
+                } else {
                     Log::error($current_prices_list_details_from_server);
                 }
             }

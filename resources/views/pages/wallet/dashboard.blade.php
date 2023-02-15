@@ -101,6 +101,14 @@
         </div>
 
         <div class="card-body">
+            <div class="card d-none" id="error-box-api-rate-limit">
+                <p class="p-2 text-danger text-sm">There has been error in fetching data from API. Click here
+                    to refresh.
+                    <button type="button" class="btn btn-primary" onclick="window.location.reload()">
+                        Refresh
+                    </button>
+                </p>
+            </div>
             <table class="table table-responsive w-100 d-block d-md-table table-bordered" style="width: 100%">
                 <thead>
                     <tr>
@@ -307,6 +315,10 @@
                 'type': 'GET',
                 success: function(result) {
                     $("#coin_worth_all_summary").html(result);
+                    var api_rate_limit_flag = $('#api_rate_limit_flag').val();
+                    if (api_rate_limit_flag == 1) {
+                        $('#error-box-api-rate-limit').removeClass('d-none');
+                    }
                     var verylow = $('.tabledata-verylow').map((_, el) => el.innerHTML).get();
                     var sum_verylow = 0;
                     verylow.forEach(element => {
