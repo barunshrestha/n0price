@@ -15,10 +15,10 @@
         $usd = $data['current_usd'];
         $usd_24h_change = $data['24hr'];
         $usd_market_cap = $data['usd_market_cap'];
-        $total_buy_unit = $data['buy_unit'] ? $data['buy_unit'] : 0;
-        $total_sell_unit = $data['sell_unit'] ? $data['sell_unit'] : 0;
-        $req_unit = $total_buy_unit - $total_sell_unit;
-        $calculated_worth = $req_unit * $usd;
+        // $total_buy_unit = $data['buy_unit'] ? $data['buy_unit'] : 0;
+        // $total_sell_unit = $data['sell_unit'] ? $data['sell_unit'] : 0;
+        // $req_unit = $total_buy_unit - $total_sell_unit;
+        $calculated_worth = (string) $data['worth'];
         ?>
         <td style="text-align: right;">${{ number_format($usd_market_cap / 1000000, 0) }} M</td>
         @if ($usd_market_cap < 25000000)
