@@ -109,6 +109,8 @@
                     </button>
                 </p>
             </div>
+            <div class="card" id="invalid_wallet_address_message">
+            </div>
             <table class="table table-responsive w-100 d-block d-md-table table-bordered" style="width: 100%">
                 <thead>
                     <tr>
@@ -269,6 +271,8 @@
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
+                                        <div class="card-body" id="maximum_wallet_capacity_error_box">
+                                        </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-light-primary font-weight-bold"
                                                 data-dismiss="modal">Close</button>
@@ -321,6 +325,17 @@
                     var api_rate_limit_flag = $('#api_rate_limit_flag').val();
                     if (api_rate_limit_flag == 1) {
                         $('#error-box-api-rate-limit').removeClass('d-none');
+                    }
+                    var invalid_wallet_addresses = $('#invalid_wallet_address_list').val();
+                    if (invalid_wallet_addresses !== "") {
+                        $("#invalid_wallet_address_message").html(
+                            '<div class="alert alert-danger" role="alert">' +
+                            '<h6>' +
+                            'Invalid wallet address: ' +
+                            invalid_wallet_addresses +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<span aria-hidden="true"><i class="ki ki-close"></i></span></button></h6></div>'
+                        )
                     }
                     var verylow = $('.tabledata-verylow').map((_, el) => el.innerHTML).get();
                     var sum_verylow = 0;
@@ -378,10 +393,12 @@
                     var total_allocated = sum_verylow + sum_low + sum_medium + sum_high + sum_veryhigh;
 
                     var sign_total_allocated = total_allocated.toFixed(1);
-                    $('#total_holding_valuation').html(sign_total_allocated >= 0 ? 'Total : $' +
-                        sign_total_allocated.replace(/\d(?=(\d{3})+\.)/g, '$&,') : 'Total : -$' + String(
-                            Math
-                            .abs(sign_total_allocated)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                    // $('#total_holding_valuation').html(sign_total_allocated >= 0 ? 'Total : $' +
+                    //     sign_total_allocated.replace(/\d(?=(\d{3})+\.)/g, '$&,') : 'Total : -$' + String(
+                    //         Math
+                    //         .abs(sign_total_allocated)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
+                    $('#total_holding_valuation').html('Total : $' + $('#total_worth_backend').val());
 
                     var allocation_percentage = $('.allocation-percentage').map((_, el) => el.innerHTML)
                         .get();

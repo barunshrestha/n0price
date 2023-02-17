@@ -13,22 +13,20 @@
                     <div class="card-header card-header-tabs-line">
                         <div class="card-toolbar">
                             <ul class="nav nav-tabs nav-bold nav-tabs-line row">
-                                <li class="nav-item col-sm-12 col-md-6" >
+                                <li class="nav-item col-sm-12 col-md-6">
                                     <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_csv"
                                         id="portfolio-btn">
                                         <span class="nav-icon mx-2"><i class="flaticon2-infographic"></i></span>
                                         <span class="nav-text">Import CSV</span>
                                     </a>
                                 </li>
-                                @if (Auth::user()->role_id == '1')
-                                    <li class="nav-item col-sm-12 col-md-6" style="width: min-content;">
-                                        <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_wallet"
-                                            id="transaction-btn">
-                                            <span class="nav-icon mx-2"><i class="flaticon-piggy-bank"></i></span>
-                                            <span class="nav-text">Add Wallet</span>
-                                        </a>
-                                    </li>
-                                @endif
+                                <li class="nav-item col-sm-12 col-md-6" style="width: min-content;">
+                                    <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_wallet"
+                                        id="transaction-btn">
+                                        <span class="nav-icon mx-2"><i class="flaticon-piggy-bank"></i></span>
+                                        <span class="nav-text">Add Wallet</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -62,36 +60,38 @@
                                     </div>
                                 </form>
                             </div>
-                            @if (Auth::user()->role_id == '1')
-                                <div class="tab-pane fade" id="kt_tab_pane_wallet" role="tabpanel"
-                                    aria-labelledby="kt_tab_pane_wallet">
-                                    <form class="form" id="wallet_form" action="{{ route('load.wallet') }}"
-                                        method="post" enctype="multipart/form-data">
-                                        {{ csrf_field() }}
-                                        <input type="hidden" id="portfolioId" value="{{ $portfolio_details->id }}" name="portfolio_id">
-                                        <div class="card-body">
-                                            <div id="wallet_address_collection">
-                                                <div class="input-group mb-3">
-                                                    <input name="wallet_address[]" type="text"
-                                                        class="form-control form-control-solid"
-                                                        placeholder="Enter your wallet address" required
-                                                        autocomplete="off" />
-                                                </div>
+                            <div class="tab-pane fade" id="kt_tab_pane_wallet" role="tabpanel"
+                                aria-labelledby="kt_tab_pane_wallet">
+                                <form class="form" id="wallet_form" action="{{ route('load.wallet') }}" method="post"
+                                    enctype="multipart/form-data">
+                                    {{ csrf_field() }}
+                                    <input type="hidden" id="portfolioId" value="{{ $portfolio_details->id }}"
+                                        name="portfolio_id">
+                                    <div class="card-body">
+                                        <div id="wallet_address_collection">
+                                            <div class="input-group mb-3">
+                                                <input name="wallet_address[]" type="text"
+                                                    class="form-control form-control-solid"
+                                                    placeholder="Enter your wallet address" required
+                                                    autocomplete="off" />
                                             </div>
-                                            <button class="btn btn-icon btn-info btn-sm mx-2" type="button"
-                                                onclick="addWalletAddressField()">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-light-primary font-weight-bold"
-                                                data-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary font-weight-bold"
-                                                id="coin-save-transaction-btn">Save</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            @endif
+                                        <button class="btn btn-icon btn-info btn-sm mx-2" type="button"
+                                            onclick="addWalletAddressField()">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <div class="card-body" id="maximum_wallet_capacity_error_box">
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light-primary font-weight-bold"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary font-weight-bold"
+                                            id="coin-save-transaction-btn">Save</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

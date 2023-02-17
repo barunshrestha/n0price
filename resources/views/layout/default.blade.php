@@ -219,19 +219,27 @@ License: You must have a valid license purchased only from themeforest(the above
         });
 
         function addWalletAddressField() {
-            $('#wallet_address_collection').append('<div class="input-group mb-3">' +
-                '<input name="wallet_address[]" type="text"' +
-                'class="form-control form-control-solid"' +
-                'placeholder="Enter another wallet address" required' +
-                'autocomplete="off" />' +
-                '<button class="btn btn-danger btn-info btn-sm mx-2" type="button"' +
-                'onclick="removeWalletAddressField(this)">' +
-                '<i class="fa fa-minus"></i>' +
-                '</button>' +
-                '</div>');
+            var total_wallet_address = $('#wallet_address_collection').find($("input"));
+            if (total_wallet_address.length < 5) {
+                $('#wallet_address_collection').append('<div class="input-group mb-3">' +
+                    '<input name="wallet_address[]" type="text"' +
+                    'class="form-control form-control-solid"' +
+                    'placeholder="Enter another wallet address" required ' +
+                    'autocomplete="off" />' +
+                    '<button class="btn btn-icon btn-danger btn-sm mx-2" type="button" ' +
+                    'onclick="removeWalletAddressField(this)">' +
+                    '<i class="fa fa-minus"></i>' +
+                    '</button>' +
+                    '</div>');
+            } else {
+                var error_msg = '<h6 class="bg-danger text-white p-4">You can only add 5 wallet address at max.</h6>';
+                $('#maximum_wallet_capacity_error_box').html(error_msg);
+            }
         }
 
         function removeWalletAddressField(elem) {
+            var error_msg = '';
+            $('#maximum_wallet_capacity_error_box').html(error_msg);
             $(elem).closest('.input-group').remove();
         }
     </script>

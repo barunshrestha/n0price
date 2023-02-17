@@ -425,7 +425,9 @@ class TransactionController extends Controller
         if (isset($transaction_count)) {
             $portfolio = new Portfolio();
             $portfolio->user_id = Auth::id();
-            $portfolio->wallet_address = strtolower(json_encode($request->wallet_address));
+            $all_address = array_map('strtolower', $request->wallet_address);
+            $final_address = array_values(array_unique($all_address));
+            $portfolio->wallet_address = json_encode($final_address);
             $portfolio->save();
             (new AuthController)->create_asset_matrix($user, $portfolio);
             return redirect()->route('portfolio.specific', $portfolio->id);
@@ -445,304 +447,317 @@ class TransactionController extends Controller
             $invalid_contract_address = [];
         }
         $worths = [];
+        $invalid_wallet_address = [];
         $count = 0;
         $base_url = "https://api.etherscan.io/api?module=account&action=tokentx&sort=asc&apikey=FY5RF1IUVNPFKSY4FV9MBAJ6NDAJ5SRTDA";
-        foreach ($all_wallet_address as $address) {
-            $actual_results = [];
-            $url = $base_url . "&address=" . $address;
-            $results = $this->establish_curl($url);
-            if (!isset($results) || $results['status'] != 1) {
-                return redirect()->back()->with('fail', "Couldn't load wallet. Please try again later.");
-            }
+        if (isset($all_wallet_address)) {
+            foreach ($all_wallet_address as $address) {
+                $actual_results = [];
+                $url = $base_url . "&address=" . $address;
+                $results = $this->establish_curl($url);
 
-            $actual_results = array_filter($results['result'], function ($result) use ($invalid_contract_address) {
-                return $result['value'] > 0 && !in_array($result['contractAddress'], $invalid_contract_address);
-            });
-            // $actual_results = array_merge($actual_results, $filtered_results);
+                if (isset($results) && $results['status'] == 1) {
+                    $actual_results = array_filter($results['result'], function ($result) use ($invalid_contract_address) {
+                        return $result['value'] > 0 && !in_array($result['contractAddress'], $invalid_contract_address);
+                    });
+                    // $actual_results = array_merge($actual_results, $filtered_results);
 
-            $coins_available = [];
-            $buy_transactions = [];
-            $sell_transactions = [];
-            // $actual_results = array_merge($actual_results, $success_block_number);
+                    $coins_available = [];
+                    $buy_transactions = [];
+                    $sell_transactions = [];
+                    // $actual_results = array_merge($actual_results, $success_block_number);
 
-            // Group actual results by contract address
-            $grouped_results = [];
-            $missing_cache = [];
-            $lookup_table = [0, 1, 2, 3, 6, 12, 13, 24, 25, 48, 49, 71, 72];
+                    // Group actual results by contract address
+                    $grouped_results = [];
+                    $missing_cache = [];
+                    $lookup_table = [0, 1, 2, 3, 6, 12, 13, 24, 25, 48, 49, 71, 72];
 
-            foreach ($actual_results as $result) {
-                if ($result['contractAddress'] == '') {
-                    $result['contractAddress'] = 'ethereum';
-                    $result['tokenName'] = 'Ethereum';
-                    $result['tokenSymbol'] = 'eth';
-                }
-                $grouped_results[$result['contractAddress']][] = $result;
-                $contract_address = $result['contractAddress'];
-                $unix_timestamp = $result['timeStamp'];
-                $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
-                // if ($contract_address == '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48') {
-                //     $new_unix_timestamp = mktime(0, 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
-                // }
-                $cache_key = $contract_address . '_' . $new_unix_timestamp;
-                $price = Redis::get($cache_key);
-                if (!isset($price)) {
-                    $cache_keys = [];
-                    // foreach ($lookup_table as $i) {
-                    for ($i = 0; $i < 48; $i++) {
-                        // Generate cache key based on current time plus $i hours
-                        $added_unix_timestamp = strtotime("+$i hour", $unix_timestamp);
-                        $new_unix_timestamp = mktime(date("H", $added_unix_timestamp), 0, 0, date("n", $added_unix_timestamp), date("j", $added_unix_timestamp), date("Y", $added_unix_timestamp));
-                        $cache_keys[] = $contract_address . '_' . $new_unix_timestamp;
-                    }
+                    foreach ($actual_results as $result) {
+                        if ($result['contractAddress'] == '') {
+                            $result['contractAddress'] = 'ethereum';
+                            $result['tokenName'] = 'Ethereum';
+                            $result['tokenSymbol'] = 'eth';
+                        }
+                        $grouped_results[$result['contractAddress']][] = $result;
+                        $contract_address = $result['contractAddress'];
+                        $unix_timestamp = $result['timeStamp'];
+                        $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+                        // if ($contract_address == '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48') {
+                        //     $new_unix_timestamp = mktime(0, 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+                        // }
+                        $cache_key = $contract_address . '_' . $new_unix_timestamp;
+                        $price = Redis::get($cache_key);
+                        if (!isset($price)) {
+                            $cache_keys = [];
+                            // foreach ($lookup_table as $i) {
+                            for ($i = 0; $i < 48; $i++) {
+                                // Generate cache key based on current time plus $i hours
+                                $added_unix_timestamp = strtotime("+$i hour", $unix_timestamp);
+                                $new_unix_timestamp = mktime(date("H", $added_unix_timestamp), 0, 0, date("n", $added_unix_timestamp), date("j", $added_unix_timestamp), date("Y", $added_unix_timestamp));
+                                $cache_keys[] = $contract_address . '_' . $new_unix_timestamp;
+                            }
 
-                    // Retrieve values for all cache keys in one Redis call
-                    $values = Redis::mget($cache_keys);
-                    foreach ($values as $value) {
-                        if (isset($value)) {
-                            $price = $value;
-                            break;
+                            // Retrieve values for all cache keys in one Redis call
+                            $values = Redis::mget($cache_keys);
+                            foreach ($values as $value) {
+                                if (isset($value)) {
+                                    $price = $value;
+                                    break;
+                                }
+                            }
+
+                            if (!isset($price)) {
+                                // Price not found, add to missing cache
+                                $missing_cache[$result['contractAddress']][] = $result;
+                            }
                         }
                     }
+                    $api_rate_limit_flag = 0;
+                    if (!empty($missing_cache)) {
+                        // dd($missing_cache);
+                        foreach ($missing_cache as $contract_address => $results) {
+                            $max_timestamp = strtotime("+3 day", max(array_column($results, 'timeStamp')));
+                            $min_timestamp = strtotime("-2 day", min(array_column($results, 'timeStamp')));
 
-                    if (!isset($price)) {
-                        // Price not found, add to missing cache
-                        $missing_cache[$result['contractAddress']][] = $result;
-                    }
-                }
-            }
-            $api_rate_limit_flag = 0;
-            if (!empty($missing_cache)) {
-                // dd($missing_cache);
-                foreach ($missing_cache as $contract_address => $results) {
-                    $max_timestamp = strtotime("+3 day", max(array_column($results, 'timeStamp')));
-                    $min_timestamp = strtotime("-2 day", min(array_column($results, 'timeStamp')));
-
-                    // $max_timestamp = strtotime("+2 hour", max(array_column($results, 'timeStamp')));
-                    // $min_timestamp = strtotime("-2 hour", min(array_column($results, 'timeStamp')));
-                    // if ($contract_address == '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48') {
-                    //     $max_timestamp = strtotime("+2 day", max(array_column($results, 'timeStamp')));
-                    //     $min_timestamp = strtotime("-2 day", min(array_column($results, 'timeStamp')));
-                    // }
-                    $api_rate_limit_flag = $this->sync_cache($contract_address, $max_timestamp, $min_timestamp);
-                    if ($api_rate_limit_flag == 1) {
-                        break;
-                    }
-                }
-            }
-            foreach ($grouped_results as $contract_address => $results) {
-                $grouped_results[$contract_address]['buy_unit'] = '0';
-                $grouped_results[$contract_address]['sell_unit'] = '0';
-                $grouped_results[$contract_address]['buy_amount'] = '0';
-                // Process the results for this contract address
-                foreach ($results as $result) {
-                    $unix_timestamp = $result['timeStamp'];
-                    $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
-                    // if ($contract_address == '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48') {
-                    //     $new_unix_timestamp = mktime(0, 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
-                    // }
-
-                    $cache_key = $contract_address . '_' . $new_unix_timestamp;
-                    $redis_price = Redis::get($cache_key);
-
-                    if (!isset($redis_price)) {
-                        $cache_keys = [];
-                        // foreach ($lookup_table as $i) {
-                        for ($i = 0; $i < 48; $i++) {
-                            // Generate cache key based on current time plus $i hours
-                            $added_unix_timestamp = strtotime("+$i hour", $unix_timestamp);
-                            $new_unix_timestamp = mktime(date("H", $added_unix_timestamp), 0, 0, date("n", $added_unix_timestamp), date("j", $added_unix_timestamp), date("Y", $added_unix_timestamp));
-                            $cache_keys[] = $contract_address . '_' . $new_unix_timestamp;
-                        }
-
-                        // Retrieve values for all cache keys in one Redis call
-                        $values = Redis::mget($cache_keys);
-                        // dd($values);
-                        foreach ($values as $value) {
-                            if (isset($value)) {
-                                $redis_price = $value;
+                            // $max_timestamp = strtotime("+2 hour", max(array_column($results, 'timeStamp')));
+                            // $min_timestamp = strtotime("-2 hour", min(array_column($results, 'timeStamp')));
+                            // if ($contract_address == '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48') {
+                            //     $max_timestamp = strtotime("+2 day", max(array_column($results, 'timeStamp')));
+                            //     $min_timestamp = strtotime("-2 day", min(array_column($results, 'timeStamp')));
+                            // }
+                            $api_rate_limit_flag = $this->sync_cache($contract_address, $max_timestamp, $min_timestamp);
+                            if ($api_rate_limit_flag == 1) {
                                 break;
                             }
                         }
                     }
-                    // if ($contract_address == "0x7a58c0be72be218b41c608b7fe7c5bb630736c71") {
-                    //     dd($price, $contract_address, $result);
-                    // }
-                    $price = isset($redis_price) ? $redis_price : 0;
-                    $units = $result['value'] / 10 ** $result['tokenDecimal'];
-                    // print_r($cache_key . "   " . $redis_price . "    " . $units . "<br>");
-                    $purchase_price = $units * $price;
-                    // dd($all_wallet_address,$result);
-                    if (strtolower($result['from']) == $address) {
-                        // sell transaction
-                        array_push($sell_transactions, (object)[
-                            'tokenName' => $result['tokenName'],
-                            'tokenSymbol' => $result['tokenSymbol'],
-                            'units' => $units,
-                            'purchase_price' => $purchase_price,
-                            'contract_address' => $contract_address,
-                            'timeStamp' => $result['timeStamp']
-                        ]);
-                        $grouped_results[$contract_address]['sell_unit'] = floatval($grouped_results[$contract_address]['sell_unit']) + floatval($units);
-                    } elseif (strtolower($result['to']) == $address) {
-                        // buy transaction
-                        array_push($buy_transactions, (object)[
-                            'tokenName' => $result['tokenName'],
-                            'tokenSymbol' => $result['tokenSymbol'],
-                            'units' => $units,
-                            'purchase_price' => $purchase_price,
-                            'contract_address' => $contract_address,
-                            'timeStamp' => $result['timeStamp']
-                        ]);
-                        $grouped_results[$contract_address]['buy_unit'] = floatval($grouped_results[$contract_address]['buy_unit']) + floatval($units);
-                        $grouped_results[$contract_address]['buy_amount'] = floatval($grouped_results[$contract_address]['buy_amount']) + floatval($purchase_price);
-                    }
-                }
-            }
-            // dd($buy_transactions, $sell_transactions);
-            foreach ($grouped_results as $contract_address => $results) {
-                $token_name = $results[0]['tokenName'];
-                $token_symbol = $results[0]['tokenSymbol'];
-                array_push($coins_available, (object) [
-                    'contract_address' => $contract_address,
-                    'tokenName' => $token_name,
-                    'tokenSymbol' => $token_symbol,
-                    'buy_unit' => $results['buy_unit'],
-                    'sell_unit' => $results['sell_unit'],
-                    'buy_amount' => $results['buy_amount']
-                ]);
-            }
+                    foreach ($grouped_results as $contract_address => $results) {
+                        $grouped_results[$contract_address]['buy_unit'] = '0';
+                        $grouped_results[$contract_address]['sell_unit'] = '0';
+                        $grouped_results[$contract_address]['buy_amount'] = '0';
+                        // Process the results for this contract address
+                        foreach ($results as $result) {
+                            $unix_timestamp = $result['timeStamp'];
+                            $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+                            // if ($contract_address == '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48') {
+                            //     $new_unix_timestamp = mktime(0, 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+                            // }
 
-            $total_worth = [];
-            $current_transactions = [];
+                            $cache_key = $contract_address . '_' . $new_unix_timestamp;
+                            $redis_price = Redis::get($cache_key);
 
-            foreach ($coins_available as $coin) {
-                $total_worth[$coin->contract_address] = $coin->buy_amount;
-            }
+                            if (!isset($redis_price)) {
+                                $cache_keys = [];
+                                // foreach ($lookup_table as $i) {
+                                for ($i = 0; $i < 48; $i++) {
+                                    // Generate cache key based on current time plus $i hours
+                                    $added_unix_timestamp = strtotime("+$i hour", $unix_timestamp);
+                                    $new_unix_timestamp = mktime(date("H", $added_unix_timestamp), 0, 0, date("n", $added_unix_timestamp), date("j", $added_unix_timestamp), date("Y", $added_unix_timestamp));
+                                    $cache_keys[] = $contract_address . '_' . $new_unix_timestamp;
+                                }
 
-            foreach ($buy_transactions as $b_t) {
-                $current_transactions[$b_t->contract_address] = [
-                    'units' => $b_t->units,
-                    'purchase_price' => $b_t->purchase_price,
-                    'debited_units' => 0,
-                    'profit_loss' => 0,
-                ];
-            }
-            usort($sell_transactions, function ($a, $b) {
-                return $a->timeStamp > $b->timeStamp;
-            });
-            usort($buy_transactions, function ($a, $b) {
-                return $a->timeStamp > $b->timeStamp;
-            });
-            if (!empty($sell_transactions)) {
-                foreach ($sell_transactions as $s_t) {
-                    $coin_name = $s_t->contract_address;
-                    $sell_units = $s_t->units;
-                    $sell_unit_price = $s_t->purchase_price / $s_t->units;
-
-                    if (isset($current_transactions[$coin_name])) {
-                        $current_transaction = $current_transactions[$coin_name];
-                        $purchase_unit_price = $current_transaction['purchase_price'] / $current_transaction['units'];
-                        $profit_loss_rate = $sell_unit_price - $purchase_unit_price;
-                        $total_units = $current_transaction['units'];
-                        $total_debited_units = $current_transaction['debited_units'];
-                        $slot_units_available = $total_units - $total_debited_units;
-                        $profit_earned = $current_transaction['profit_loss'];
-                        if ($slot_units_available > 0) {
-                            if ($slot_units_available >= $sell_units) {
-                                $current_transactions[$coin_name]['debited_units'] = $total_debited_units + $sell_units;
-                                $current_transactions[$coin_name]['profit_loss'] = $profit_earned + $profit_loss_rate * $sell_units;
-
-                                $total_worth[$coin_name] = $total_worth[$coin_name] - $sell_units * $purchase_unit_price;
-                                break;
-                            } else {
-                                $current_transactions[$coin_name]['debited_units'] = $total_debited_units + $slot_units_available;
-                                $current_transactions[$coin_name]['profit_loss'] = $profit_earned + $profit_loss_rate * $slot_units_available;
-                                $total_worth[$coin_name] = $total_worth[$coin_name] - $slot_units_available * $purchase_unit_price;
-                                $sell_units -= $slot_units_available;
+                                // Retrieve values for all cache keys in one Redis call
+                                $values = Redis::mget($cache_keys);
+                                // dd($values);
+                                foreach ($values as $value) {
+                                    if (isset($value)) {
+                                        $redis_price = $value;
+                                        break;
+                                    }
+                                }
+                            }
+                            // if ($contract_address == "0x7a58c0be72be218b41c608b7fe7c5bb630736c71") {
+                            //     dd($price, $contract_address, $result);
+                            // }
+                            $price = isset($redis_price) ? $redis_price : 0;
+                            $units = $result['value'] / 10 ** $result['tokenDecimal'];
+                            // print_r($cache_key . "   " . $redis_price . "    " . $units . "<br>");
+                            $purchase_price = $units * $price;
+                            // dd($all_wallet_address,$result);
+                            if (strtolower($result['from']) == $address) {
+                                // sell transaction
+                                array_push($sell_transactions, (object)[
+                                    'tokenName' => $result['tokenName'],
+                                    'tokenSymbol' => $result['tokenSymbol'],
+                                    'units' => $units,
+                                    'purchase_price' => $purchase_price,
+                                    'contract_address' => $contract_address,
+                                    'timeStamp' => $result['timeStamp']
+                                ]);
+                                $grouped_results[$contract_address]['sell_unit'] = floatval($grouped_results[$contract_address]['sell_unit']) + floatval($units);
+                            } elseif (strtolower($result['to']) == $address) {
+                                // buy transaction
+                                array_push($buy_transactions, (object)[
+                                    'tokenName' => $result['tokenName'],
+                                    'tokenSymbol' => $result['tokenSymbol'],
+                                    'units' => $units,
+                                    'purchase_price' => $purchase_price,
+                                    'contract_address' => $contract_address,
+                                    'timeStamp' => $result['timeStamp']
+                                ]);
+                                $grouped_results[$contract_address]['buy_unit'] = floatval($grouped_results[$contract_address]['buy_unit']) + floatval($units);
+                                $grouped_results[$contract_address]['buy_amount'] = floatval($grouped_results[$contract_address]['buy_amount']) + floatval($purchase_price);
                             }
                         }
                     }
+                    // dd($buy_transactions, $sell_transactions);
+                    foreach ($grouped_results as $contract_address => $results) {
+                        $token_name = $results[0]['tokenName'];
+                        $token_symbol = $results[0]['tokenSymbol'];
+                        array_push($coins_available, (object) [
+                            'contract_address' => $contract_address,
+                            'tokenName' => $token_name,
+                            'tokenSymbol' => $token_symbol,
+                            'buy_unit' => $results['buy_unit'],
+                            'sell_unit' => $results['sell_unit'],
+                            'buy_amount' => $results['buy_amount']
+                        ]);
+                    }
+
+                    $total_worth = [];
+                    $current_transactions = [];
+
+                    foreach ($coins_available as $coin) {
+                        $total_worth[$coin->contract_address] = $coin->buy_amount;
+                    }
+
+                    foreach ($buy_transactions as $b_t) {
+                        $current_transactions[$b_t->contract_address] = [
+                            'units' => $b_t->units,
+                            'purchase_price' => $b_t->purchase_price,
+                            'debited_units' => 0,
+                            'profit_loss' => 0,
+                        ];
+                    }
+                    usort($sell_transactions, function ($a, $b) {
+                        return $a->timeStamp > $b->timeStamp;
+                    });
+                    usort($buy_transactions, function ($a, $b) {
+                        return $a->timeStamp > $b->timeStamp;
+                    });
+                    if (!empty($sell_transactions)) {
+                        foreach ($sell_transactions as $s_t) {
+                            $coin_name = $s_t->contract_address;
+                            $sell_units = $s_t->units;
+                            $sell_unit_price = $s_t->purchase_price / $s_t->units;
+
+                            if (isset($current_transactions[$coin_name])) {
+                                $current_transaction = $current_transactions[$coin_name];
+                                $purchase_unit_price = $current_transaction['purchase_price'] / $current_transaction['units'];
+                                $profit_loss_rate = $sell_unit_price - $purchase_unit_price;
+                                $total_units = $current_transaction['units'];
+                                $total_debited_units = $current_transaction['debited_units'];
+                                $slot_units_available = $total_units - $total_debited_units;
+                                $profit_earned = $current_transaction['profit_loss'];
+                                if ($slot_units_available > 0) {
+                                    if ($slot_units_available >= $sell_units) {
+                                        $current_transactions[$coin_name]['debited_units'] = $total_debited_units + $sell_units;
+                                        $current_transactions[$coin_name]['profit_loss'] = $profit_earned + $profit_loss_rate * $sell_units;
+
+                                        $total_worth[$coin_name] = $total_worth[$coin_name] - $sell_units * $purchase_unit_price;
+                                        break;
+                                    } else {
+                                        $current_transactions[$coin_name]['debited_units'] = $total_debited_units + $slot_units_available;
+                                        $current_transactions[$coin_name]['profit_loss'] = $profit_earned + $profit_loss_rate * $slot_units_available;
+                                        $total_worth[$coin_name] = $total_worth[$coin_name] - $slot_units_available * $purchase_unit_price;
+                                        $sell_units -= $slot_units_available;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $worth = [];
+
+                    array_push($coins_available, (object) [
+                        'contract_address' => 'ethereum',
+                        'tokenName' => 'Ethereum',
+                        'tokenSymbol' => 'eth',
+                        'buy_unit' => $this->calc_ether_value($address),
+                        'sell_unit' => 0,
+                        'buy_amount' => 0
+                    ]);
+                    foreach ($coins_available as $coins) {
+                        $contract_address = $coins->contract_address;
+                        $unix_timestamp = time();
+                        $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+                        $cache_key = $contract_address . '_' . $new_unix_timestamp;
+                        $current_value =  Redis::get($cache_key);
+                        if (!isset($current_value)) {
+                            $api_rate_limit_flag = $this->sync_current_price_coin($contract_address, $cache_key);
+                            if ($api_rate_limit_flag == 1) {
+                                break;
+                            }
+                        }
+                        if ($coins->contract_address !== 'ethereum') {
+                            $total_current_invested = $total_worth[$coins->contract_address];
+                        }
+                        $total_buy = $coins->buy_unit ? $coins->buy_unit : 0;
+                        $total_sell = $coins->sell_unit ? $coins->sell_unit : 0;
+                        $remaining_coins = $total_buy - $total_sell;
+                        $current_market_capital = 0;
+                        $current_price = 0;
+                        $price_change_percentage_24h = 0;
+                        $price_change_percentage_7d = 0;
+                        $all_time_high_price_percentage = 0;
+                        $cache_data = Redis::get($cache_key);
+                        if (isset($cache_data)) {
+                            $current_prices_list_details_from_server = json_decode($cache_data);
+                            $current_market_capital = $current_prices_list_details_from_server->current_market_capital;
+                            $current_price = $current_prices_list_details_from_server->current_price;
+                            $price_change_percentage_24h = $current_prices_list_details_from_server->price_change_percentage_24h;
+                            $price_change_percentage_7d = $current_prices_list_details_from_server->price_change_percentage_7d;
+                            $all_time_high_price_percentage = $current_prices_list_details_from_server->all_time_high_price_percentage;
+
+                            $todaysWorth =  $remaining_coins * $current_price;
+                            if ($coins->contract_address == 'ethereum') {
+                                $total_current_invested = $todaysWorth;
+                            }
+                            $return = $total_current_invested == 0 ? 0 : round(($todaysWorth - $total_current_invested) / $total_current_invested, 2) * 100;
+                            $worth = array_merge(
+                                $worth,
+                                array($coins->tokenName =>
+                                array(
+                                    "buy_unit" => $total_buy,
+                                    "sell_unit" => $total_sell,
+                                    "usd_market_cap" => round($current_market_capital, 2),
+                                    "current_usd" => $current_price,
+                                    "return" => $return,
+                                    "24hr" => round($price_change_percentage_24h, 2),
+                                    "7d" => round($price_change_percentage_7d, 2),
+                                    "ATH" => round($all_time_high_price_percentage, 2),
+                                    "worth" => $todaysWorth,
+                                    "total_current_invested" => $total_current_invested
+                                ))
+                            );
+                        }
+                    }
+                    $worths[$count++] = $worth;
+                } else {
+                    $invalid_wallet_address[] = $address;
                 }
             }
+            $this->_data['invalid_wallet_address'] = implode(', ', $invalid_wallet_address);
+            if (count($all_wallet_address) == count($invalid_wallet_address)) {
+                return view("pages." . 'wallet.' . 'coin_worth', $this->_data);
+            }
+            $keys = $this->getUniqueKeys($worths);
+            $datas = $this->group_result($worths, $keys);
             $worth = [];
-
-            array_push($coins_available, (object) [
-                'contract_address' => 'ethereum',
-                'tokenName' => 'Ethereum',
-                'tokenSymbol' => 'eth',
-                'buy_unit' => $this->calc_ether_value($address),
-                'sell_unit' => 0,
-                'buy_amount' => 0
-            ]);
-            foreach ($coins_available as $coins) {
-                $contract_address = $coins->contract_address;
-                $unix_timestamp = time();
-                $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
-                $cache_key = $contract_address . '_' . $new_unix_timestamp;
-                $current_value =  Redis::get($cache_key);
-                if (!isset($current_value)) {
-                    $api_rate_limit_flag = $this->sync_current_price_coin($contract_address, $cache_key);
-                    if ($api_rate_limit_flag == 1) {
-                        break;
+            $total_worth = 0;
+            foreach ($datas as $key => $data) {
+                $result = $this->calculate_combined_return($data);
+                if ($result['worth'] > 50) {
+                    if ($key !== 'Ethereum') {
+                        $total_worth += $result['worth'];
                     }
-                }
-                if ($coins->contract_address !== 'ethereum') {
-                    $total_current_invested = $total_worth[$coins->contract_address];
-                }
-                $total_buy = $coins->buy_unit ? $coins->buy_unit : 0;
-                $total_sell = $coins->sell_unit ? $coins->sell_unit : 0;
-                $remaining_coins = $total_buy - $total_sell;
-                $current_market_capital = 0;
-                $current_price = 0;
-                $price_change_percentage_24h = 0;
-                $price_change_percentage_7d = 0;
-                $all_time_high_price_percentage = 0;
-                $cache_data = Redis::get($cache_key);
-                if (isset($cache_data)) {
-                    $current_prices_list_details_from_server = json_decode($cache_data);
-                    $current_market_capital = $current_prices_list_details_from_server->current_market_capital;
-                    $current_price = $current_prices_list_details_from_server->current_price;
-                    $price_change_percentage_24h = $current_prices_list_details_from_server->price_change_percentage_24h;
-                    $price_change_percentage_7d = $current_prices_list_details_from_server->price_change_percentage_7d;
-                    $all_time_high_price_percentage = $current_prices_list_details_from_server->all_time_high_price_percentage;
-
-                    $todaysWorth =  $remaining_coins * $current_price;
-                    if ($coins->contract_address == 'ethereum') {
-                        $total_current_invested = $todaysWorth;
-                    }
-                    $return = $total_current_invested == 0 ? 0 : round(($todaysWorth - $total_current_invested) / $total_current_invested, 2) * 100;
-                    $worth = array_merge(
-                        $worth,
-                        array($coins->tokenName =>
-                        array(
-                            "buy_unit" => $total_buy,
-                            "sell_unit" => $total_sell,
-                            "usd_market_cap" => round($current_market_capital, 2),
-                            "current_usd" => $current_price,
-                            "return" => $return,
-                            "24hr" => round($price_change_percentage_24h, 2),
-                            "7d" => round($price_change_percentage_7d, 2),
-                            "ATH" => round($all_time_high_price_percentage, 2),
-                            "worth" => $todaysWorth,
-                            "total_current_invested" => $total_current_invested
-                        ))
-                    );
+                    $worth[$key] = $result;
                 }
             }
-            $worths[$count++] = $worth;
-        }
 
-        $keys = $this->getUniqueKeys($worths);
-        $datas = $this->group_result($worths, $keys);
-        $worth = [];
-        foreach ($datas as $key => $data) {
-            $result = $this->calculate_combined_return($data);
-            if ($result['worth'] > 50) {
-                $worth[$key] = $result;
-            }
+            $this->_data['api_rate_limit_flag'] = $api_rate_limit_flag;
+            $this->_data['worth'] = $worth;
+            $this->_data['total_worth'] = round($total_worth, 2);
         }
-        $this->_data['api_rate_limit_flag'] = $api_rate_limit_flag;
-        $this->_data['worth'] = $worth;
         return view("pages." . 'wallet.' . 'coin_worth', $this->_data);
     }
 
@@ -927,7 +942,9 @@ class TransactionController extends Controller
             Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->update(['wallet_address' => $request->wallet_address]);
             return redirect()->back();
         }
-        Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->update(['wallet_address' => strtolower(json_encode($request->wallet_address))]);
+        $all_address = array_map('strtolower', $request->wallet_address);
+        $final_address = array_values(array_unique($all_address));
+        Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->update(['wallet_address' =>  json_encode($final_address)]);
         return redirect()->back();
     }
 }
