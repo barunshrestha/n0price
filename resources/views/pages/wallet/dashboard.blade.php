@@ -330,11 +330,10 @@
                     if (invalid_wallet_addresses !== "") {
                         $("#invalid_wallet_address_message").html(
                             '<div class="alert alert-danger" role="alert">' +
-                            '<h6>' +
                             'Invalid wallet address: ' +
                             invalid_wallet_addresses +
                             '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                            '<span aria-hidden="true"><i class="ki ki-close"></i></span></button></h6></div>'
+                            '<span aria-hidden="true"><i class="ki ki-close"></i></span></button></div>'
                         )
                     }
                     var verylow = $('.tabledata-verylow').map((_, el) => el.innerHTML).get();
