@@ -436,7 +436,11 @@ class TransactionController extends Controller
             (new AuthController)->create_asset_matrix($user, $portfolio);
             return redirect()->route('portfolio.specific', $portfolio->id);
         }
-        Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->update(['wallet_address' => strtolower(json_encode($request->wallet_address))]);
+        $encoded_wallet_address = strtolower(json_encode($request->wallet_address));
+        $portfolio = Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->first();
+        if ($portfolio) {
+            Portfolio::find($request->portfolio_id)->update(['wallet_address' => $encoded_wallet_address]);
+        }
         return redirect()->back();
     }
 
@@ -806,9 +810,13 @@ class TransactionController extends Controller
         $total_cost_of_investment = array_sum($total_current_invested);
         $current_value_of_investment = array_sum($todaysWorths);
 
-        // Calculate total return on all investments
-        $total_return = (($current_value_of_investment - $total_cost_of_investment) / $total_cost_of_investment) * 100;
-        // dd($todaysWorths,$total_current_invested,$total_cost_of_investment,$current_value_of_investment,$total_return);
+        // Check if total cost of investment is zero
+        if ($total_cost_of_investment == 0) {
+            $total_return = 0;
+        } else {
+            // Calculate total return on all investments
+            $total_return = (($current_value_of_investment - $total_cost_of_investment) / $total_cost_of_investment) * 100;
+        }
         return array(
             "usd_market_cap" => $investments[0]["usd_market_cap"],
             "current_usd" => $investments[0]["current_usd"],
@@ -951,7 +959,10 @@ class TransactionController extends Controller
         }
         $all_address = array_map('strtolower', $request->wallet_address);
         $final_address = array_values(array_unique($all_address));
-        Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->update(['wallet_address' =>  json_encode($final_address)]);
+        $portfolio = Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id);
+        if ($portfolio) {
+            Portfolio::find($request->portfolio_id)->update(['wallet_address' =>  json_encode($final_address)]);
+        }
         return redirect()->back();
     }
 }

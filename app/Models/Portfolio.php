@@ -10,14 +10,12 @@ class Portfolio extends Model
 {
     use HasFactory;
     protected $table = 'portfolios';
-
     protected $fillable = [
         'user_id',
         'portfolio_name',
         'status',
         'wallet_address'
     ];
-
     public function setWalletAddressAttribute($value)
     {
         $secret_key = (new Transaction)->secret_key;
