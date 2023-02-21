@@ -543,7 +543,6 @@
             let fetchRes = fetch(url);
             fetchRes.then(res =>
                 res.json()).then(data => {
-                console.log(data);
                 price_today = data[Object.keys(data)[0]].usd;
                 var usd_24h_change = data[Object.keys(data)[0]].usd_24h_change ? data[Object.keys(data)[0]]
                     .usd_24h_change : 0;

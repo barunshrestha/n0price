@@ -24,6 +24,10 @@ class TransactionController extends Controller
     private $_app = "";
     private $_page = "pages.transaction.";
     private $_data = [];
+    private $coingeckoBaseUrl = "https://pro-api.coingecko.com/api/v3/coins/ethereum";
+    private $coingecko_pro_key = "&x_cg_pro_api_key=CG-N6JsBYNKHnYSjbU7NUyzzYhq";
+    private $etherscanBaseUrl = "https://api.etherscan.io/api";
+    private $etherscan_pro_key = "&apikey=FY5RF1IUVNPFKSY4FV9MBAJ6NDAJ5SRTDA";
     /**
      * Display a listing of the resource.
      *
@@ -449,7 +453,7 @@ class TransactionController extends Controller
         $worths = [];
         $invalid_wallet_address = [];
         $count = 0;
-        $base_url = "https://api.etherscan.io/api?module=account&action=tokentx&sort=asc&apikey=FY5RF1IUVNPFKSY4FV9MBAJ6NDAJ5SRTDA";
+        $base_url = $this->etherscanBaseUrl . "?module=account&action=tokentx&sort=asc" . $this->etherscan_pro_key;
         if (isset($all_wallet_address)) {
             foreach ($all_wallet_address as $address) {
                 $actual_results = [];
@@ -817,7 +821,7 @@ class TransactionController extends Controller
     }
     public function calc_ether_value($wallet_address)
     {
-        $url = "https://api.etherscan.io/api?module=account&action=balance&address=" . $wallet_address . "&tag=latest&apikey=FY5RF1IUVNPFKSY4FV9MBAJ6NDAJ5SRTDA";
+        $url = $this->etherscanBaseUrl . "?module=account&action=balance&address=" . $wallet_address . "&tag=latest" . $this->etherscan_pro_key;
         $response = $this->establish_curl($url);
         $total_ether = 0;
         if ($response['status'] == '1') {
@@ -844,16 +848,17 @@ class TransactionController extends Controller
             $invalid_contract_address = [];
         }
         if (!in_array($contract_address, $invalid_contract_address)) {
-            $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "/market_chart/range?vs_currency=usd&from=" . $min_timestamp . "&to=" . $max_timestamp . "&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+            $url = $this->coingeckoBaseUrl . "/contract/" . $contract_address . "/market_chart/range?vs_currency=usd&from=" . $min_timestamp . "&to=" . $max_timestamp . $this->coingecko_pro_key;
             if ($contract_address == 'ethereum') {
-                $url = "https://api.coingecko.com/api/v3/coins/ethereum/market_chart/range?vs_currency=usd&from=" . $min_timestamp . "&to=" . $max_timestamp . "&x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX";
+                $url = $this->coingeckoBaseUrl . "/market_chart/range?vs_currency=usd&from=" . $min_timestamp . "&to=" . $max_timestamp . $this->coingecko_pro_key;
             }
             $price_response = $this->establish_curl($url);
-            Log::info("Fetching coingecko for Syncing cache");
+            // Log::info($url);
+            // Log::info("Fetching coingecko for Syncing cache");
             if (!isset($price_response['prices']) || empty($price_response['prices'])) {
 
-                Log::error("Error fetching" . Carbon::now());
-                Log::error($price_response);
+                // Log::error("Error fetching" . Carbon::now());
+                // Log::error($price_response);
                 if (isset($price_response['error'])) {
                     if ($price_response['error'] == 'coin not found') {
                         array_push($invalid_contract_address, $contract_address);
@@ -896,10 +901,11 @@ class TransactionController extends Controller
         }
 
         if (!in_array($contract_address, $invalid_contract_address)) {
-            $url = "https://api.coingecko.com/api/v3/coins/ethereum/contract/" . $contract_address . "?x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX&localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false";
+            $url = $this->coingeckoBaseUrl . "/contract/" . $contract_address . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false" . $this->coingecko_pro_key;
             if ($contract_address == 'ethereum') {
-                $url = "https://api.coingecko.com/api/v3/coins/ethereum?x_cg_pro_api_key=CG-Lv6txGbXYYpmXNp7kfs2GhiX&localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false";
+                $url = $this->coingeckoBaseUrl . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false" . $this->coingecko_pro_key;
             }
+            // Log::info($url);
             $current_prices_list_details_from_server = $this->establish_curl($url);
             if (isset($current_prices_list_details_from_server['market_data']['market_cap']['usd'])) {
                 $current_market_capital = $current_prices_list_details_from_server['market_data']['market_cap']['usd'];
@@ -923,16 +929,17 @@ class TransactionController extends Controller
                         return 0;
                     }
 
-                    Log::info("Fetching coingecko for Current price");
-                    Log::error("Error fetching" . Carbon::now());
-                    Log::error($current_prices_list_details_from_server);
+                    // Log::info("Fetching coingecko for Current price");
+                    // Log::error("Error fetching" . Carbon::now());
+                    // Log::error($current_prices_list_details_from_server);
                 } elseif (isset($current_prices_list_details_from_server['status']['error_code'])) {
                     if ($current_prices_list_details_from_server['status']['error_code'] == 429) {
                         return 1;
                     }
-                } else {
-                    Log::error($current_prices_list_details_from_server);
                 }
+                // else {
+                //     // Log::error($current_prices_list_details_from_server);
+                // }
             }
         }
     }
