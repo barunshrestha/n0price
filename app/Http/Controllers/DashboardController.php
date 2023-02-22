@@ -7,6 +7,7 @@ use App\Models\Coin;
 use App\Models\Portfolio;
 use App\Models\Query;
 use App\Models\Transaction;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -130,10 +131,9 @@ class DashboardController extends Controller
         if ($asset_matrix_total[0]->asset_total == 0) {
             return view($this->_page . 'no-content-dashboard', $this->_data);
         }
-        if (isset($selectedPortfolio->wallet_address)) {
-            $portfolio_wallet_addresses = $selectedPortfolio->wallet_address;
-            $all_wallet_address = json_decode($portfolio_wallet_addresses);
-            $this->_data['all_wallet_address'] = $all_wallet_address;
+        $all_wallet_address = $selectedPortfolio->wallets()->get()->pluck('wallet_address')->toArray();
+        $this->_data['all_wallet_address'] = $all_wallet_address;
+        if (!empty($all_wallet_address)) {
             $this->_data['portfolio_id'] = $portfolio_id;
             return view('pages.wallet.dashboard', $this->_data);
         }
@@ -338,7 +338,6 @@ class DashboardController extends Controller
         $this->_data['user'] = $user;
         $selectedPortfolio = Portfolio::where('user_id', $user->id)->where('id', $portfolio_id)->first();
         if ($selectedPortfolio) {
-            $selectedPortfolio = Portfolio::find($portfolio_id);
             $this->_data['page_title'] = $selectedPortfolio->portfolio_name;
             $portfolio_id = $selectedPortfolio->id;
             $this->_data['portfolio_id'] = $portfolio_id;
@@ -350,14 +349,13 @@ class DashboardController extends Controller
             if ($asset_matrix_total[0]->asset_total == 0) {
                 return view($this->_page . 'no-content-dashboard', $this->_data);
             }
-            if (isset($selectedPortfolio->wallet_address)) {
-                $portfolio_wallet_addresses = $selectedPortfolio->wallet_address;
-                $all_wallet_address = json_decode($portfolio_wallet_addresses);
-                $this->_data['all_wallet_address'] = $all_wallet_address;
-                $this->_data['portfolio_id'] = $portfolio_id;
+            // $all_wallet_address = $selectedPortfolio->wallets()->get()->pluck('wallet_address')->toArray();
+            $all_wallet_address = Wallet::where('portfolio_id', $selectedPortfolio->id)->pluck('wallet_address');
+            $this->_data['all_wallet_address'] = $all_wallet_address;
+            $this->_data['portfolio_id'] = $portfolio_id;
+            if (count($all_wallet_address) !== 0) {
                 return view('pages.wallet.dashboard', $this->_data);
             }
-
             $transaction_count = Transaction::where('user_id', $user->id)->where('portfolio_id', $portfolio_id)->count();
             $this->_data['transaction_count'] = $transaction_count;
             return view($this->_page . 'dashboard', $this->_data);

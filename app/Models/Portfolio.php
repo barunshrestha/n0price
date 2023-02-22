@@ -13,8 +13,10 @@ class Portfolio extends Model
     protected $fillable = [
         'user_id',
         'portfolio_name',
-        'status',
-        'wallet_address'
+        'status'
     ];
-
+    public function wallets()
+    {
+        return $this->hasMany(Wallet::class);
+    }
 }

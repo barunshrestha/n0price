@@ -9,6 +9,7 @@ use App\Models\Coin;
 use App\Models\Portfolio;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -421,33 +422,50 @@ class TransactionController extends Controller
             ->select(['coin_id', 'id'])
             ->first();
     }
+    public function checkAndSaveWalletAddress($portfolio_id, $wallet_address)
+    {
+        $wallet_address_encrypted = (new Wallet)->encryptAttribute($wallet_address);
+        $wallet = Wallet::where('portfolio_id', $portfolio_id)->where('wallet_address', $wallet_address_encrypted)->first();
+        if (!isset($wallet)) {
+            Wallet::create([
+                'portfolio_id' => $portfolio_id,
+                'wallet_address' => $wallet_address
+            ]);
+        }
+    }
 
     public function loadWallet(Request $request)
     {
         $user = Auth::user();
         $transaction_count = Transaction::where('user_id', $user->id)->where('portfolio_id', $request->portfolio_id)->first();
+        $all_address = array_map('strtolower', $request->wallet_address);
+        $final_address = array_values(array_unique($all_address));
         if (isset($transaction_count)) {
             $portfolio = new Portfolio();
             $portfolio->user_id = Auth::id();
-            $all_address = array_map('strtolower', $request->wallet_address);
-            $final_address = array_values(array_unique($all_address));
-            $portfolio->wallet_address = json_encode($final_address);
             $portfolio->save();
             (new AuthController)->create_asset_matrix($user, $portfolio);
+            foreach ($final_address as $wallet_address) {
+                Wallet::create([
+                    'portfolio_id' => $portfolio->id,
+                    'wallet_address' => $wallet_address
+                ]);
+            }
             return redirect()->route('portfolio.specific', $portfolio->id);
         }
-        $encoded_wallet_address = strtolower(json_encode($request->wallet_address));
         $portfolio = Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->first();
         if ($portfolio) {
-            Portfolio::find($request->portfolio_id)->update(['wallet_address' => $encoded_wallet_address]);
+            foreach ($final_address as $wallet_address) {
+                $this->checkAndSaveWalletAddress($portfolio->id, $wallet_address);
+            }
+            // Portfolio::find($request->portfolio_id)->update(['wallet_address' => $encoded_wallet_address]);
         }
         return redirect()->back();
     }
 
     public function loadWalletCalculations(Request $request, $portfolio_id)
     {
-        $portfolio_wallet_addresses = (Portfolio::where('id', $portfolio_id)->first('wallet_address'))->wallet_address;
-        $all_wallet_address = json_decode($portfolio_wallet_addresses);
+        $all_wallet_address = Wallet::where('portfolio_id', $portfolio_id)->pluck('wallet_address');
         $this->_data['all_wallet_address'] = $all_wallet_address;
         $this->_data['portfolio_id'] = $portfolio_id;
         $invalid_contract_address = json_decode(Redis::get('invalid_coins'));
@@ -463,7 +481,6 @@ class TransactionController extends Controller
                 $actual_results = [];
                 $url = $base_url . "&address=" . $address;
                 $results = $this->establish_curl($url);
-
                 if (isset($results) && $results['status'] == 1) {
                     $actual_results = array_filter($results['result'], function ($result) use ($invalid_contract_address) {
                         return $result['value'] > 0 && !in_array($result['contractAddress'], $invalid_contract_address);
@@ -953,15 +970,34 @@ class TransactionController extends Controller
     }
     public function updateWallet(Request $request)
     {
-        if (!isset($request->wallet_address)) {
-            Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->update(['wallet_address' => $request->wallet_address]);
+        $portfolio = Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id)->first();
+        if (!$portfolio) {
             return redirect()->back();
         }
-        $all_address = array_map('strtolower', $request->wallet_address);
-        $final_address = array_values(array_unique($all_address));
-        $portfolio = Portfolio::where('user_id', Auth::id())->where('id', $request->portfolio_id);
-        if ($portfolio) {
-            Portfolio::find($request->portfolio_id)->update(['wallet_address' =>  json_encode($final_address)]);
+        if (!isset($request->wallet_address)) {
+            Wallet::where('portfolio_id', $portfolio->id)
+                ->delete();
+            return redirect()->back();
+        }
+        $existing_wallets = $portfolio->wallets()->get()->pluck('wallet_address')->toArray();
+
+        $new_wallets = array_map('strtolower', $request->wallet_address);
+        $new_wallets = array_values(array_unique($new_wallets));
+
+        $wallets_to_add = array_diff($new_wallets, $existing_wallets);
+        $wallets_to_remove = array_diff($existing_wallets, $new_wallets);
+        foreach ($wallets_to_add as $wallet_address) {
+            // $wallet_address_encrypted = (new Wallet)->encryptAttribute($wallet_address);
+            Wallet::create([
+                'portfolio_id' => $portfolio->id,
+                'wallet_address' => $wallet_address
+            ]);
+        }
+        foreach ($wallets_to_remove as $wallet_address) {
+            $wallet_address_encrypted = (new Wallet)->encryptAttribute($wallet_address);
+            Wallet::where('portfolio_id', $portfolio->id)
+                ->where('wallet_address', $wallet_address_encrypted)
+                ->delete();
         }
         return redirect()->back();
     }
