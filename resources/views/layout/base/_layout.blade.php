@@ -67,7 +67,7 @@
 @else
     <div class="d-flex flex-column flex-root">
         <div class="d-flex flex-row flex-column-fluid page">
-            <div class="d-flex flex-column flex-row-fluid mt-30">
+            <div class="d-flex flex-column flex-row-fluid mt-10">
                 @include('layout.base._content')
             </div>
         </div>
