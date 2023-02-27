@@ -34,6 +34,7 @@ Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, '__i
     ->middleware(['signed', 'throttle:6,1'])
     ->name('verification.verify');
 
+
 Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
     ->name('password.request');
 
@@ -122,6 +123,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });
+
+Route::post('/calculate/wallet/{portfolio_id}', [TransactionController::class, 'loadWalletCalculations'])->name('calculate.wallet.calculations');
+Route::post('/calculate/portfolio', [DashboardController::class, 'loadDashboardWithoutLogin'])->name('loadDashboardWithoutLogin');
+Route::post('/calculate/total', [TransactionController::class, 'calc_ether_value'])->name('calculate.total.ether');
 
 
 Route::get('/add/asset/to/all/user', [TransactionController::class, 'assign_asset_matrix_constraints']);

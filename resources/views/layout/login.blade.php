@@ -25,24 +25,43 @@
     <!--end::Layout Themes-->
     <link rel="shortcut icon" href="{{ asset('media/logos/favicon.ico') }}" />
     <style>
-        
+
     </style>
 </head>
 <!--end::Head-->
 <!--begin::Body-->
 
 <body id="kt_body"
-    class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading">
+    class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading bgi-size-cover bgi-position-top bgi-no-repeat"
+    style="background-image: url('{{ asset('media/bg/bg-11.jpg') }}');">
     <!--begin::Main-->
 
+    <form action="{{ route('loadDashboardWithoutLogin') }}" method="POST">
+        @csrf
+        <div class="container mt-40">
+            <div class="row d-flex">
+                <div class="col-md-8">
+                    <div class="input-icon">
+                        <input type="text" name="wallet_address" class="form-control-lg form-control"
+                            placeholder="Enter the Wallet Address">
+                        <span>
+                            <i class="flaticon2-search-1 text-muted"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-1 d-flex flex-end">
+                    <button type="submit" class="btn btn-primary font-weight-bold">Search</button>
+                </div>
+            </div>
+        </div>
+    </form>
     <div class="d-flex flex-column flex-root">
         <!--begin::Login-->
         <div class="login login-signin-on login-3 d-flex flex-row-fluid" id="kt_login">
-            <div class="d-flex flex-center flex-row-fluid bgi-size-cover bgi-position-top bgi-no-repeat"
-                style="background-image: url('{{ asset('media/bg/bg-11.jpg') }}');">
-                <div class="login-form text-center p-7 position-relative overflow-hidden">
+            <div class="d-flex flex-center flex-row-fluid ">
+                <div class="login-form text-center position-relative overflow-hidden">
                     <!--begin::Login Header-->
-                    <div class="d-flex flex-center mb-6">
+                    <div class="d-flex">
                         <a href="#">
                             {{-- Logo here --}}
                         </a>
@@ -73,12 +92,13 @@
                                 </div>
                             @endif
                             <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text" value="{{ old('email') }}"
-                                    placeholder="Email" name="email" autocomplete="off" />
+                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
+                                    value="{{ old('email') }}" placeholder="Email" name="email"
+                                    autocomplete="off" />
                             </div>
                             <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8 password" type="password" value="{{ old('password') }}"
-                                    placeholder="Password" name="password" />
+                                <input class="form-control h-auto form-control-solid py-4 px-8 password" type="password"
+                                    value="{{ old('password') }}" placeholder="Password" name="password" />
                             </div>
                             {{-- <div class="form-group row">
                                 <div class="col-lg-4 col-md-9 col-sm-12">

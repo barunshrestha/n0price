@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class DashboardController extends Controller
 {
@@ -29,92 +30,96 @@ class DashboardController extends Controller
 
     public function menu_list()
     {
-        $menus = [[]];
-        array_push(
-            $menus[0],
-            [
-                'title' => 'Dashboard',
-                'root' => true,
-                'icon' => 'media/svg/icons/Home/Home.svg', // or can be 'flaticon-home' or any flaticon-*
-                'page' => '/',
-                'new-tab' => false,
-            ],
-
-            [
-                'title' => 'Manage Portfolio',
-                'root' => true,
-                'page' => '/portfolio',
-                'icon' => 'media/svg/icons/General/Settings-2.svg', // or can be 'flaticon-home' or any flaticon-*
-                'new-tab' => false,
-            ],
-            [
-                'section' => 'My Portfolios',
-            ]
-        );
         $user = Auth::user();
-        $menu_of_portfolio = Portfolio::where('user_id', $user->id)->get(['id', 'portfolio_name']);
-        foreach ($menu_of_portfolio as $menu_items) {
-            array_push(
-                $menus[0],
-                [
-                    'title' => $menu_items->portfolio_name ? $menu_items->portfolio_name : 'Unnamed',
-                    'root' => true,
-                    'page' => '/select/portfolio/' . $menu_items->id,
-                    'icon' => 'media/svg/icons/Clothes/Briefcase.svg', // or can be 'flaticon-home' or any flaticon-*
-                    'new-tab' => false,
-                ]
-            );
-        }
-        if (Auth::user()->role_id == 1) {
-            array_push(
-                $menus[0],
-                [
-                    'section' => 'User',
-                ],
-                [
-                    'title' => 'Users',
-                    'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
-                    'bullet' => 'line',
-                    'page' => '/users',
-                    'root' => true,
-                    'new-tab' => false,
-                ],
-                [
-                    'section' => 'Coin',
-                ],
-                [
-                    'title' => 'Coin',
-                    'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
-                    'bullet' => 'line',
-                    'page' => '/coins',
-                    'root' => true,
-                    'new-tab' => false,
-                ],
-                [
-                    'title' => 'Transaction',
-                    'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
-                    'bullet' => 'line',
-                    'page' => '/all/transactions',
-                    'root' => true,
+        if ($user) {
 
+            $menus = [[]];
+            array_push(
+                $menus[0],
+                [
+                    'title' => 'Dashboard',
+                    'root' => true,
+                    'icon' => 'media/svg/icons/Home/Home.svg', // or can be 'flaticon-home' or any flaticon-*
+                    'page' => '/',
+                    'new-tab' => false,
+                ],
+
+                [
+                    'title' => 'Manage Portfolio',
+                    'root' => true,
+                    'page' => '/portfolio',
+                    'icon' => 'media/svg/icons/General/Settings-2.svg', // or can be 'flaticon-home' or any flaticon-*
+                    'new-tab' => false,
+                ],
+                [
+                    'section' => 'My Portfolios',
                 ]
             );
-        } else {
+            $menu_of_portfolio = Portfolio::where('user_id', $user->id)->get(['id', 'portfolio_name']);
+            foreach ($menu_of_portfolio as $menu_items) {
+                array_push(
+                    $menus[0],
+                    [
+                        'title' => $menu_items->portfolio_name ? $menu_items->portfolio_name : 'Unnamed',
+                        'root' => true,
+                        'page' => '/select/portfolio/' . $menu_items->id,
+                        'icon' => 'media/svg/icons/Clothes/Briefcase.svg', // or can be 'flaticon-home' or any flaticon-*
+                        'new-tab' => false,
+                    ]
+                );
+            }
+            if (Auth::user()->role_id == 1) {
+                array_push(
+                    $menus[0],
+                    [
+                        'section' => 'User',
+                    ],
+                    [
+                        'title' => 'Users',
+                        'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
+                        'bullet' => 'line',
+                        'page' => '/users',
+                        'root' => true,
+                        'new-tab' => false,
+                    ],
+                    [
+                        'section' => 'Coin',
+                    ],
+                    [
+                        'title' => 'Coin',
+                        'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
+                        'bullet' => 'line',
+                        'page' => '/coins',
+                        'root' => true,
+                        'new-tab' => false,
+                    ],
+                    [
+                        'title' => 'Transaction',
+                        'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
+                        'bullet' => 'line',
+                        'page' => '/all/transactions',
+                        'root' => true,
+
+                    ]
+                );
+            } else {
+            }
+            array_push(
+                $menus[0],
+                [
+                    'section' => 'Settings',
+                ],
+                [
+                    'title' => 'Logout',
+                    'root' => true,
+                    'icon' => 'media/svg/icons/Electric/Shutdown.svg', // or can be 'flaticon-home' or any flaticon-*
+                    'page' => '/logout',
+                    'new-tab' => false,
+                ]
+            );
+            return $menus;
         }
-        array_push(
-            $menus[0],
-            [
-                'section' => 'Settings',
-            ],
-            [
-                'title' => 'Logout',
-                'root' => true,
-                'icon' => 'media/svg/icons/Electric/Shutdown.svg', // or can be 'flaticon-home' or any flaticon-*
-                'page' => '/logout',
-                'new-tab' => false,
-            ]
-        );
-        return $menus;
+        return [];
     }
     public function index(Request $request)
     {
@@ -361,5 +366,16 @@ class DashboardController extends Controller
             return view($this->_page . 'dashboard', $this->_data);
         }
         return redirect()->back();
+    }
+    public function loadDashboardWithoutLogin(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'wallet_address' => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->withInput($request->input())->withErrors($validator);
+        }
+        $this->_data['wallet_address'] = $request->wallet_address;
+        return view('pages.noAuthDashboard', $this->_data);
     }
 }

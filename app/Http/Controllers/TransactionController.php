@@ -465,9 +465,17 @@ class TransactionController extends Controller
 
     public function loadWalletCalculations(Request $request, $portfolio_id)
     {
-        $all_wallet_address = Wallet::where('portfolio_id', $portfolio_id)->pluck('wallet_address');
-        $this->_data['all_wallet_address'] = $all_wallet_address;
-        $this->_data['portfolio_id'] = $portfolio_id;
+        if (Auth::user()) {
+            $all_wallet_address = Wallet::where('portfolio_id', $portfolio_id)->pluck('wallet_address');
+            $this->_data['all_wallet_address'] = $all_wallet_address;
+            $this->_data['portfolio_id'] = $portfolio_id;
+        } else {
+            $wallet_address = explode(',', $request->wallet_address);
+            $all_address = array_map('strtolower', $wallet_address);
+            $all_wallet_address = array_values(array_unique($all_address));
+            $this->_data['all_wallet_address'] = $all_wallet_address;
+        }
+
         $invalid_contract_address = json_decode(Redis::get('invalid_coins'));
         if (!isset($invalid_contract_address)) {
             $invalid_contract_address = [];
