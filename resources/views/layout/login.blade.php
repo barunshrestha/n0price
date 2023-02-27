@@ -36,26 +36,28 @@
     style="background-image: url('{{ asset('media/bg/bg-11.jpg') }}');">
     <!--begin::Main-->
 
-    <form action="{{ route('loadDashboardWithoutLogin') }}" method="POST">
-        @csrf
-        <div class="container mt-40">
-            <div class="row d-flex">
-                <div class="col-md-8">
-                    <div class="input-icon">
+    <div class="d-flex flex-column flex-root">
+
+        <form action="{{ route('loadDashboardWithoutLogin') }}" method="POST">
+            @csrf
+            <div class="d-flex flex-column">
+
+                <div class="d-flex justify-content-center" style="margin-top:20em;">
+                    <div class="input-icon mx-4">
                         <input type="text" name="wallet_address" class="form-control-lg form-control"
-                            placeholder="Enter the Wallet Address">
+                            style="width: 40em;" placeholder="Enter Wallet Address">
                         <span>
                             <i class="flaticon2-search-1 text-muted"></i>
                         </span>
                     </div>
-                </div>
-                <div class="col-md-1 d-flex flex-end">
                     <button type="submit" class="btn btn-primary font-weight-bold">Search</button>
                 </div>
             </div>
+        </form>
+        <div class="form-group align-items-center" style="margin-left: 33.5%">
+            <p class="text-muted">It supports upto 5 wallet addresses. Separate
+                the wallet addresses by comma</p>
         </div>
-    </form>
-    <div class="d-flex flex-column flex-root">
         <!--begin::Login-->
         <div class="login login-signin-on login-3 d-flex flex-row-fluid" id="kt_login">
             <div class="d-flex flex-center flex-row-fluid ">

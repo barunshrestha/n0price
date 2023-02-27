@@ -472,7 +472,7 @@ class TransactionController extends Controller
         } else {
             $wallet_address = explode(',', $request->wallet_address);
             $all_address = array_map('strtolower', $wallet_address);
-            $all_wallet_address = array_values(array_unique($all_address));
+            $all_wallet_address = array_values(array_unique(array_slice($all_address, 0, 5)));
             $this->_data['all_wallet_address'] = $all_wallet_address;
         }
 

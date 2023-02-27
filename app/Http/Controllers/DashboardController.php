@@ -375,7 +375,11 @@ class DashboardController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withInput($request->input())->withErrors($validator);
         }
-        $this->_data['wallet_address'] = $request->wallet_address;
+        $wallet_address = explode(',', $request->wallet_address);
+        $all_address = array_map('strtolower', $wallet_address);
+        $all_wallet_address = array_values(array_unique($all_address));
+        $this->_data['wallet_list'] = array_slice($all_wallet_address, 0, 5);
+        $this->_data['wallet_address'] = implode(",", $this->_data['wallet_list']);
         return view('pages.noAuthDashboard', $this->_data);
     }
 }
