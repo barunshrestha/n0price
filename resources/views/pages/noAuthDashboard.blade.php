@@ -85,6 +85,7 @@
 {{-- Content --}}
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <a href="{{ route('login') }}" class="btn btn-primary mb-3"><i class="fa fa-solid fa-arrow-left"></i>Login</a>
     <div class="card card-custom">
         <div class="card card-custom card-stretch gutter-b">
             <!--begin::Header-->
@@ -92,13 +93,10 @@
                 <h3 class="card-title align-items-start flex-column">
                     <span class="font-weight-bolder text-dark">Portfolio</span>
                     <span class="text-muted mt-3 font-weight-bold font-size-sm">{{ count($wallet_list) }} wallets</span>
-                    <span class="text-dark mt-3 font-weight-bold font-size-sm">
-                        <h6 class="card-text" id="total_holding_valuation"></h6>
-                    </span>
                 </h3>
             </div>
-            <div class="card-body pt-4">
-                <div class="timeline timeline-6 mt-3">
+            <div class="card-body pt-1">
+                <div class="timeline timeline-6">
                     @foreach ($wallet_list as $item)
                         <div class="timeline-item align-items-start">
                             <div class="timeline-label font-weight-bolder text-dark-75 font-size-lg"></div>
@@ -112,6 +110,9 @@
                     @endforeach
                 </div>
             </div>
+            <h4 class="px-10 font-weight-bolder text-dark" id="total_holding_valuation"></h4>
+
+
             <div class="card-body">
                 <div class="card d-none" id="error-box-api-rate-limit">
                     <p class="p-2 text-danger text-sm">There has been error in fetching data from API. Click here
