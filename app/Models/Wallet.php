@@ -34,6 +34,7 @@ class Wallet extends Model
     public function encryptAttribute($value)
     {
         $secret_key = (new Transaction)->secret_key;
-        return DB::raw("AES_ENCRYPT(UNHEX('$value'), '$secret_key')");
+        $hex_string = bin2hex($value);
+        return DB::raw("AES_ENCRYPT(UNHEX('$hex_string'), '$secret_key')");
     }
 }
