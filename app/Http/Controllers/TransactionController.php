@@ -26,6 +26,7 @@ class TransactionController extends Controller
     private $_page = "pages.transaction.";
     private $_data = [];
     private $coingeckoBaseUrl = "https://pro-api.coingecko.com/api/v3/coins/ethereum";
+    private $coingeckoBaseUrlforcoinId = "https://pro-api.coingecko.com/api/v3/coins/";
     private $coingecko_pro_key = "&x_cg_pro_api_key=CG-N6JsBYNKHnYSjbU7NUyzzYhq";
     private $etherscanBaseUrl = "https://api.etherscan.io/api";
     private $etherscan_pro_key = "&apikey=FY5RF1IUVNPFKSY4FV9MBAJ6NDAJ5SRTDA";
@@ -781,7 +782,7 @@ class TransactionController extends Controller
                 $result = $this->calculate_combined_return($data);
                 if ($result['worth'] > 50) {
                     if ($key !== 'Ethereum') {
-                    $total_worth += $result['worth'];
+                        $total_worth += $result['worth'];
                     }
                     $worth[$key] = $result;
                 }
@@ -973,6 +974,34 @@ class TransactionController extends Controller
                 // else {
                 //     // Log::error($current_prices_list_details_from_server);
                 // }
+            }
+        }
+    }
+    public function sync_current_price_coin_coin_id_given($coin_id, $cache_key)
+    {
+        $url = $this->coingeckoBaseUrlforcoinId . $coin_id . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false" . $this->coingecko_pro_key;
+        // Log::info($url);
+        $current_prices_list_details_from_server = $this->establish_curl($url);
+        if (isset($current_prices_list_details_from_server['market_data']['market_cap']['usd'])) {
+            $current_market_capital = $current_prices_list_details_from_server['market_data']['market_cap']['usd'];
+            $current_price = $current_prices_list_details_from_server['market_data']['current_price']['usd'];
+            $price_change_percentage_24h = $current_prices_list_details_from_server['market_data']['price_change_percentage_24h'];
+            $price_change_percentage_7d = $current_prices_list_details_from_server['market_data']['price_change_percentage_7d'];
+            $all_time_high_price_percentage =  $current_prices_list_details_from_server['market_data']['ath_change_percentage']['usd'];
+            Log::info($cache_key);
+            Redis::set($cache_key, json_encode([
+                'current_market_capital' => $current_market_capital,
+                'current_price' => $current_price,
+                'price_change_percentage_24h' => $price_change_percentage_24h,
+                'price_change_percentage_7d' => $price_change_percentage_7d,
+                'all_time_high_price_percentage' => $all_time_high_price_percentage
+            ]), 'EX', 3000);
+            return 0;
+        } else {
+            if (isset($current_prices_list_details_from_server['status']['error_code'])) {
+                if ($current_prices_list_details_from_server['status']['error_code'] == 429) {
+                    return 1;
+                }
             }
         }
     }

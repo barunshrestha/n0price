@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 
 class DashboardController extends Controller
@@ -303,26 +304,41 @@ class DashboardController extends Controller
             }
         }
         $worth = array();
-        $ch = curl_init();
         foreach ($coins_available as $coins) {
+            $coin_id = $coins->coin_id;
+            $unix_timestamp = time();
+            $new_unix_timestamp = mktime(date("H", $unix_timestamp), 0, 0, date("n", $unix_timestamp), date("j", $unix_timestamp), date("Y", $unix_timestamp));
+            $cache_key = $coin_id . '_' . $new_unix_timestamp;
+            $current_value =  Redis::get($cache_key);
+            if (!isset($current_value)) {
+                $api_rate_limit_flag = (new TransactionController)->sync_current_price_coin_coin_id_given($coin_id, $cache_key);
+                if ($api_rate_limit_flag == 1) {
+                    break;
+                }
+            }
             $total_current_invested = $total_worth[$coins->coin_id];
             $total_buy = $coins->buy_unit ? $coins->buy_unit : 0;
             $total_sell = $coins->sell_unit ? $coins->sell_unit : 0;
             $remaining_coins = $total_buy - $total_sell;
+            $current_market_capital = 0;
+            $current_price = 0;
+            $price_change_percentage_24h = 0;
+            $price_change_percentage_7d = 0;
+            $all_time_high_price_percentage = 0;
+            $return = 0;
             $coin_id = "$coins->coin_id";
-            $url =  $this->_baseurl . "coins/" . $coin_id . "?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false" . $this->_key;
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $response = curl_exec($ch);
-            $current_prices_list_details_from_server = json_decode($response);
-            $current_market_capital = isset($current_prices_list_details_from_server->market_data->market_cap->usd) ? $current_prices_list_details_from_server->market_data->market_cap->usd : 0;
-            $current_price = isset($current_prices_list_details_from_server->market_data->current_price->usd) ? $current_prices_list_details_from_server->market_data->current_price->usd : 0;
-            $price_change_percentage_24h = isset($current_prices_list_details_from_server->market_data->price_change_percentage_24h) ? $current_prices_list_details_from_server->market_data->price_change_percentage_24h : 0;
-            $price_change_percentage_7d = isset($current_prices_list_details_from_server->market_data->price_change_percentage_7d) ? $current_prices_list_details_from_server->market_data->price_change_percentage_7d : 0;
-            $all_time_high_price_percentage = isset($current_prices_list_details_from_server->market_data->ath_change_percentage->usd) ? $current_prices_list_details_from_server->market_data->ath_change_percentage->usd : 0;
-            $todaysWorth = $remaining_coins * $current_price;
-            $return = ($todaysWorth - $total_current_invested) / $total_current_invested * 100;
-            $return = $total_current_invested == 0 ? 0 : round($return, 2);
+            $cache_data = Redis::get($cache_key);
+            if (isset($cache_data)) {
+                $current_prices_list_details_from_server = json_decode($cache_data);
+                $current_prices_list_details_from_server = json_decode($cache_data);
+                $current_market_capital = $current_prices_list_details_from_server->current_market_capital;
+                $current_price = $current_prices_list_details_from_server->current_price;
+                $price_change_percentage_24h = $current_prices_list_details_from_server->price_change_percentage_24h;
+                $price_change_percentage_7d = $current_prices_list_details_from_server->price_change_percentage_7d;
+                $all_time_high_price_percentage = $current_prices_list_details_from_server->all_time_high_price_percentage;
+                $todaysWorth =  $remaining_coins * $current_price;
+                $return = $total_current_invested == 0 ? 0 : round(($todaysWorth - $total_current_invested) / $total_current_invested, 2) * 100;
+            }
             $coinData = [
                 "usd_market_cap" => $current_market_capital,
                 "current_usd" => $current_price,
