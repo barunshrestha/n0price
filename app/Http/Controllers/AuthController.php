@@ -39,7 +39,7 @@ class AuthController extends Controller
             'password' => 'required|min:8',
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->withInput($request->input())->withErrors($validator);
+            return redirect()->back()->withInput($request->input())->withErrors($validator)->with(['action' => 'signup', 'fail' => 'Signup failed']);
         }
         $user = User::create([
             'name' => $request->name,
@@ -55,7 +55,7 @@ class AuthController extends Controller
 
         event(new Registered($user));
 
-        return redirect(route('login'))->with(['success' => "User Registration Successful. Check email for Verfication."]);
+        return redirect(route('login'))->with(['success' => "User Registration Successful. Check email for Verfication.", 'action' => 'login']);
     }
 
     public function login(Request $request)
@@ -77,7 +77,7 @@ class AuthController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             return redirect()->route('dashboard');
         }
-        return redirect()->back()->withInput($request->only('email'))->with(['fail' => 'Credentials did not match our record']);
+        return redirect()->back()->withInput($request->only('email'))->with(['fail' => 'Credentials did not match our record', 'action' => 'login']);
     }
 
     public function logout(Request $request)
