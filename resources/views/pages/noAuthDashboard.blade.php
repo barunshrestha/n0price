@@ -313,38 +313,39 @@
                                 <div class="tab-content">
                                     <div class="tab-pane fade show active" id="kt_tab_pane_csv" role="tabpanel"
                                         aria-labelledby="kt_tab_pane_csv">
-                                        <form class="form" id="wallet_form"
+                                        {{-- <form class="form" id="wallet_form"
                                             action="{{ route('loadDashboardWithoutLogin') }}" method="post"
                                             enctype="multipart/form-data">
-                                            {{ csrf_field() }}
-                                            <div class="card-body">
-                                                <div id="wallet_address_collection">
-                                                    @foreach ($wallet_list as $wallet_address)
-                                                        <div class="input-group mb-3">
-                                                            <input name="wallet_address[]" type="text"
-                                                                class="form-control form-control-solid"
-                                                                placeholder="Enter your wallet address" required
-                                                                value="{{ $wallet_address }}" autocomplete="off" />
-                                                            <button class="btn btn-icon btn-danger btn-sm mx-2"
-                                                                type="button" onclick="removeWalletAddressField(this)">
-                                                                <i class="fa fa-minus"></i>
-                                                            </button>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-                                                <button class="btn btn-icon btn-info btn-sm mx-2" type="button"
-                                                    onclick="addWalletAddressField()">
-                                                    <i class="fa fa-plus"></i>
-                                                </button>
+                                            {{ csrf_field() }} --}}
+                                        <div class="card-body">
+                                            <div id="wallet_address_collection">
+                                                @foreach ($wallet_list as $wallet_address)
+                                                    <div class="input-group mb-3">
+                                                        <input name="wallet_address[]" type="text"
+                                                            class="form-control form-control-solid"
+                                                            placeholder="Enter your wallet address" required
+                                                            value="{{ $wallet_address }}" autocomplete="off" />
+                                                        <button class="btn btn-icon btn-danger btn-sm mx-2" type="button"
+                                                            onclick="removeWalletAddressField(this)">
+                                                            <i class="fa fa-minus"></i>
+                                                        </button>
+                                                    </div>
+                                                @endforeach
                                             </div>
-                                            <div class="card-body" id="maximum_wallet_capacity_error_box">
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-light-primary font-weight-bold"
-                                                    data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary font-weight-bold"
-                                                    id="coin-save-transaction-btn">Save</button>
-                                            </div>
+                                            <button class="btn btn-icon btn-info btn-sm mx-2" type="button"
+                                                onclick="addWalletAddressField()">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="card-body" id="maximum_wallet_capacity_error_box">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light-primary font-weight-bold" id="modal-close-button"
+                                                data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary font-weight-bold"
+                                                onclick="editWalletListModal()"
+                                                id="coin-save-transaction-btn">Save</button>
+                                        </div>
                                         </form>
                                     </div>
                                 </div>

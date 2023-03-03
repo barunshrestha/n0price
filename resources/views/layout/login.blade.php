@@ -25,164 +25,155 @@
     <!--end::Layout Themes-->
     <link rel="shortcut icon" href="{{ asset('media/logos/favicon.ico') }}" />
     <style>
+        .card-custom-login {
+            background: transparent !important;
+        }
 
+        .card-custom-login .card-header {
+            border-bottom: none !important;
+        }
+
+        .coin_container .selection {
+            margin-bottom: 1em;
+        }
+
+        .coin_container {
+            display: flex;
+        }
+
+        .selection label {
+            text-align: center;
+            display: block;
+            width: 7em;
+            background-color: #42b4d6;
+            border-radius: 12em;
+            color: #ffffff;
+            padding: 0.5em;
+            cursor: pointer;
+        }
+
+        .coin_container .selection label:hover {
+            background-color: #5fc0dc;
+        }
+
+        .coin_container .selection input[type=radio] {
+            display: none;
+        }
+
+        .coin_container .selection input[type=radio]:checked~label {
+            background-color: #f1592a;
+        }
+
+        .dropdown-image {
+            height: 40px;
+            width: 40px;
+        }
+
+        .icon-image {
+            height: 25px;
+            width: 25px;
+        }
+
+
+        .hidden {
+            display: none !important;
+        }
+
+        .flexproperty {
+            display: inline-flex;
+        }
+
+        #kt_datatable_coin_select tbody tr span {
+            /* width:max-content !important; */
+            width: 100% !important;
+        }
+
+        .gain-button {
+            min-width: 8em;
+        }
+
+        #selected_coin span {
+            width: 100% !important;
+        }
+
+        #coin_worth_all_summary tr td i {
+            float: right;
+        }
+
+        #coin_worth_all_summary tr td i:hover {
+            color: black;
+        }
+
+        @media screen and (min-width: 1287px) {
+            .portfolio-table {
+                display: inline-table;
+            }
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #EBEDF3;
+            font-size: 0.8em;
+        }
     </style>
 </head>
 <!--end::Head-->
 <!--begin::Body-->
 
 <body id="kt_body"
-    class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading bgi-size-cover bgi-position-top bgi-no-repeat"
+    class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading bgi-size-cover bgi-position-top"
     style="background-image: url('{{ asset('media/bg/bg-11.jpg') }}');">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <!--begin::Main-->
-
-    <div class="d-flex flex-column flex-root">
-
-        <form action="{{ route('loadDashboardWithoutLogin') }}" method="POST">
-            @csrf
-            <div class="d-flex flex-column">
-
-                <div class="d-flex justify-content-center" style="margin-top:20em;">
-                    <div class="input-icon mx-4">
-                        <input type="text" name="wallet_address" class="form-control-lg form-control"
-                            style="width: 40em;" placeholder="Enter Wallet Address">
-                        <span>
-                            <i class="flaticon2-search-1 text-muted"></i>
-                        </span>
-                    </div>
-                    <button type="submit" class="btn btn-primary font-weight-bold">Search</button>
-                </div>
-            </div>
-        </form>
-        <div class="form-group align-items-center" style="margin-left: 33.5%">
-            <p class="text-muted">Separate addresses (maximum 5) with commas</p>
-        </div>
-        <!--begin::Login-->
-        <div class="login login-signin-on login-3 d-flex flex-row-fluid" id="kt_login">
-            <div class="d-flex flex-center flex-row-fluid ">
-                <div class="login-form text-center position-relative overflow-hidden">
-                    <!--begin::Login Header-->
-                    <div class="d-flex">
-                        <a href="#">
-                            {{-- Logo here --}}
-                        </a>
-                    </div>
-                    <!--end::Login Header-->
-                    <!--begin::Login Sign in form-->
-                    <div class="login-signin">
-                        <div class="mb-10">
-                            <h2 style="color: #ffffff;">Login</h2>
-                            <div class="text-muted font-weight-bold">Enter your details to login to your account:</div>
-                        </div>
-                        <form class="kt-form" action="{{ route('login') }}" method="post" novalidate="novalidate">
-                            {{ csrf_field() }}
-                            @if (session('fail'))
-                                <div class="alert alert-danger d-flex" role="alert">
-                                    <div class="alert-text">{!! session('fail') !!}</div>
-                                    <div class="alert-close ml-auto">
-                                        <i class="flaticon2-cross kt-icon-sm text-white" data-dismiss="alert"></i>
-                                    </div>
-                                </div>
-                            @endif
-                            @if (session('success'))
-                                <div class="alert alert-success d-flex" role="alert">
-                                    <div class="alert-text">{!! session('success') !!}</div>
-                                    <div class="alert-close ml-auto">
-                                        <i class="flaticon2-cross kt-icon-sm text-white" data-dismiss="alert"></i>
-                                    </div>
-                                </div>
-                            @endif
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
-                                    value="{{ old('email') }}" placeholder="Email" name="email"
-                                    autocomplete="off" />
-                            </div>
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8 password" type="password"
-                                    value="{{ old('password') }}" placeholder="Password" name="password" />
-                            </div>
-                            {{-- <div class="form-group row">
-                                <div class="col-lg-4 col-md-9 col-sm-12">
-                                    <div class="g-recaptcha" data-sitekey="6LdnLwgUAAAAAAIb9L3PQlHQgvSCi16sYgbMIMFR">
-                                    </div>
-                                </div>
-                            </div> --}}
-                            <div class="form-group d-flex flex-wrap justify-content-between align-items-center">
-                                <a href="/forgot-password" class="text-muted text-hover-primary">Forget Password ?</a>
-                            </div>
-                            <button type="submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4">Sign
-                                In</button>
-                        </form>
-                        <div class="mt-10">
-                            <span class="text-muted font-weight-bold">Don't have an account yet?</span>
-                            <a href="/signup" id="kt_login_signup"
-                                class="text-muted text-hover-primary font-weight-bold">Sign Up!</a>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-custom-login card-custom">
+                    <div class="card-header card-header-tabs-line justify-content-end">
+                        <div class="card-toolbar">
+                            <ul class="nav nav-tabs nav-bold nav-tabs-line row">
+                                <li class="nav-item col-sm-12 col-md-4">
+                                    <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_1_3">
+                                        <span class="nav-icon"><i class="flaticon2-chat-1"></i></span>
+                                        <span class="nav-text">Home</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item col-sm-12 col-md-4">
+                                    <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_1_4"
+                                        style="width: inherit;">
+                                        <span class="nav-icon"><i class="flaticon2-chat-1"></i></span>
+                                        <span class="nav-text">Sign in</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item col-sm-12 col-md-4">
+                                    <a class="nav-link mx-sm-5" data-toggle="tab" href="#kt_tab_pane_2_4"
+                                        style="width: inherit;">
+                                        <span class="nav-icon"><i class="flaticon2-drop"></i></span>
+                                        <span class="nav-text">Sign up</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <!--end::Login Sign in form-->
-                    <!--begin::Login Sign up form-->
-                    <div class="login-signup">
-                        <div class="mb-20">
-                            <h3>Sign Up</h3>
-                            <div class="text-muted font-weight-bold">Enter your details to create your account</div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="kt_tab_pane_1_3" role="tabpanel"
+                                aria-labelledby="kt_tab_pane_1_3">
+                                @include('layout.searchWallet-partials')
+                            </div>
+                            <div class="tab-pane fade show" id="kt_tab_pane_1_4" role="tabpanel"
+                                aria-labelledby="kt_tab_pane_1_4">
+                                @include('layout.login-partials')
+                            </div>
+                            <div class="tab-pane fade" id="kt_tab_pane_2_4" role="tabpanel"
+                                aria-labelledby="kt_tab_pane_2_4">
+                                @include('layout.signup-partials');
+                            </div>
                         </div>
-                        <form class="form">
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
-                                    placeholder="Fullname" name="fullname" />
-                            </div>
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
-                                    placeholder="Email" name="email" autocomplete="off" />
-                            </div>
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="password"
-                                    placeholder="Password" name="password" />
-                            </div>
-                            <div class="form-group mb-5">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="password"
-                                    placeholder="Confirm Password" name="rpassword" />
-                            </div>
-                            <div class="form-group mb-5 text-left">
-                                <label class="checkbox m-0">
-                                    <input type="checkbox" name="agree" />I Agree the
-                                    <a href="#" class="font-weight-bold">terms and conditions</a>.
-                                    <span></span></label>
-                                <div class="form-text text-muted text-center"></div>
-                            </div>
-                            <div class="form-group d-flex flex-wrap flex-center mt-10">
-                                <button id="kt_login_signup_submit"
-                                    class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2">Sign Up</button>
-                                <button id="kt_login_signup_cancel"
-                                    class="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-2">Cancel</button>
-                            </div>
-                        </form>
                     </div>
-                    <!--end::Login Sign up form-->
-                    <!--begin::Login forgot password form-->
-                    <div class="login-forgot">
-                        <div class="mb-20">
-                            <h3>Forgotten Password ?</h3>
-                            <div class="text-muted font-weight-bold">Enter your email to reset your password</div>
-                        </div>
-                        <form class="form">
-                            <div class="input-group mb-10">
-                                <input class="form-control h-auto form-control-solid py-4 px-8" type="text"
-                                    placeholder="Email" name="email" id="kt_email" autocomplete="off" />
-                            </div>
-                            <div class="form-group d-flex flex-wrap flex-center mt-10">
-                                <button id="kt_login_forgot_submit"
-                                    class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2">Request</button>
-                                <button id="kt_login_forgot_cancel"
-                                    class="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-2">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                    <!--end::Login forgot password form-->
                 </div>
             </div>
         </div>
-        <!--end::Login-->
     </div>
     <!--end::Main-->
     <script>
@@ -265,6 +256,61 @@
         })
     </script>
     <!--end::Page Scripts-->
+    <script>
+        function searchWallet() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var wallet_list = $('#wallet_address_at_search').val();
+            $.ajax({
+                'url': '{{ route('loadDashboardWithoutLogin') }}',
+                'type': 'POST',
+                'data': {
+                    'wallet_address': wallet_list
+                },
+                success: function(result) {
+                    $('#kt_tab_pane_1_3').html(result)
+                }
+            });
+        }
+
+        function editWalletListModal() {
+            // Get all input fields with name "wallet_address[]"
+            $('#modal-close-button').click();
+            $('#modal-close-button').click();
+            var walletAddresses = $("input[name='wallet_address[]']");
+
+            // Create an array to store the values
+            var walletAddressValues = [];
+
+            // Loop through each input field and add its value to the array
+            walletAddresses.each(function() {
+                if ($(this).val().trim() !== '') {
+                    // Remove the input field from the DOM
+                    walletAddressValues.push($(this).val());
+                }
+            });
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            // Perform AJAX call to the backend
+            $.ajax({
+                type: "POST",
+                'url': '{{ route('loadDashboardWithoutLogin') }}',
+                data: {
+                    'wallet_address': walletAddressValues
+                },
+                success: function(result) {
+                    // Handle success response from backend
+                    $('#kt_tab_pane_1_3').html(result)
+                }
+            });
+        }
+    </script>
 </body>
 <!--end::Body-->
 
