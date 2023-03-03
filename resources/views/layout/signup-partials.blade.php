@@ -11,11 +11,11 @@
                 </div>
 
                 <div class="login-signin">
-                    <div class="mb-20">
-                        <h3 class="text-muted font-weight-bold">Sign Up
+                    <div class="mb-10">
+                        <h3 class="font-weight-bold" style="color: #ffffff;">Sign Up
                         </h3>
 
-                        <div class="text-muted font-weight-bold">Enter
+                        <div class="font-weight-bold" style="color: #ffffff;">Enter
                             your details to
                             create your account</div>
 

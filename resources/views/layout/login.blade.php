@@ -143,14 +143,14 @@
                                     <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_1_4" id="login-page-link"
                                         style="width: inherit;">
                                         <span class="nav-icon"><i class="flaticon-user"></i></span>
-                                        <span class="nav-text">Sign in</span>
+                                        <span class="nav-text">Sign In</span>
                                     </a>
                                 </li>
                                 <li class="nav-item col-sm-12 col-md-4">
                                     <a class="nav-link mx-sm-5" data-toggle="tab" href="#kt_tab_pane_2_4"
                                         id="signup-page-link" style="width: inherit;">
                                         <span class="nav-icon"><i class="flaticon-user-add"></i></span>
-                                        <span class="nav-text">Sign up</span>
+                                        <span class="nav-text">Sign Up</span>
                                     </a>
                                 </li>
                             </ul>
@@ -291,6 +291,7 @@
                     },
                     success: function(result) {
                         $('#kt_tab_pane_1_3').html(result)
+                        replaceUrlWithWalletAddress();
                         populateReturn();
                         $('.allocationEditBtn').click(function() {
                             pleaseLoginSweetAlert();
@@ -298,6 +299,13 @@
                     }
                 });
             }
+        }
+
+        function replaceUrlWithWalletAddress() {
+            var all_wallet_address = $('#all_wallet_address').val();
+            let url = "{{ route('loadDashboardByAddress', ['address' => ':addresses']) }}";
+            url = url.replace(":addresses", all_wallet_address);
+            history.replaceState(null, null, url);
         }
 
         function editWalletListModal() {
@@ -330,6 +338,7 @@
                 success: function(result) {
                     // Handle success response from backend
                     $('#kt_tab_pane_1_3').html(result)
+                    replaceUrlWithWalletAddress();
                     populateReturn();
                     $('.allocationEditBtn').click(function() {
                         pleaseLoginSweetAlert();

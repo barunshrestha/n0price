@@ -17,10 +17,10 @@
                             <!--begin::Login Sign in form-->
                             <div class="login-signin">
                                 <div class="mb-10">
-                                    <h2 style="color: #ffffff;">Login</h2>
-                                    <div class="text-muted font-weight-bold">Enter your
+                                    <h2 style="color: #ffffff;">Sign In</h2>
+                                    <div class="font-weight-bold" style="color: #ffffff;">Enter your
                                         details
-                                        to login to your account:</div>
+                                        to sign in to your account:</div>
                                 </div>
                                 <form class="kt-form" action="{{ route('login') }}" method="post"
                                     novalidate="novalidate">
