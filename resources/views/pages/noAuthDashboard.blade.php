@@ -85,7 +85,7 @@
 {{-- Content --}}
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <a href="{{ route('login') }}" class="btn btn-primary mb-3"><i class="fa fa-solid fa-arrow-left"></i>Login</a>
+    <a href="{{ route('login') }}" class="btn btn-primary mb-3"><i class="fa fa-solid fa-arrow-left"></i>Back</a>
     <div class="card card-custom">
         <div class="card card-custom card-stretch gutter-b">
             <!--begin::Header-->
@@ -93,7 +93,14 @@
                 <h3 class="card-title align-items-start flex-column">
                     <span class="font-weight-bolder text-dark">Portfolio</span>
                     <span class="text-muted mt-3 font-weight-bold font-size-sm">{{ count($wallet_list) }} wallets</span>
+                    <input type="hidden" id="all_wallet_address" value="{{ $wallet_address }}">
                 </h3>
+                <div class="card-toolbar">
+                    <button type="button" class="btn btn-success mx-2 my-3" data-toggle="modal"
+                        data-target="#my_wallet_addresses">
+                        <i class="flaticon-upload"></i>
+                        My Wallet</button>
+                </div>
             </div>
             <div class="card-body pt-1">
                 <div class="timeline timeline-6">
@@ -276,6 +283,77 @@
                 </table>
             </div>
         </div>
+        <div class="modal fade" id="my_wallet_addresses" data-backdrop="static" tabindex="-1" role="dialog"
+            aria-labelledby="staticBackdrop" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Import data</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <i aria-hidden="true" class="ki ki-close"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card px-3 py-3 container card-custom" style="width: 100%">
+                            <div class="card-header card-header-tabs-line">
+                                <div class="card-toolbar">
+                                    <ul class="nav nav-tabs nav-bold nav-tabs-line row">
+
+                                        <li class="nav-item col-sm-12 col-md-7">
+                                            <a class="nav-link mx-sm-5" data-toggle="tab" href="#kt_tab_pane_wallet"
+                                                id="transaction-btn">
+                                                <span class="nav-icon mx-2"><i class="flaticon-piggy-bank"></i></span>
+                                                <span class="nav-text">Wallet</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="kt_tab_pane_csv" role="tabpanel"
+                                        aria-labelledby="kt_tab_pane_csv">
+                                        <form class="form" id="wallet_form"
+                                            action="{{ route('loadDashboardWithoutLogin') }}" method="post"
+                                            enctype="multipart/form-data">
+                                            {{ csrf_field() }}
+                                            <div class="card-body">
+                                                <div id="wallet_address_collection">
+                                                    @foreach ($wallet_list as $wallet_address)
+                                                        <div class="input-group mb-3">
+                                                            <input name="wallet_address[]" type="text"
+                                                                class="form-control form-control-solid"
+                                                                placeholder="Enter your wallet address" required
+                                                                value="{{ $wallet_address }}" autocomplete="off" />
+                                                            <button class="btn btn-icon btn-danger btn-sm mx-2"
+                                                                type="button" onclick="removeWalletAddressField(this)">
+                                                                <i class="fa fa-minus"></i>
+                                                            </button>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <button class="btn btn-icon btn-info btn-sm mx-2" type="button"
+                                                    onclick="addWalletAddressField()">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                            <div class="card-body" id="maximum_wallet_capacity_error_box">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-light-primary font-weight-bold"
+                                                    data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary font-weight-bold"
+                                                    id="coin-save-transaction-btn">Save</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endsection
     @section('scripts')
         <script src="{{ asset('js/pages/crud/ktdatatable/base/html-table.js') }}" type="text/javascript"></script>
@@ -315,13 +393,15 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
+                var wallet_list = $('#all_wallet_address').val();
                 $.ajax({
                     'url': '/calculate/wallet/0',
                     'type': 'POST',
                     'data': {
-                        'wallet_address': '{{ $wallet_address }}'
+                        'wallet_address': wallet_list
                     },
                     success: function(result) {
+
                         $("#coin_worth_all_summary").html(result);
                         var api_rate_limit_flag = $('#api_rate_limit_flag').val();
                         if (api_rate_limit_flag == 1) {

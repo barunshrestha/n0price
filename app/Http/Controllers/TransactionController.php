@@ -781,7 +781,7 @@ class TransactionController extends Controller
                 $result = $this->calculate_combined_return($data);
                 if ($result['worth'] > 50) {
                     if ($key !== 'Ethereum') {
-                        $total_worth += $result['worth'];
+                    $total_worth += $result['worth'];
                     }
                     $worth[$key] = $result;
                 }

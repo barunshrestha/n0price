@@ -55,8 +55,7 @@
             </div>
         </form>
         <div class="form-group align-items-center" style="margin-left: 33.5%">
-            <p class="text-muted">It supports upto 5 wallet addresses. Separate
-                the wallet addresses by comma</p>
+            <p class="text-muted">Separate addresses (maximum 5) with commas</p>
         </div>
         <!--begin::Login-->
         <div class="login login-signin-on login-3 d-flex flex-row-fluid" id="kt_login">
