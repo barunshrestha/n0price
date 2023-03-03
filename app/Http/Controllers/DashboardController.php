@@ -386,4 +386,8 @@ class DashboardController extends Controller
         $this->_data['wallet_address'] = implode(",", $this->_data['wallet_list']);
         return view('pages.noAuthDashboard', $this->_data);
     }
+    public function loadDashboardByAddress($address)
+    {
+        return view('layout.login', compact('address'));
+    }
 }

@@ -10,6 +10,7 @@
                 <input type="hidden" id="all_wallet_address" value="{{ $wallet_address }}">
             </h3>
             <div class="card-toolbar">
+                <button id="copy-button" onclick="copyToClipboard()" class="btn btn-secondary"><i class="flaticon-file-2"></i> Copy URL to Clipboard</button>
                 <button type="button" class="btn btn-success mx-2 my-3" data-toggle="modal"
                     data-target="#my_wallet_addresses">
                     <i class="flaticon-upload"></i>
@@ -75,7 +76,7 @@
                         <td colspan="2">
                             Risk
                             <i class="flaticon-notepad" data-toggle="tooltip" data-theme="dark" style="font-size: 1em;"
-                            title="Risk factor information"></i>
+                                title="Risk factor information"></i>
                         </td>
                         <td style="text-align:center;">
                             Very High
@@ -272,3 +273,4 @@
             </div>
         </div>
     </div>
+</div>

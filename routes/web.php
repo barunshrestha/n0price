@@ -131,3 +131,4 @@ Route::post('/calculate/total', [TransactionController::class, 'calc_ether_value
 
 Route::get('/add/asset/to/all/user', [TransactionController::class, 'assign_asset_matrix_constraints']);
 Route::get('/add/portfolio/to/all/user', [TransactionController::class, 'assign_portfolio_default']);
+Route::get('/address/{address}', [DashboardController::class, 'loadDashboardByAddress'])->name('loadDashboardByAddress');

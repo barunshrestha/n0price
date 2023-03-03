@@ -248,15 +248,17 @@
     <script src="{{ asset('js/scripts.bundle.js') }}"></script>
 
     <script>
-        @if (session('action'))
-            $(document).ready(function() {
+        $(document).ready(function() {
+            @if (session('action'))
                 @if (session('action') == 'login')
                     $('#login-page-link')[0].click();
                 @elseif (session('action') == 'signup')
                     $('#signup-page-link')[0].click();
                 @endif
-            });
-        @endif
+            @else
+                searchWallet();
+            @endif
+        });
     </script>
     <script type="text/javascript">
         $('.password').on('copy paste cut', function(e) {
@@ -265,27 +267,37 @@
     </script>
     <!--end::Page Scripts-->
     <script>
+        function copyToClipboard() {
+            var all_wallet_address = $('#all_wallet_address').val();
+            let url = "{{ route('loadDashboardByAddress', ['address' => ':addresses']) }}";
+            url = url.replace(":addresses", all_wallet_address);
+            navigator.clipboard.writeText(url)
+        }
+
         function searchWallet() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
+
             var wallet_list = $('#wallet_address_at_search').val();
-            $.ajax({
-                'url': '{{ route('loadDashboardWithoutLogin') }}',
-                'type': 'POST',
-                'data': {
-                    'wallet_address': wallet_list
-                },
-                success: function(result) {
-                    $('#kt_tab_pane_1_3').html(result)
-                    populateReturn();
-                    $('.allocationEditBtn').click(function() {
-                        pleaseLoginSweetAlert();
-                    });
-                }
-            });
+            if (wallet_list.trim() !== '') {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    'url': '{{ route('loadDashboardWithoutLogin') }}',
+                    'type': 'POST',
+                    'data': {
+                        'wallet_address': wallet_list
+                    },
+                    success: function(result) {
+                        $('#kt_tab_pane_1_3').html(result)
+                        populateReturn();
+                        $('.allocationEditBtn').click(function() {
+                            pleaseLoginSweetAlert();
+                        });
+                    }
+                });
+            }
         }
 
         function editWalletListModal() {
