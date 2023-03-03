@@ -69,10 +69,10 @@ class TransactionController extends Controller
         $secret_key = (new Transaction)->secret_key;
         $data = $request->except('_token');
         $user = Auth::user();
-        $selected_portfolio = Portfolio::where("user_id", $user->id)->where('id', $request->portfolio_id)->get('id');
+        $selected_portfolio = Portfolio::where("user_id", $user->id)->where('id', $request->portfolio_id)->first('id');
         if ($data['coin_investment_type'] == 'sell') {
-            $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $data['coin_id'] . ',' . $selected_portfolio[0]->id . ',' . $secret_key . ')');
-
+            $select_statement = $select_statement = "CALL usp_get_current_transaction_coin_wise('" . $user->id . "','" . $data['coin_id'] . "','" . $selected_portfolio->id . "','" . $secret_key . "')";
+            $to_check_transaction = DB::select($select_statement);
             if (!empty($to_check_transaction)) {
                 $to_check_buy_total = isset($to_check_transaction[0]->buy_unit) ? $to_check_transaction[0]->buy_unit : 0;
                 $to_check_sell_total = isset($to_check_transaction[0]->sell_unit) ? $to_check_transaction[0]->sell_unit : 0;
@@ -148,7 +148,8 @@ class TransactionController extends Controller
         $secret_key = (new Transaction)->secret_key;
         $selected_portfolio = Portfolio::where("user_id", $user->id)->where('id', $portfolio_id)->get('id');
         if ($investment_type == 'sell') {
-            $to_check_transaction = DB::select('CALL usp_get_current_transaction_coin_wise(' . $user->id . ',' . $given_coin_id . ',' . $selected_portfolio[0]->id . ',' . $secret_key . ')');
+            $select_statement = $select_statement = "CALL usp_get_current_transaction_coin_wise('" . $user->id . "','" . $given_coin_id . "','" . $selected_portfolio[0]->id . "','" . $secret_key . "')";
+            $to_check_transaction = DB::select($select_statement);
             $to_check_buy_total = $to_check_transaction[0]->buy_unit;
             $to_check_sell_total = $to_check_transaction[0]->sell_unit ? $to_check_transaction[0]->sell_unit : 0;
             $to_check_amt = $to_check_buy_total - $to_check_sell_total - $request->units;
