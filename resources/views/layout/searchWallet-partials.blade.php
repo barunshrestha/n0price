@@ -8,7 +8,7 @@
             <div class="d-flex justify-content-center" style="margin-top:20em;">
                 <div class="input-icon mx-4">
                     <input type="text" name="wallet_address" class="form-control-lg form-control"
-                        id="wallet_address_at_search" style="width: 40em;" placeholder="Enter Wallet Address">
+                        id="wallet_address_at_search" style="width: 40em;" placeholder="Search by ethereum addresses">
                     <span>
                         <i class="flaticon2-search-1 text-muted"></i>
                     </span>

@@ -74,6 +74,8 @@
                     <tr>
                         <td colspan="2">
                             Risk
+                            <i class="flaticon-notepad" data-toggle="tooltip" data-theme="dark" style="font-size: 1em;"
+                            title="Risk factor information"></i>
                         </td>
                         <td style="text-align:center;">
                             Very High
@@ -270,5 +272,3 @@
             </div>
         </div>
     </div>
-
-
