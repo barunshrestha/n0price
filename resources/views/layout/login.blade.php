@@ -258,6 +258,13 @@
             @else
                 searchWallet();
             @endif
+            $('#wallet_address_at_search').focus(function() {
+                $(document).on('keypress', function(e) {
+                    if (e.which == 13) {
+                        searchWallet();
+                    }
+                });
+            })
         });
     </script>
     <script type="text/javascript">
