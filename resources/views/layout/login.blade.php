@@ -14,14 +14,9 @@
     <!--end::Page Custom Styles-->
     <!--begin::Global Theme Styles(used by all pages)-->
     <link href="{{ asset('plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('plugins/custom/prismjs/prismjs.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
     <!--end::Global Theme Styles-->
     <!--begin::Layout Themes(used by all pages)-->
-    <link href="{{ asset('css/themes/layout/header/base/light.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('css/themes/layout/header/menu/light.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('css/themes/layout/brand/dark.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('css/themes/layout/aside/dark.css') }}" rel="stylesheet" type="text/css" />
     <!--end::Layout Themes-->
     <link rel="shortcut icon" href="{{ asset('media/logos/favicon.ico') }}" />
     <style>
@@ -31,14 +26,6 @@
 
         .card-custom-login .card-header {
             border-bottom: none !important;
-        }
-
-        .coin_container .selection {
-            margin-bottom: 1em;
-        }
-
-        .coin_container {
-            display: flex;
         }
 
         .selection label {
@@ -129,24 +116,24 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card card-custom-login card-custom">
-                    <div class="card-header card-header-tabs-line justify-content-end">
+                    <div class="card-header card-header-tabs-line justify-content-between">
+                        <div style="align-self: center;">
+                            <a style="text-decoration:none;color:#EBEDF3;" data-toggle="tab" href="#kt_tab_pane_1_3"
+                                href="{{ route('login') }}">
+                                <h2>noprice
+                                </h2>
+                            </a>
+                        </div>
                         <div class="card-toolbar">
                             <ul class="nav nav-tabs nav-bold nav-tabs-line row">
-                                <li class="nav-item col-sm-12 col-md-4">
-                                    <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_1_3"
-                                        id="home-page-link">
-                                        <span class="nav-icon"><i class="flaticon-home-2"></i></span>
-                                        <span class="nav-text">Home</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item col-sm-12 col-md-4">
+                                <li class="nav-item col-sm-12 col-md-6">
                                     <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_1_4" id="login-page-link"
                                         style="width: inherit;">
                                         <span class="nav-icon"><i class="flaticon-user"></i></span>
                                         <span class="nav-text">Sign In</span>
                                     </a>
                                 </li>
-                                <li class="nav-item col-sm-12 col-md-4">
+                                <li class="nav-item col-sm-12 col-md-6">
                                     <a class="nav-link mx-sm-5" data-toggle="tab" href="#kt_tab_pane_2_4"
                                         id="signup-page-link" style="width: inherit;">
                                         <span class="nav-icon"><i class="flaticon-user-add"></i></span>
@@ -177,10 +164,11 @@
         </div>
     </div>
     <!--end::Main-->
-    <script src="{{ asset('js/pages/crud/ktdatatable/base/html-table.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/pages/crud/datatables/extensions/buttons.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/pages/widgets.js') }}" type="text/javascript"></script>
+
     <!--begin::Global Config(global config for global JS scripts)-->
+    <script src="{{ asset('plugins/global/plugins.bundle.js') }}"></script>
+    <script src="{{ asset('plugins/custom/prismjs/prismjs.bundle.js') }}"></script>
+    <script src="{{ asset('js/scripts.bundle.js') }}"></script>
     <script>
         var KTAppSettings = {
             "breakpoints": {
@@ -243,9 +231,6 @@
     </script>
     <!--end::Global Config-->
     <!--begin::Global Theme Bundle(used by all pages)-->
-    <script src="{{ asset('plugins/global/plugins.bundle.js') }}"></script>
-    <script src="{{ asset('plugins/custom/prismjs/prismjs.bundle.js') }}"></script>
-    <script src="{{ asset('js/scripts.bundle.js') }}"></script>
 
     <script>
         $(document).ready(function() {
