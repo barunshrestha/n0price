@@ -102,6 +102,30 @@
             border: 1px solid #EBEDF3;
             font-size: 0.8em;
         }
+
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip-icon {
+            font-size: 12px;
+            color: #999;
+            cursor: pointer;
+        }
+
+        .tooltip-content {
+            display: none;
+            position: absolute;
+            top: 20px;
+            left: 0;
+            z-index: 1;
+            width: max-content;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <!--end::Head-->
@@ -285,6 +309,24 @@
                     },
                     success: function(result) {
                         $('#kt_tab_pane_1_3').html(result)
+                        $('.tooltip-container').hover(function() {
+                            $(this).find('.tooltip-content').fadeIn();
+                        }, function() {
+                            $(this).find('.tooltip-content').fadeOut();
+                        });
+
+                        // Show tooltip on click
+                        $('.tooltip-icon').click(function() {
+                            $(this).siblings('.tooltip-content').fadeIn();
+                            return false;
+                        });
+
+                        // Hide tooltip when clicking outside
+                        $(document).click(function(e) {
+                            if (!$(e.target).closest('.tooltip-container').length) {
+                                $('.tooltip-content').fadeOut();
+                            }
+                        });
                         $('#navbar-search-wallet').html(
                             '<div class="input-icon mx-4">' +
                             '<input type="text" name="wallet_address" class="form-control-lg form-control" id="wallet_address_at_search"' +
@@ -306,7 +348,7 @@
                             });
                         })
                         replaceUrlWithWalletAddress();
-                        populateReturn();
+                        // populateReturn();
                         $('.allocationEditBtn').click(function() {
                             pleaseLoginSweetAlert();
                         });

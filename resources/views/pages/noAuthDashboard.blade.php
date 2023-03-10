@@ -6,11 +6,12 @@
         <div class="card-header align-items-center border-0 mt-4">
             <h3 class="card-title align-items-start flex-column">
                 <span class="font-weight-bolder text-dark">Portfolio</span>
-                <span class="text-muted mt-3 font-weight-bold font-size-sm">{{ count($wallet_list) }} wallets</span>
+                <span class="text-muted mt-3 font-weight-bold font-size-sm">{{ count($wallet_list) }} address</span>
                 <input type="hidden" id="all_wallet_address" value="{{ $wallet_address }}">
             </h3>
             <div class="card-toolbar">
-                <button id="copy-button" onclick="copyToClipboard()" class="btn btn-secondary"><i class="flaticon-file-2"></i> Copy URL to Clipboard</button>
+                <button id="copy-button" onclick="copyToClipboard()" class="btn btn-secondary"><i
+                        class="flaticon-file-2"></i> Copy URL to Clipboard</button>
                 <button type="button" class="btn btn-success mx-2 my-3" data-toggle="modal"
                     data-target="#my_wallet_addresses">
                     <i class="flaticon-upload"></i>
@@ -75,8 +76,15 @@
                     <tr>
                         <td colspan="2">
                             Risk
-                            <i class="flaticon-notepad" data-toggle="tooltip" data-theme="dark" style="font-size: 1em;"
-                                title="Risk factor information"></i>
+                            {{-- <i class="flaticon-notepad" data-toggle="tooltip" data-theme="dark" style="font-size: 1em;"
+                                title="Risk factor information"></i> --}}
+
+                            {{-- <i class="fa fa-info-circle p-2" aria-hidden="true" data-toggle="tooltip" title="Risk factor based on the range of market capitalization"></i> --}}
+                            <div class="tooltip-container">
+                                <span class="tooltip-icon"><i class="fa fa-info-circle"></i></span>
+                                <div class="tooltip-content">Risk factor based on the range of market capitalization.</div>
+                            </div>
+
                         </td>
                         <td style="text-align:center;">
                             Very High
@@ -96,6 +104,10 @@
                     </tr>
                     <tr>
                         <td style="border-right: 1px solid #ffffff;">Allocation%
+                            <div class="tooltip-container">
+                                <span class="tooltip-icon"><i class="fa fa-info-circle"></i></span>
+                                <div class="tooltip-content">Risk factor % exposure for the portfolio analysis and adjustment.</div>
+                            </div>
                         </td>
                         <td style="text-align: right">
                             <span id="total_allocation" class="ml-auto">100.0</span>
@@ -155,6 +167,10 @@
                     <tr>
                         <td colspan="2">
                             To Allocate $
+                            <div class="tooltip-container">
+                                <span class="tooltip-icon"><i class="fa fa-info-circle"></i></span>
+                                <div class="tooltip-content">Total assets to allocate based on risk factor.</div>
+                            </div>
                         </td>
                         <td style="text-align: right;"><span id="toallocate-veryhigh"></span></td>
                         <td style="text-align: right;"><span id="toallocate-high"></span></td>
@@ -167,6 +183,10 @@
 
                         <td colspan="2">
                             Allocated
+                            <div class="tooltip-container">
+                                <span class="tooltip-icon"><i class="fa fa-info-circle"></i></span>
+                                <div class="tooltip-content">Total assets allocated.</div>
+                            </div>
                         </td>
                         <td style="text-align: right;"><span id="allocated-veryhigh"></span></td>
                         <td style="text-align: right;"><span id="allocated-high"></span></td>
@@ -178,6 +198,10 @@
 
                         <td colspan="2">
                             Reallocate
+                            <div class="tooltip-container">
+                                <span class="tooltip-icon"><i class="fa fa-info-circle"></i></span>
+                                <div class="tooltip-content">Adjust the assets for the targeted risk factor.</div>
+                            </div>
                         </td>
                         <td style="text-align: right;"><span id="not_allocated-veryhigh"></span></td>
                         <td style="text-align: right;"><span id="not_allocated-high"></span></td>
