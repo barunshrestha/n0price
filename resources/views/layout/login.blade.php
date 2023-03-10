@@ -348,13 +348,36 @@
                             });
                         })
                         replaceUrlWithWalletAddress();
-                        // populateReturn();
+                        populateReturn();
                         $('.allocationEditBtn').click(function() {
                             pleaseLoginSweetAlert();
                         });
                     }
                 });
             }
+        }
+
+        function composeEmail() {
+            // specify the recipient email address
+            var to = "";
+
+            // specify the subject of the email
+            var subject = "Have a look into my portfolio";
+
+            // specify the body of the email
+            var all_wallet_address = $('#all_wallet_address').val();
+            let url = "{{ route('loadDashboardByAddress', ['address' => ':addresses']) }}";
+            url = url.replace(":addresses", all_wallet_address);
+
+            var body = "Here is the link to my portfolio. \n " + url;
+
+            // construct the mailto link with the recipient email address, subject, and body
+            var mailtoLink = "mailto:" + to + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(
+                body);
+
+            // open the mailto link in a new window or tab
+            window.open("https://mail.google.com/mail/?view=cm&fs=1&to=" + to + "&su=" + encodeURIComponent(subject) +
+                "&body=" + encodeURIComponent(body));
         }
 
         function replaceUrlWithWalletAddress() {
