@@ -11,7 +11,7 @@
             font-weight: 600;
             font-size: 4em;
             letter-spacing: 0.3rem;">
-                Manage portfolios, not just coins
+                Manage portfolios, not just coins...
             </h1>
             <div class="align-items-end" style="margin-left: 44.4%;margin-top:7em;">
                 <p class="text-muted">Show assets allocation and returns based on the risk factors</p>
@@ -27,7 +27,6 @@
                             <i class="flaticon2-search-1 text-muted"></i>
                         </span>
                     </div>
-                    {{-- <button type="submit" class="btn btn-primary font-weight-bold" onclick="searchWallet()">Search</button> --}}
                 </div>
             </div>
 

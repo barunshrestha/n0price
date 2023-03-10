@@ -1,5 +1,5 @@
 <meta name="csrf-token" content="{{ csrf_token() }}" />
-<a href="{{ route('login') }}" class="btn btn-primary mb-3"><i class="fa fa-solid fa-arrow-left"></i>Back</a>
+{{-- <a href="{{ route('login') }}" class="btn btn-primary mb-3"><i class="fa fa-solid fa-arrow-left"></i>Back</a> --}}
 <div class="card card-custom">
     <div class="card card-custom card-stretch gutter-b">
         <!--begin::Header-->

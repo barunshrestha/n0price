@@ -118,29 +118,33 @@
                 <div class="card card-custom-login card-custom">
                     <div class="card-header card-header-tabs-line justify-content-between">
                         <div style="align-self: center;">
-                            <a style="text-decoration:none;color:#EBEDF3;" data-toggle="tab" href="#kt_tab_pane_1_3"
-                                href="{{ route('login') }}">
+                            <a style="text-decoration:none;color:#EBEDF3;" data-toggle="tab" href="#kt_tab_pane_1_3">
                                 <h2>noprice
                                 </h2>
                             </a>
                         </div>
                         <div class="card-toolbar">
-                            <ul class="nav nav-tabs nav-bold nav-tabs-line row">
-                                <li class="nav-item col-sm-12 col-md-6">
-                                    <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_1_4" id="login-page-link"
-                                        style="width: inherit;">
-                                        <span class="nav-icon"><i class="flaticon-user"></i></span>
-                                        <span class="nav-text">Sign In</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item col-sm-12 col-md-6">
-                                    <a class="nav-link mx-sm-5" data-toggle="tab" href="#kt_tab_pane_2_4"
-                                        id="signup-page-link" style="width: inherit;">
-                                        <span class="nav-icon"><i class="flaticon-user-add"></i></span>
-                                        <span class="nav-text">Sign Up</span>
-                                    </a>
-                                </li>
-                            </ul>
+                            <div class="d-flex">
+                                <div class="d-flex justify-content-center" style="align-self: center;margin-right:2em;"
+                                    id="navbar-search-wallet">
+                                </div>
+                                <ul class="nav nav-tabs nav-bold nav-tabs-line row">
+                                    <li class="nav-item col-sm-12 col-md-6">
+                                        <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_1_4"
+                                            id="login-page-link" style="width: inherit;">
+                                            <span class="nav-icon"><i class="flaticon-user"></i></span>
+                                            <span class="nav-text">Sign In</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item col-sm-12 col-md-6">
+                                        <a class="nav-link mx-sm-5" data-toggle="tab" href="#kt_tab_pane_2_4"
+                                            id="signup-page-link" style="width: inherit;">
+                                            <span class="nav-icon"><i class="flaticon-user-add"></i></span>
+                                            <span class="nav-text">Sign Up</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -233,6 +237,7 @@
     <!--begin::Global Theme Bundle(used by all pages)-->
 
     <script>
+        enterPressed = false;
         $(document).ready(function() {
             @if (session('action'))
                 @if (session('action') == 'login')
@@ -245,20 +250,17 @@
             @endif
             $('#wallet_address_at_search').focus(function() {
                 $(document).on('keypress', function(e) {
-                    if (e.which == 13) {
+                    if (e.which == 13 && !enterPressed) {
+                        enterPressed = true;
                         searchWallet();
                     }
                 });
             })
         });
-    </script>
-    <script type="text/javascript">
         $('.password').on('copy paste cut', function(e) {
             e.preventDefault();
         })
-    </script>
-    <!--end::Page Scripts-->
-    <script>
+
         function copyToClipboard() {
             var all_wallet_address = $('#all_wallet_address').val();
             let url = "{{ route('loadDashboardByAddress', ['address' => ':addresses']) }}";
@@ -283,6 +285,26 @@
                     },
                     success: function(result) {
                         $('#kt_tab_pane_1_3').html(result)
+                        $('#navbar-search-wallet').html(
+                            '<div class="input-icon mx-4">' +
+                            '<input type="text" name="wallet_address" class="form-control-lg form-control" id="wallet_address_at_search"' +
+                            'style="width: 45em;" placeholder="Search by ethereum addresses, separated by comma if multiple…"' +
+                            "value={{ $address ?? '' }}>" +
+                            '<span>' +
+                            '<i class="flaticon2-search-1 text-muted"></i>' +
+                            '</span>' +
+                            '</div>'
+                        );
+                        let all_wallet_address = $('#all_wallet_address').val();
+                        $('#wallet_address_at_search').val(all_wallet_address);
+                        $('#wallet_address_at_search').focus(function() {
+                            $(document).on('keypress', function(e) {
+                                if (e.which == 13 && !enterPressed) {
+                                    enterPressed = true;
+                                    searchWallet();
+                                }
+                            });
+                        })
                         replaceUrlWithWalletAddress();
                         populateReturn();
                         $('.allocationEditBtn').click(function() {
@@ -338,8 +360,7 @@
                 }
             });
         }
-    </script>
-    <script type="text/javascript">
+
         function pleaseLoginSweetAlert() {
             swal.fire({
                 title: "Login Alert",
@@ -446,12 +467,11 @@
                     var total_allocated = sum_verylow + sum_low + sum_medium + sum_high + sum_veryhigh;
 
                     var sign_total_allocated = total_allocated.toFixed(1);
-                    // $('#total_holding_valuation').html(sign_total_allocated >= 0 ? 'Total : $' +
-                    //     sign_total_allocated.replace(/\d(?=(\d{3})+\.)/g, '$&,') : 'Total : -$' + String(
-                    //         Math
-                    //         .abs(sign_total_allocated)).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                    let valuation = Number($('#total_worth_backend').val());
+                    $('#total_holding_valuation').html('Total : ' +
+                        (valuation >= 0 ? '$' + valuation.toString().replace(/\d(?=(\d{3})+\.)/g, '$&,') :
+                            '-$' + Math.abs(valuation).toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')));
 
-                    $('#total_holding_valuation').html('Total : $' + $('#total_worth_backend').val());
 
                     var allocation_percentage = $('.allocation-percentage').map((_, el) => el.innerHTML)
                         .get();
@@ -553,6 +573,7 @@
                             sign_total_not_allocated))
                         .replace(/\d(?=(\d{3})+\.)/g, '$&,'));
                     sortTableasc(0);
+                    enterPressed = false;
                 }
             });
         }
