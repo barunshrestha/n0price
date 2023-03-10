@@ -348,7 +348,7 @@
                             });
                         })
                         replaceUrlWithWalletAddress();
-                        populateReturn();
+                        // populateReturn();
                         $('.allocationEditBtn').click(function() {
                             pleaseLoginSweetAlert();
                         });
