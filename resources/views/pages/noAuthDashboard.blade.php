@@ -5,7 +5,7 @@
         <!--begin::Header-->
         <div class="card-header align-items-center border-0 mt-4">
             <h3 class="card-title align-items-start flex-column">
-                <span class="font-weight-bolder text-dark">Portfolio</span>
+                <span class="font-weight-bold text-dark">Portfolio created based on 20% risk factor and hence shows your current allocation vs the allocation with selected risk factor. To manage portfolio sign in….</span>
                 <span class="text-muted mt-3 font-weight-bold font-size-sm">{{ count($wallet_list) }} address</span>
                 <input type="hidden" id="all_wallet_address" value="{{ $wallet_address }}">
             </h3>
