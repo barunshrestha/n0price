@@ -42,7 +42,7 @@
                             </div>
                         @endif
                         @csrf
-                        <div class="form-group mb-5">
+                        {{-- <div class="form-group mb-5">
                             <input
                                 class="form-control h-auto form-control-solid py-4 px-8 @error('name')is-invalid @enderror"
                                 type="text" value="{{ old('name') }}" placeholder="Fullname" name="name" />
@@ -54,7 +54,7 @@
                                     </div>
                                 </div>
                             @enderror
-                        </div>
+                        </div> --}}
                         <div class="form-group mb-5">
                             <input
                                 class="form-control h-auto form-control-solid py-4 px-8 @error('email')is-invalid @enderror"
