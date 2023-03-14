@@ -126,6 +126,21 @@
             border: 1px solid #ccc;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
+
+        .input-box-holder {
+            /* trbl */
+            padding: 6px 8px 6px 8px;
+            background: rgb(253, 253, 253);
+            border-radius: 10px;
+        }
+
+        .input-box-holder input {
+            border: none !important;
+        }
+
+        .input-box-holder .btn-primary {
+            background: #0784c3 !important;
+        }
     </style>
 </head>
 <!--end::Head-->
@@ -142,7 +157,7 @@
                 <div class="card card-custom-login card-custom">
                     <div class="card-header card-header-tabs-line justify-content-between">
                         <div style="align-self: center;">
-                            <a style="text-decoration:none;color:#EBEDF3;" data-toggle="tab" href="#kt_tab_pane_1_3">
+                            <a style="text-decoration:none;color:#EBEDF3;" href="{{ route('login') }}">
                                 <h2>noprice
                                 </h2>
                             </a>
@@ -309,32 +324,15 @@
                     },
                     success: function(result) {
                         $('#kt_tab_pane_1_3').html(result)
-                        $('.tooltip-container').hover(function() {
-                            $(this).find('.tooltip-content').fadeIn();
-                        }, function() {
-                            $(this).find('.tooltip-content').fadeOut();
-                        });
-
-                        // Show tooltip on click
-                        $('.tooltip-icon').click(function() {
-                            $(this).siblings('.tooltip-content').fadeIn();
-                            return false;
-                        });
-
-                        // Hide tooltip when clicking outside
-                        $(document).click(function(e) {
-                            if (!$(e.target).closest('.tooltip-container').length) {
-                                $('.tooltip-content').fadeOut();
-                            }
-                        });
+                        loadTooltip();
                         $('#navbar-search-wallet').html(
-                            '<div class="input-icon mx-4">' +
-                            '<input type="text" name="wallet_address" class="form-control-lg form-control" id="wallet_address_at_search"' +
-                            'style="width: 45em;" placeholder="Search by ethereum addresses, separated by comma if multiple…"' +
+                            '<div class="d-flex input-box-holder mx-4">' +
+                            '<input type="text" name="wallet_address" class="form-control-md form-control" id="wallet_address_at_search"' +
+                            'style="width: 45em;" placeholder="search by ethereum addresses (max 5, separated by comma)"' +
                             "value={{ $address ?? '' }}>" +
-                            '<span>' +
-                            '<i class="flaticon2-search-1 text-muted"></i>' +
-                            '</span>' +
+                            '<button class="btn btn-primary btn-icon" onclick="searchWallet()">' +
+                            '<i class="flaticon2-search-1"></i>' +
+                            '</button>' +
                             '</div>'
                         );
                         let all_wallet_address = $('#all_wallet_address').val();
@@ -355,6 +353,27 @@
                     }
                 });
             }
+        }
+
+        function loadTooltip() {
+            $('.tooltip-container').hover(function() {
+                $(this).find('.tooltip-content').fadeIn();
+            }, function() {
+                $(this).find('.tooltip-content').fadeOut();
+            });
+
+            // Show tooltip on click
+            $('.tooltip-icon').click(function() {
+                $(this).siblings('.tooltip-content').fadeIn();
+                return false;
+            });
+
+            // Hide tooltip when clicking outside
+            $(document).click(function(e) {
+                if (!$(e.target).closest('.tooltip-container').length) {
+                    $('.tooltip-content').fadeOut();
+                }
+            });
         }
 
         function composeEmail() {
@@ -462,6 +481,7 @@
                 success: function(result) {
 
                     $("#coin_worth_all_summary").html(result);
+                    loadTooltip();
                     var api_rate_limit_flag = $('#api_rate_limit_flag').val();
                     if (api_rate_limit_flag == 1) {
                         $('#error-box-api-rate-limit').removeClass('d-none');
@@ -840,7 +860,7 @@
         function addWalletAddressField() {
             var total_wallet_address = $('#wallet_address_collection').find($("input"));
             if (total_wallet_address.length < 5) {
-                $('#wallet_address_collection').append('<div class="input-group mb-3">' +
+                $('#wallet_address_collection').append('<div class="input-group mb-3 col-sm-12 col-md-3">' +
                     '<input name="wallet_address[]" type="text"' +
                     'class="form-control form-control-solid"' +
                     'placeholder="Enter another wallet address" required ' +

@@ -5,11 +5,14 @@
         <!--begin::Header-->
         <div class="card-header align-items-center border-0 mt-4">
             <h3 class="card-title align-items-start flex-column">
-                <span class="text-muted mt-5 font-weight-bold font-size-sm">{{ count($wallet_list) }} address
-                    <button class="btn btn-icon btn-success btn-xs mx-3" type="button" data-toggle="modal"
-                        data-target="#my_wallet_addresses">
-                        <i class="fa fa-pen"></i>
-                    </button></span>
+                <span class="font-weight-bolder text-dark" style="font-size: 1.2em;">Portfolio:
+                    <span id="total_holding_valuation"></span>
+                </span>
+                {{-- <button class="btn btn-icon btn-success btn-xs mx-3" type="button" data-toggle="modal"
+                    data-target="#my_wallet_addresses">
+                    <i class="fa fa-pen"></i>
+                </button> --}}
+
                 <input type="hidden" id="all_wallet_address" value="{{ $wallet_address }}">
             </h3>
             <div class="card-toolbar">
@@ -42,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-body pt-1">
+        {{-- <div class="card-body pt-1">
             <div class="timeline timeline-6">
                 @foreach ($wallet_list as $item)
                     <div class="timeline-item align-items-start">
@@ -57,9 +60,32 @@
                     </div>
                 @endforeach
             </div>
+        </div> --}}
+        <div class="card-body">
+            <div id="wallet_address_collection" class="row">
+                @foreach ($wallet_list as $wallet_address)
+                    <div class="input-group mb-3 col-sm-12 col-md-3">
+                        <input name="wallet_address[]" type="text" class="form-control form-control-solid"
+                            placeholder="Enter your wallet address" required value="{{ $wallet_address }}"
+                            autocomplete="off" />
+                        <button class="btn btn-icon btn-danger btn-sm mx-2" type="button"
+                            onclick="removeWalletAddressField(this)">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                @endforeach
+            </div>
+            <div class="d-flex">
+                <button class="btn btn-icon btn-info btn-sm" type="button" onclick="addWalletAddressField()">
+                    <i class="fa fa-plus"></i>
+                </button>
+                <button class="btn btn-icon btn-primary btn-sm mx-3" type="button" onclick="editWalletListModal()">
+                    <i class="fa fa-save"></i>
+                </button>
+            </div>
         </div>
-        <h4 class="px-10 font-weight-bolder text-dark" id="total_holding_valuation"></h4>
-
+        <div id="maximum_wallet_capacity_error_box">
+        </div>
 
         <div class="card-body">
             <div class="card d-none" id="error-box-api-rate-limit">
@@ -102,7 +128,7 @@
                             Risk
                             <div class="tooltip-container">
                                 <span class="tooltip-icon"><i class="fa fa-info-circle"></i></span>
-                                <div class="tooltip-content">Risk factor based on the range of market capitalization.
+                                <div class="tooltip-content">risk factor is based on the range of market cap
                                 </div>
                             </div>
 
@@ -127,8 +153,7 @@
                         <td style="border-right: 1px solid #ffffff;">Allocation%
                             <div class="tooltip-container">
                                 <span class="tooltip-icon"><i class="fa fa-info-circle"></i></span>
-                                <div class="tooltip-content">Risk factor % exposure for the portfolio analysis and
-                                    adjustment.</div>
+                                <div class="tooltip-content">define your allocation % based on your risk appetite</div>
                             </div>
                         </td>
                         <td style="text-align: right">
@@ -191,7 +216,7 @@
                             To Allocate $
                             <div class="tooltip-container">
                                 <span class="tooltip-icon"><i class="fa fa-info-circle"></i></span>
-                                <div class="tooltip-content">Total assets to allocate based on risk factor.</div>
+                                <div class="tooltip-content">to allocate is calculated based on allocation % of your total portfolio size</div>
                             </div>
                         </td>
                         <td style="text-align: right;"><span id="toallocate-veryhigh"></span></td>
@@ -207,7 +232,7 @@
                             Allocated
                             <div class="tooltip-container">
                                 <span class="tooltip-icon"><i class="fa fa-info-circle"></i></span>
-                                <div class="tooltip-content">Total assets allocated.</div>
+                                <div class="tooltip-content">amount you have already invested in this risk category</div>
                             </div>
                         </td>
                         <td style="text-align: right;"><span id="allocated-veryhigh"></span></td>
@@ -222,7 +247,7 @@
                             Reallocate
                             <div class="tooltip-container">
                                 <span class="tooltip-icon"><i class="fa fa-info-circle"></i></span>
-                                <div class="tooltip-content">Adjust the assets for the targeted risk factor.</div>
+                                <div class="tooltip-content">amount you need to add/remove from this risk category to balance your portfolio based on your allocation %</div>
                             </div>
                         </td>
                         <td style="text-align: right;"><span id="not_allocated-veryhigh"></span></td>
@@ -247,7 +272,7 @@
             </table>
         </div>
     </div>
-    <div class="modal fade" id="my_wallet_addresses" data-backdrop="static" tabindex="-1" role="dialog"
+    {{-- <div class="modal fade" id="my_wallet_addresses" data-backdrop="static" tabindex="-1" role="dialog"
         aria-labelledby="staticBackdrop" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -300,5 +325,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>

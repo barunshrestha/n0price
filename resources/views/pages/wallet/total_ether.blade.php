@@ -1,3 +1,3 @@
-<h6>
-    Total : {{$total_ether}}
-</h6>
+<h4>
+   {{$total_ether}}
+</h4>

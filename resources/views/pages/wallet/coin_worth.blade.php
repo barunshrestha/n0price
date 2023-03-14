@@ -6,7 +6,12 @@
         <input type="hidden" value="{{ $total_worth ?? 0 }}" id="total_worth_backend">
         <input type="hidden" value="{{ $invalid_wallet_address ?? '' }}" id="invalid_wallet_address_list">
     </td>
-    <td id="return-asc-desc">Return <i class="fa fa-sort" onclick="sortTableasc(7)"></i></td>
+    <td id="return-asc-desc">Return <div class="tooltip-container" style="vertical-align: sub;">
+            <span class="tooltip-icon"><i class="fa fa-info-circle"></i></span>
+            <div class="tooltip-content">current return on your asset based on fifo</div>
+        </div>
+        <i class="fa fa-sort" onclick="sortTableasc(7)"></i>
+    </td>
     <td id="24hr-asc-desc">24hr <i class="fa fa-sort" onclick="sortTableasc(8)"></i></td>
     <td id="7d-asc-desc">7d <i class="fa fa-sort" onclick="sortTableasc(9)"></i></td>
     <td id="ath-asc-desc">ATH <i class="fa fa-sort" onclick="sortTableasc(10)"></i></td>

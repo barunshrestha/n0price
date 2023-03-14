@@ -46,7 +46,7 @@ Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
 Route::post('reset-password', [NewPasswordController::class, 'store'])
     ->name('password.update');
 
-
+Route::post('/calculate/wallet/{portfolio_id}', [TransactionController::class, 'loadWalletCalculations'])->name('calculate.wallet.calculations');
 Route::middleware(['auth', 'verified', 'topLevelApproval', 'adminAuth'])->group(function () {
     Route::get('/user/approve/{id}', [UserController::class, 'approveUser'])->name('user.approve');
     Route::get('/user/unnapprove/{id}', [UserController::class, 'unapproveUser'])->name('user.unapprove');
@@ -124,7 +124,7 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('logout');
 });
 
-Route::post('/calculate/wallet/{portfolio_id}', [TransactionController::class, 'loadWalletCalculations'])->name('calculate.wallet.calculations');
+
 Route::post('/calculate/portfolio', [DashboardController::class, 'loadDashboardWithoutLogin'])->name('loadDashboardWithoutLogin');
 Route::post('/calculate/total', [TransactionController::class, 'calc_ether_value'])->name('calculate.total.ether');
 
